@@ -1,0 +1,233 @@
+{
+  "projectType": "frontend",
+  "projectName": "Adopta Un Abuelo React Components",
+  "projectDescription": "A simple, customizable, and accessible library of React components built with TypeScript and styled-components",
+  "theme": "palm",
+  "primaryColor": "#848c8e",
+  "lightColor": "#11161e",
+  "darkColor": "#cfd0d2",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Core Concepts",
+            "pages": [
+              "concepts/architecture",
+              "concepts/styling",
+              "concepts/typescript"
+            ]
+          },
+          {
+            "group": "Form Components",
+            "pages": [
+              "components/button",
+              "components/input",
+              "components/input-phone",
+              "components/input-location",
+              "components/input-image",
+              "components/input-birthday",
+              "components/input-code",
+              "components/input-date-range",
+              "components/input-range",
+              "components/input-price",
+              "components/input-chat",
+              "components/select",
+              "components/textarea",
+              "components/checkbox",
+              "components/radio-button",
+              "components/switch",
+              "components/search-bar"
+            ]
+          },
+          {
+            "group": "Display Components",
+            "pages": [
+              "components/text",
+              "components/avatar",
+              "components/label",
+              "components/progress-bar",
+              "components/countdown",
+              "components/counter",
+              "components/stamp",
+              "components/feedback"
+            ]
+          },
+          {
+            "group": "Navigation Components",
+            "pages": [
+              "components/breadcrumb",
+              "components/menu",
+              "components/tabs",
+              "components/pagination"
+            ]
+          },
+          {
+            "group": "Interactive Components",
+            "pages": [
+              "components/modal",
+              "components/dropdown",
+              "components/filter",
+              "components/cell-selector",
+              "components/tag-selector",
+              "components/switch-tag",
+              "components/hover",
+              "components/faqs",
+              "components/chat"
+            ]
+          },
+          {
+            "group": "Form & Data",
+            "pages": [
+              "components/form",
+              "components/currency-selector",
+              "components/payout"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/optional-dependencies",
+              "advanced/google-maps-integration",
+              "advanced/stripe-integration",
+              "advanced/rich-text-editor"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "resources/contributing",
+              "resources/changelog",
+              "resources/license"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "Components",
+            "pages": [
+              "api/avatar",
+              "api/breadcrumb",
+              "api/button",
+              "api/cell-selector",
+              "api/chat",
+              "api/checkbox",
+              "api/countdown",
+              "api/counter",
+              "api/currency-selector",
+              "api/dropdown",
+              "api/faqs",
+              "api/feedback",
+              "api/filter",
+              "api/form",
+              "api/hover",
+              "api/input",
+              "api/input-birthday",
+              "api/input-chat",
+              "api/input-code",
+              "api/input-date-range",
+              "api/input-image",
+              "api/input-location",
+              "api/input-phone",
+              "api/input-price",
+              "api/input-range",
+              "api/label",
+              "api/menu",
+              "api/modal",
+              "api/pagination",
+              "api/payout",
+              "api/progress-bar",
+              "api/radio-button",
+              "api/search-bar",
+              "api/select",
+              "api/stamp",
+              "api/switch",
+              "api/switch-tag",
+              "api/tabs",
+              "api/tag-selector",
+              "api/text",
+              "api/textarea"
+            ]
+          },
+          {
+            "group": "Constants",
+            "pages": [
+              "api/color",
+              "api/color-v2"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "40+ production-ready React components",
+    "Full TypeScript support with comprehensive type definitions",
+    "Styled-components based theming system",
+    "Multiple design variants per component (primary, secondary, text, etc.)",
+    "Accessible and customizable component API",
+    "Optional integrations (Google Maps, Stripe, Tiptap rich text editor)",
+    "Built-in loading and success animations with Lottie",
+    "Form components with validation support",
+    "Responsive design utilities",
+    "Comprehensive Storybook documentation"
+  ],
+  "publicApiSurface": [
+    "Avatar",
+    "BreadCrumb",
+    "Button",
+    "CellSelector",
+    "Chat",
+    "Checkbox",
+    "Countdown",
+    "Counter",
+    "CurrencySelector",
+    "Dropdown",
+    "FAQs",
+    "Feedback",
+    "Filter",
+    "Form",
+    "Hover",
+    "Input",
+    "InputBirthday",
+    "InputChat",
+    "InputCode",
+    "InputDateRange",
+    "InputImage",
+    "InputLocation",
+    "InputPhone",
+    "InputPrice",
+    "InputRange",
+    "Label",
+    "Menu",
+    "Modal",
+    "Pagination",
+    "Payout",
+    "ProgressBar",
+    "RadioButton",
+    "SearchBar",
+    "Select",
+    "Stamp",
+    "Switch",
+    "SwitchTag",
+    "Tabs",
+    "TagSelector",
+    "Text",
+    "TextAnimated",
+    "TextArea",
+    "Color",
+    "ColorV2"
+  ]
+}
