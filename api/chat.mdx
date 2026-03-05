@@ -1,0 +1,126 @@
+---
+title: Chat
+description: API reference for the Chat component
+---
+
+## Chat
+
+Full-featured chat interface with message history, template support, and media uploads. Automatically groups messages by date and shows template prompt when last message is > 24 hours old.
+
+### Import
+
+```tsx
+import { Chat } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="messages" type="Array<ChatMessageProps>" required>
+  Array of chat messages to display, grouped automatically by date
+</ParamField>
+
+<ParamField path="templates" type="Array<TemplateProps>" required>
+  Available message templates shown when conversation is inactive (>24 hrs)
+</ParamField>
+
+<ParamField path="onSend" type="(data: SendData) => void" required>
+  Callback fired when user sends a message, template, or uploads media
+</ParamField>
+
+<ParamField path="loading" type="boolean">
+  Shows loading spinner in input when true
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the input field
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+### ChatMessageProps
+
+<ParamField path="key" type="string" required>
+  Unique identifier for the message
+</ParamField>
+
+<ParamField path="type" type="'sender' | 'recipient'" required>
+  Message direction/sender type
+</ParamField>
+
+<ParamField path="text" type="string">
+  Text content of the message
+</ParamField>
+
+<ParamField path="createdAt" type="Date" required>
+  Timestamp when message was created
+</ParamField>
+
+<ParamField path="state" type="'sent' | 'undelivered' | 'delivered' | 'failed' | 'read'" required>
+  Delivery/read status of the message
+</ParamField>
+
+<ParamField path="media" type="Array<MediaProps>">
+  Array of media attachments (images, audio)
+</ParamField>
+
+<ParamField path="User" type="{ imageUrl?: string; name?: string }" required>
+  User information for the message sender
+</ParamField>
+
+<ParamField path="role" type="string">
+  Role attribute for the message container
+</ParamField>
+
+### TemplateProps
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the template
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Template title
+</ParamField>
+
+<ParamField path="subtitle" type="string" required>
+  Template subtitle
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  Full template message content
+</ParamField>
+
+### SendData
+
+<ParamField path="text" type="string">
+  Text message content
+</ParamField>
+
+<ParamField path="template" type="string">
+  Template ID when using a template
+</ParamField>
+
+<ParamField path="media" type="{ base64: string; contentType: string }">
+  Media attachment with base64 data and content type
+</ParamField>
+
+### Usage
+
+```tsx
+<Chat
+  messages={chatMessages}
+  templates={messageTemplates}
+  loading={isSending}
+  onSend={(data) => handleSendMessage(data)}
+/>
+```
+
+### Notes
+
+- Messages are automatically grouped by date with date dividers
+- Shows template prompt when last recipient message is >24 hours old
+- Supports image and audio media attachments
+- Auto-scrolls to bottom when new messages arrive
+- Media uploads are converted to base64 before sending
+- Input is disabled when templates are required (>24h inactive)

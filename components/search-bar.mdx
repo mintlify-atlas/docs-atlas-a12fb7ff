@@ -1,0 +1,190 @@
+---
+title: SearchBar
+description: Search input with magnifying glass icon and multiple size and design variants
+---
+
+A search input component with an integrated magnifying glass icon, supporting two sizes and visual designs.
+
+## Basic Usage
+
+```tsx
+import { SearchBar } from '@adoptaunabuelo/react-components';
+
+function SearchExample() {
+  const handleSearch = (e) => {
+    console.log('Search:', e.target.value);
+  };
+
+  return (
+    <SearchBar
+      placeholder="Search..."
+      onChange={handleSearch}
+    />
+  );
+}
+```
+
+## Size Variants
+
+### Big (48px height)
+
+```tsx
+<SearchBar
+  type="big"
+  placeholder="Search articles..."
+  onChange={(e) => handleSearch(e.target.value)}
+/>
+```
+
+### Small (38px height, default)
+
+```tsx
+<SearchBar
+  type="small"
+  placeholder="Search..."
+  onChange={(e) => handleSearch(e.target.value)}
+/>
+```
+
+## Design Variants
+
+### Primary Design (Gray Background)
+
+```tsx
+<SearchBar
+  design="primary"
+  type="big"
+  placeholder="Search..."
+  onChange={handleSearch}
+/>
+```
+
+### Secondary Design (White with Border)
+
+```tsx
+<SearchBar
+  design="secondary"
+  type="big"
+  placeholder="Search..."
+  onChange={handleSearch}
+/>
+```
+
+## Full Example with State
+
+```tsx
+import { SearchBar } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function ProductSearch() {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    
+    // Perform search
+    const filteredResults = products.filter(product =>
+      product.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setResults(filteredResults);
+  };
+
+  return (
+    <div>
+      <SearchBar
+        type="big"
+        design="primary"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+      
+      <div>
+        {results.map(result => (
+          <div key={result.id}>{result.name}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Custom Styling
+
+```tsx
+<SearchBar
+  id="custom-search"
+  placeholder="Search..."
+  style={{ width: '100%', maxWidth: '600px' }}
+  onChange={handleSearch}
+/>
+```
+
+## Props
+
+<ParamField path="type" type="'big' | 'small'" default="small">
+  Size variant:
+  - `big`: 48px height with larger font (16px)
+  - `small`: 38px height with standard font (14px)
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'" default="primary">
+  Visual design variant:
+  - `primary`: Gray background (rgba(0, 29, 61, 0.04)) with soft border
+  - `secondary`: White background with border, no gray fill
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the search bar container.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text displayed when empty.
+</ParamField>
+
+<ParamField path="onChange" type="(e: React.ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when the input value changes.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles for the container.
+</ParamField>
+
+Also supports all standard HTML input attributes (value, onFocus, onBlur, etc.).
+
+## Features
+
+- **Search Icon**: Magnifying glass icon from Lucide React
+- **Auto-focus**: Changes to text cursor on focus
+- **Focus States**: Border color changes on focus
+- **Responsive Padding**: Icon and text positioning adjusts based on design variant
+- **Rounded Corners**: 100px border radius for pill-shaped appearance
+- **Hover Effect**: Cursor changes to pointer when hovering
+
+## Styling Details
+
+### Icon Positioning
+- **Primary design**: 16px from left edge
+- **Secondary design**: 0px from left edge
+
+### Input Padding
+- **Primary design, big**: 46px left padding
+- **Primary design, small**: 46px left padding
+- **Secondary design, big**: 36px left padding
+- **Secondary design, small**: 36px left padding
+
+### Icon Size
+- **Big**: 24px × 24px
+- **Small**: 22px × 22px
+
+### Border Behavior
+- **Primary, unfocused**: 1px soft border
+- **Primary, focused**: 1px full border, white background
+- **Secondary**: No border changes (always soft border)
+
+### Font
+- **Family**: Poppins
+- **Size (big)**: 16px
+- **Size (small)**: 14px

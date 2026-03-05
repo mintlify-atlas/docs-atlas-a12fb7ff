@@ -1,0 +1,259 @@
+---
+title: ProgressBar
+description: Animated progress indicator supporting single or multiple progress values with optional percentage display
+---
+
+## Overview
+
+The `ProgressBar` component displays visual progress with smooth animations. It supports both single and multiple progress values, customizable colors, animation timing, and an optional floating percentage indicator.
+
+## Import
+
+```tsx
+import { ProgressBar } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Progress Bar
+
+```tsx
+<ProgressBar progress={75} />
+```
+
+### With Percentage Display
+
+```tsx
+<ProgressBar 
+  progress={60}
+  showPercentage
+/>
+```
+
+### Animated Progress
+
+```tsx
+<ProgressBar 
+  progress={85}
+  animationTime={1.5}
+  animationDelay={0.3}
+  showPercentage
+/>
+```
+
+### Custom Color
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<ProgressBar 
+  progress={50}
+  color={ColorV2.surface.green}
+  showPercentage
+/>
+```
+
+### Multiple Progress Bars
+
+```tsx
+<ProgressBar 
+  progress={[
+    { value: 30, color: ColorV2.surface.blue },
+    { value: 25, color: ColorV2.surface.green },
+    { value: 20, color: ColorV2.surface.orange }
+  ]}
+  maxValue={100}
+  showPercentage
+/>
+```
+
+### Custom Range
+
+```tsx
+<ProgressBar 
+  progress={750}
+  minValue={0}
+  maxValue={1000}
+  showPercentage
+/>
+{/* Displays 75% */}
+```
+
+### Custom Height
+
+```tsx
+<ProgressBar 
+  progress={60}
+  style={{ height: 12 }}
+  showPercentage
+/>
+```
+
+## Props
+
+<ParamField path="progress" type="number | Array<{ value: number; color?: string }>" required>
+  Current progress value(s).
+  
+  **Single value:**
+  ```tsx
+  progress={75}
+  ```
+  
+  **Multiple values:**
+  ```tsx
+  progress={[
+    { value: 40, color: '#4CAF50' },
+    { value: 30, color: '#2196F3' }
+  ]}
+  ```
+  
+  When using multiple values, each segment gets its own color and percentage indicator.
+</ParamField>
+
+<ParamField path="minValue" type="number" default="0">
+  Minimum value for progress calculation. Used to calculate the percentage:
+  
+  ```
+  percentage = (progress / (maxValue - minValue)) * 100
+  ```
+</ParamField>
+
+<ParamField path="maxValue" type="number" default="100">
+  Maximum value for progress calculation.
+</ParamField>
+
+<ParamField path="color" type="string">
+  Bar color. Overrides the default primary color.
+  
+  **Default:** `Color.background.primary`
+</ParamField>
+
+<ParamField path="animationTime" type="number">
+  Animation duration in seconds for progress changes.
+  
+  ```tsx
+  animationTime={2} // 2 second transition
+  ```
+</ParamField>
+
+<ParamField path="animationDelay" type="number">
+  Delay in seconds before animation starts.
+  
+  ```tsx
+  animationDelay={0.5} // Wait 0.5s before animating
+  ```
+</ParamField>
+
+<ParamField path="showPercentage" type="boolean" default="false">
+  Display floating percentage badge(s) above the progress bar.
+  
+  The badge:
+  - Automatically positions above the current progress point
+  - Matches the bar color (or uses custom color)
+  - Shows percentage with 0 decimal places
+  - Appears for each segment in multi-progress mode
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom inline styles for the container. Common use cases:
+  
+  ```tsx
+  style={{
+    height: 10,      // Custom bar height
+    width: '100%',   // Full width
+    margin: '20px 0' // Spacing
+  }}
+  ```
+</ParamField>
+
+## Features
+
+- **Smooth animations**: CSS transitions with configurable timing and delay
+- **Multiple progress bars**: Display several progress segments simultaneously
+- **Percentage display**: Optional floating badge showing exact percentage
+- **Custom ranges**: Support for non-0-100 ranges
+- **Color customization**: Per-bar color control
+- **Responsive**: Works across all screen sizes
+- **Accessible**: Uses `role="progress-bar"` for semantic identification
+
+## Animation Behavior
+
+The progress bar uses CSS transitions for smooth animations:
+
+1. **Initial render**: Starts at 0 (or last progress value)
+2. **Progress change**: Smoothly transitions to new value
+3. **Timing**: Controlled by `animationTime` prop (ease-out)
+4. **Delay**: Optional delay before animation starts
+
+```tsx
+const [progress, setProgress] = useState(0);
+
+useEffect(() => {
+  // Animate to 80% after component mounts
+  setTimeout(() => setProgress(80), 100);
+}, []);
+
+<ProgressBar 
+  progress={progress}
+  animationTime={1.5}
+  showPercentage
+/>
+```
+
+## Multi-Progress Mode
+
+When passing an array of progress values:
+
+- Each segment renders side-by-side
+- Segments share the same container (stacked horizontally)
+- Each can have its own color
+- Each gets its own percentage badge when `showPercentage={true}`
+- Total width is sum of all segments as percentage of maxValue
+
+```tsx
+<ProgressBar
+  progress={[
+    { value: 30, color: '#4CAF50' },
+    { value: 20, color: '#FFC107' },
+    { value: 10, color: '#F44336' }
+  ]}
+  maxValue={100}
+  showPercentage
+/>
+{/* Total: 60% filled (30% + 20% + 10%) */}
+```
+
+## Design Specifications
+
+- **Default height**: 6px
+- **Background**: `Color.background.soft` (light gray)
+- **Border radius**: 100px (fully rounded ends)
+- **Default color**: `Color.background.primary`
+- **Percentage badge**:
+  - Background: `ColorV2.surface.primary` (or custom color)
+  - Text: White, p2 size, medium weight
+  - Padding: 0px 4px
+  - Border radius: 4px
+  - Position: 28px above bar, centered on progress point
+
+## Best Practices
+
+- Use `showPercentage` for important progress indicators
+- Add animation for dynamic progress changes (loading, uploads)
+- Use multiple progress bars to show segmented completion (e.g., task categories)
+- Keep `animationTime` between 0.5-2 seconds for natural feel
+- Use custom colors to indicate progress state (green=success, red=danger)
+- Ensure sufficient contrast between bar color and background
+- Consider custom height for better visibility in your design
+
+## Accessibility
+
+- Uses `role="progress-bar"` for semantic identification
+- Percentage display provides clear progress indication
+- Visual progress complemented by numeric percentage
+- High contrast default colors
+
+## Related Components
+
+- [Text](/components/text) - Used internally for percentage display
+- [Counter](/components/counter) - Alternative numeric progress indicator

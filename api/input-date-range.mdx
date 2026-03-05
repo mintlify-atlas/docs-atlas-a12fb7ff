@@ -1,0 +1,175 @@
+---
+title: InputDateRange
+description: Date range picker powered by react-dates (Airbnb) with Spanish localization
+---
+
+## Import
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import moment from 'moment';
+```
+
+## Usage
+
+```tsx
+import moment from 'moment';
+
+const [startDate, setStartDate] = useState<moment.Moment | null>(null);
+const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+
+<InputDateRange
+  startDate={startDate}
+  endDate={endDate}
+  onChange={({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }}
+  isOutsideRange={(date) => date.isBefore(moment())}
+/>
+```
+
+## Props
+
+<ParamField path="startDate" type="moment.Moment | null" required>
+  The selected start date as a moment.js object. Use `null` for no selection.
+</ParamField>
+
+<ParamField path="endDate" type="moment.Moment | null" required>
+  The selected end date as a moment.js object. Use `null` for no selection.
+</ParamField>
+
+<ParamField path="onChange" type="(data: { startDate: moment.Moment | null; endDate: moment.Moment | null }) => void" required>
+  Callback fired when either date changes. Receives both start and end dates.
+</ParamField>
+
+<ParamField path="isOutsideRange" type="(date: moment.Moment) => boolean">
+  Optional function to disable specific dates. Return `true` to disable a date. Commonly used to prevent past date selection.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the input container.
+</ParamField>
+
+<ParamField path="focus" type="boolean">
+  Controls whether the input has focus styling (not functional for actual focus state).
+</ParamField>
+
+## Styling
+
+- **Height**: 56px
+- **Border radius**: 12px
+- **Border**: 1px solid neutral soft gray, 2px neutral medium on focus
+- **Padding**: 0-6px
+- **Spanish placeholders**: "Fecha inicio" and "Fecha final"
+
+## Dependencies
+
+This component uses:
+- `react-dates` from Airbnb for the date picker UI
+- `moment` for date handling
+- Custom CSS overrides in `./react_dates_overrides.css`
+
+<Warning>
+  You must import the react-dates CSS in your app:
+  ```tsx
+  import 'react-dates/lib/css/_datepicker.css';
+  ```
+</Warning>
+
+## Features
+
+- **Clear dates button**: Built-in button to clear both dates
+- **No border mode**: Uses `noBorder={true}` for seamless integration
+- **Keyboard shortcuts hidden**: `hideKeyboardShortcutsPanel={true}`
+- **Spanish UI**: Date picker interface in Spanish locale
+
+## Examples
+
+### Prevent Past Dates
+
+```tsx
+import moment from 'moment';
+
+<InputDateRange
+  startDate={startDate}
+  endDate={endDate}
+  onChange={({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }}
+  isOutsideRange={(date) => date.isBefore(moment(), 'day')}
+/>
+```
+
+### Only Allow Current Month
+
+```tsx
+<InputDateRange
+  startDate={startDate}
+  endDate={endDate}
+  onChange={({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }}
+  isOutsideRange={(date) => {
+    const today = moment();
+    return !date.isSame(today, 'month');
+  }}
+/>
+```
+
+### With Custom Styling
+
+```tsx
+<InputDateRange
+  startDate={startDate}
+  endDate={endDate}
+  style={{ maxWidth: 400 }}
+  onChange={({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }}
+/>
+```
+
+### Booking System Example
+
+```tsx
+const [startDate, setStartDate] = useState<moment.Moment | null>(null);
+const [endDate, setEndDate] = useState<moment.Moment | null>(null);
+const [bookedDates, setBookedDates] = useState<moment.Moment[]>([]);
+
+const isDateBooked = (date: moment.Moment) => {
+  return bookedDates.some(bookedDate => date.isSame(bookedDate, 'day'));
+};
+
+<InputDateRange
+  startDate={startDate}
+  endDate={endDate}
+  onChange={({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+  }}
+  isOutsideRange={(date) => {
+    // Disable past dates and already booked dates
+    return date.isBefore(moment(), 'day') || isDateBooked(date);
+  }}
+/>
+```
+
+## Working with moment.js
+
+```tsx
+// Convert Date to moment
+const momentDate = moment(new Date());
+
+// Convert moment to Date
+const jsDate = momentDate.toDate();
+
+// Format moment date
+const formatted = momentDate.format('YYYY-MM-DD');
+
+// Parse string to moment
+const parsed = moment('2024-01-15', 'YYYY-MM-DD');
+```

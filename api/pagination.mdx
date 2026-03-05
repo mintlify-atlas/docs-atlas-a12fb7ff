@@ -1,0 +1,373 @@
+---
+title: Pagination
+description: Pagination control with first/previous/next/last navigation buttons
+---
+
+## Import
+
+```tsx
+import { Pagination } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+const [currentPage, setCurrentPage] = useState(0);
+
+<Pagination
+  length={100}
+  rowsPerPage={10}
+  start={currentPage}
+  onChange={(page) => setCurrentPage(page)}
+/>
+```
+
+## Props
+
+<ParamField path="length" type="number" required>
+  Total number of items to paginate.
+</ParamField>
+
+<ParamField path="rowsPerPage" type="number" required>
+  Number of items to display per page. Used to calculate total pages: `Math.ceil(length / rowsPerPage)`.
+</ParamField>
+
+<ParamField path="onChange" type="(page: number) => void">
+  Callback fired when page changes. Receives new page index (0-based).
+</ParamField>
+
+<ParamField path="start" type="number">
+  Initial/controlled page index (0-based). Must be less than total pages.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+## Features
+
+### Navigation Buttons
+
+1. **First Page** (ChevronFirst icon)
+   - Jumps to page 0
+   - Disabled when on first page
+
+2. **Previous Page** (ChevronLeft icon)
+   - Goes to page - 1
+   - Disabled when on first page
+
+3. **Page Indicator**
+   - Shows "**X** de **Y**" format (Spanish)
+   - X = current page (1-based display)
+   - Y = total pages
+
+4. **Next Page** (ChevronRight icon)
+   - Goes to page + 1
+   - Disabled when on last page
+
+5. **Last Page** (ChevronLast icon)
+   - Jumps to last page
+   - Disabled when on last page
+
+### Disabled States
+- **First/Previous**: Disabled on first page (gray color, `cursor: auto`)
+- **Next/Last**: Disabled on last page (gray color, `cursor: auto`)
+- Icons use `Color.text.low` when disabled, `Color.text.full` when enabled
+
+### Hover Effect
+- Light gray background on icon hover (when not disabled)
+- 26x26px circular hover area
+- Border radius: 42px
+
+## Examples
+
+### Basic Pagination
+
+```tsx
+const [page, setPage] = useState(0);
+const itemsPerPage = 10;
+const totalItems = 100;
+
+const startIndex = page * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+const currentItems = allItems.slice(startIndex, endIndex);
+
+<>
+  <ItemList items={currentItems} />
+  
+  <Pagination
+    length={totalItems}
+    rowsPerPage={itemsPerPage}
+    start={page}
+    onChange={setPage}
+  />
+</>
+```
+
+### Table Pagination
+
+```tsx
+const [currentPage, setCurrentPage] = useState(0);
+const pageSize = 20;
+
+const fetchPage = async (page: number) => {
+  const data = await api.getItems({
+    offset: page * pageSize,
+    limit: pageSize
+  });
+  setItems(data.items);
+  setTotalCount(data.total);
+};
+
+useEffect(() => {
+  fetchPage(currentPage);
+}, [currentPage]);
+
+<Table>
+  <tbody>
+    {items.map(item => <TableRow key={item.id} {...item} />)}
+  </tbody>
+</Table>
+
+<Pagination
+  length={totalCount}
+  rowsPerPage={pageSize}
+  start={currentPage}
+  onChange={(page) => {
+    setCurrentPage(page);
+    fetchPage(page);
+  }}
+/>
+```
+
+### API Pagination
+
+```tsx
+const [page, setPage] = useState(0);
+const [data, setData] = useState([]);
+const [total, setTotal] = useState(0);
+const limit = 25;
+
+const loadPage = async (pageIndex: number) => {
+  const response = await fetch(
+    `/api/items?offset=${pageIndex * limit}&limit=${limit}`
+  );
+  const json = await response.json();
+  setData(json.items);
+  setTotal(json.total);
+};
+
+useEffect(() => {
+  loadPage(page);
+}, [page]);
+
+<>
+  <ItemGrid items={data} />
+  
+  <Pagination
+    length={total}
+    rowsPerPage={limit}
+    start={page}
+    onChange={setPage}
+    style={{ marginTop: 24 }}
+  />
+</>
+```
+
+### With URL Query Parameters
+
+```tsx
+import { useSearchParams } from 'react-router-dom';
+
+const [searchParams, setSearchParams] = useSearchParams();
+const page = parseInt(searchParams.get('page') || '0');
+
+const handlePageChange = (newPage: number) => {
+  setSearchParams({ page: newPage.toString() });
+};
+
+<Pagination
+  length={totalItems}
+  rowsPerPage={10}
+  start={page}
+  onChange={handlePageChange}
+/>
+```
+
+### Custom Styling
+
+```tsx
+<Pagination
+  length={100}
+  rowsPerPage={10}
+  start={page}
+  onChange={setPage}
+  style={{
+    justifyContent: 'center',
+    marginTop: 32,
+    padding: '16px 0',
+    borderTop: '1px solid #eee'
+  }}
+/>
+```
+
+### Calculate Showing Range
+
+```tsx
+const [page, setPage] = useState(0);
+const rowsPerPage = 10;
+const total = 95;
+
+const showingStart = page * rowsPerPage + 1;
+const showingEnd = Math.min((page + 1) * rowsPerPage, total);
+
+<div>
+  <Text>Showing {showingStart}-{showingEnd} of {total}</Text>
+  
+  <Pagination
+    length={total}
+    rowsPerPage={rowsPerPage}
+    start={page}
+    onChange={setPage}
+  />
+</div>
+```
+
+## Page Calculation
+
+```tsx
+// Total pages
+const totalPages = Math.ceil(length / rowsPerPage);
+
+// Example: 100 items, 10 per page = 10 pages (0-9)
+// Example: 95 items, 10 per page = 10 pages (0-9)
+// Example: 91 items, 10 per page = 10 pages (0-9)
+
+// Current page (0-based internal, 1-based display)
+const displayPage = page + 1; // Show "1 de 10" not "0 de 10"
+```
+
+## Button Behavior
+
+### First Page Button
+```tsx
+if (page === 0) {
+  // Disabled: gray color, auto cursor
+} else {
+  // Enabled: clickable, sets page to 0
+}
+```
+
+### Previous Page Button
+```tsx
+if (page === 0) {
+  // Disabled: gray color, auto cursor
+} else {
+  // Enabled: clickable, sets page to page - 1
+}
+```
+
+### Next Page Button
+```tsx
+if (page === totalPages - 1) {
+  // Disabled: gray color, auto cursor
+} else {
+  // Enabled: clickable, sets page to page + 1
+}
+```
+
+### Last Page Button
+```tsx
+if (page === totalPages - 1) {
+  // Disabled: gray color, auto cursor
+} else {
+  // Enabled: clickable, sets page to totalPages - 1
+}
+```
+
+## Styling Details
+
+- **Container**: Flex row, centered items
+- **Icon buttons**: 26x26px circular areas
+- **Border radius**: 42px (fully rounded)
+- **Text**: Poppins font, full color for numbers
+- **Spacing**: 12px margin between text and arrows
+- **Bold**: Current page and total pages are bold (weight 700)
+- **Format**: Spanish "X de Y" ("1 de 5", "3 de 10")
+
+## Icon Library
+
+Uses Lucide React icons:
+- `ChevronFirst`: «
+- `ChevronLeft`: ‹
+- `ChevronRight`: ›
+- `ChevronLast`: »
+
+## Edge Cases
+
+### Single Page
+```tsx
+// length=5, rowsPerPage=10 = 1 page
+// All navigation buttons disabled
+// Shows "1 de 1"
+```
+
+### Empty Data
+```tsx
+// length=0, rowsPerPage=10 = 0 pages
+// All navigation buttons disabled
+// Shows "1 de 0" (edge case)
+```
+
+### Large Dataset
+```tsx
+// length=10000, rowsPerPage=25 = 400 pages
+// Works efficiently, no performance issues
+// Shows "1 de 400", "200 de 400", etc.
+```
+
+## Accessibility
+
+- Semantic roles: `role="pagination"`, `role="first-arrow"`, etc.
+- Keyboard navigation: Tab to buttons, Enter/Space to activate
+- Visual feedback: Disabled state clearly indicated
+- Color contrast: Meets WCAG standards
+
+## Common Patterns
+
+### Reset to First Page on Filter Change
+```tsx
+const [page, setPage] = useState(0);
+const [filter, setFilter] = useState('');
+
+useEffect(() => {
+  setPage(0); // Reset to first page when filter changes
+}, [filter]);
+
+<Pagination
+  length={filteredItems.length}
+  rowsPerPage={10}
+  start={page}
+  onChange={setPage}
+/>
+```
+
+### Persist Page in localStorage
+```tsx
+const [page, setPage] = useState(() => {
+  const saved = localStorage.getItem('currentPage');
+  return saved ? parseInt(saved) : 0;
+});
+
+const handlePageChange = (newPage: number) => {
+  setPage(newPage);
+  localStorage.setItem('currentPage', newPage.toString());
+};
+
+<Pagination
+  length={total}
+  rowsPerPage={10}
+  start={page}
+  onChange={handlePageChange}
+/>
+```

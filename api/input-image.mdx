@@ -1,0 +1,208 @@
+---
+title: InputImage
+description: Image upload with crop, compression, and webcam capture
+---
+
+## Import
+
+```tsx
+import { InputImage } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputImage
+  options={["camera", "library"]}
+  maxHeight={1200}
+  maxWidth={1200}
+  onChange={(base64Image) => setProfilePhoto(base64Image)}
+/>
+```
+
+## Props
+
+<ParamField path="onChange" type="(image: string | ArrayBuffer | null) => void">
+  Callback with base64-encoded WebP image after cropping and compression. The image is a data URL string (e.g., `"data:image/webp;base64,..."`).
+</ParamField>
+
+<ParamField path="options" type="Array<'camera' | 'library'>">
+  Image source options. Default: `["library"]`. On mobile, shows modal with both options if array has multiple values.
+</ParamField>
+
+<ParamField path="maxHeight" type="number">
+  Max height in pixels for compressed image. Uses compressorjs for resizing.
+</ParamField>
+
+<ParamField path="maxWidth" type="number">
+  Max width in pixels for compressed image. Uses compressorjs for resizing.
+</ParamField>
+
+<ParamField path="hideCrop" type="boolean">
+  Skip crop UI and immediately compress and return image. Useful for quick uploads without editing.
+</ParamField>
+
+<ParamField path="buttonText" type="string">
+  Custom button text. Default: `"Subir foto"`.
+</ParamField>
+
+<ParamField path="buttonStyle" type="CSSProperties">
+  Custom CSS properties for the upload button.
+</ParamField>
+
+<ParamField path="icon" type="ReactElement">
+  Custom icon for the upload button.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+<ParamField path="previewStyle" type="CSSProperties">
+  Custom CSS properties for the crop preview canvas (shown in bottom-right during cropping).
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text (currently not rendered in the component).
+</ParamField>
+
+## Features
+
+### Crop Tool
+- **1:1 aspect ratio**: Fixed square crop for profile photos
+- **Real-time preview**: 150x150px preview in bottom-right corner
+- **Drag and resize**: Interactive crop area
+- **Toolbar**: "Recortar" button to confirm, X button to cancel
+
+### Compression
+- **Format**: WebP (smaller file size than JPEG/PNG)
+- **Quality**: 1 (maximum quality)
+- **Resizing**: Respects maxHeight and maxWidth
+- **Library**: Uses compressorjs
+
+### Webcam Capture
+- **Environment camera**: Uses `facingMode: "environment"` (rear camera on mobile)
+- **Full-screen modal**: Dedicated capture interface
+- **Capture button**: Large circular button at bottom
+- **X button**: Close and cancel capture
+
+### Mobile Support
+- **Source selection modal**: Shows when `options` has multiple values
+- **Full-screen mode**: Better UX on small screens
+- **Touch-friendly**: Large tap targets
+
+## Examples
+
+### Profile Photo Upload
+
+```tsx
+const [photo, setPhoto] = useState<string | null>(null);
+
+<InputImage
+  options={["camera", "library"]}
+  maxHeight={800}
+  maxWidth={800}
+  buttonText="Upload Profile Photo"
+  onChange={(base64) => {
+    if (typeof base64 === 'string') {
+      setPhoto(base64);
+    }
+  }}
+/>
+
+{photo && <img src={photo} alt="Profile" />}
+```
+
+### Document Upload (No Crop)
+
+```tsx
+<InputImage
+  options={["camera", "library"]}
+  hideCrop
+  maxHeight={1920}
+  maxWidth={1920}
+  buttonText="Scan Document"
+  onChange={(base64) => uploadDocument(base64)}
+/>
+```
+
+### Library Only (No Camera)
+
+```tsx
+<InputImage
+  options={["library"]}
+  maxHeight={1200}
+  maxWidth={1200}
+  onChange={(base64) => setImage(base64)}
+/>
+```
+
+### Custom Button Style
+
+```tsx
+import { Upload } from 'lucide-react';
+
+<InputImage
+  icon={<Upload />}
+  buttonText="Choose Image"
+  buttonStyle={{
+    backgroundColor: '#0088ff',
+    color: 'white',
+    padding: '12px 24px',
+    fontSize: 16
+  }}
+  onChange={(base64) => setImage(base64)}
+/>
+```
+
+### Complete Upload Flow
+
+```tsx
+const [isUploading, setIsUploading] = useState(false);
+const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+const handleImageUpload = async (base64: string | ArrayBuffer | null) => {
+  if (typeof base64 !== 'string') return;
+  
+  setIsUploading(true);
+  try {
+    // Convert base64 to blob
+    const response = await fetch(base64);
+    const blob = await response.blob();
+    
+    // Upload to your API
+    const formData = new FormData();
+    formData.append('image', blob, 'photo.webp');
+    
+    const result = await uploadToAPI(formData);
+    setImageUrl(result.url);
+  } catch (error) {
+    console.error('Upload failed:', error);
+  } finally {
+    setIsUploading(false);
+  }
+};
+
+<InputImage
+  options={["camera", "library"]}
+  maxHeight={1200}
+  maxWidth={1200}
+  buttonText={isUploading ? "Uploading..." : "Upload Photo"}
+  onChange={handleImageUpload}
+/>
+```
+
+## Browser Support
+
+Requires modern browser features:
+- **MediaDevices API**: For webcam access (`navigator.mediaDevices.getUserMedia`)
+- **Canvas API**: For image cropping and preview
+- **FileReader API**: For base64 conversion
+- **WebP support**: For image compression (fallback may be needed for older browsers)
+
+## Dependencies
+
+- `react-image-crop`: Crop UI component
+- `compressorjs`: Image compression
+- `react-webcam`: Webcam capture
+- `lucide-react`: Icons (Crop, X, Camera, Image)

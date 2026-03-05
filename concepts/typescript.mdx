@@ -1,0 +1,432 @@
+---
+title: TypeScript Usage
+description: TypeScript configuration, type definitions, and path aliases in the library
+---
+
+## Overview
+
+The library is built with **TypeScript in strict mode**, providing comprehensive type safety and excellent IDE autocomplete. All components are fully typed with exported interfaces and props.
+
+## TypeScript Configuration
+
+The library uses strict TypeScript settings for maximum type safety:
+
+```json tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es6",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                           // Strict mode enabled
+    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "declaration": true,                      // Generate .d.ts files
+    "sourceMap": true,
+    "outDir": "dist",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "emitDeclarationOnly": true,
+    "resolveJsonModule": true,
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "baseUrl": ".",
+    "paths": {
+      "@components/*": ["src/components/*"],
+      "@constants/*": ["src/constants/*"],
+      "@assets/*": ["src/assets/*"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.stories.tsx", "src/**/*.stories.ts"]
+}
+```
+
+<Note>
+Story files (`.stories.tsx`) are excluded from the TypeScript build but are still type-checked during development.
+</Note>
+
+## Path Aliases
+
+The library uses TypeScript path aliases for clean, maintainable imports across the codebase.
+
+### Available Aliases
+
+<ParamField path="@components/*" type="path">
+  Maps to `src/components/*` - Use for importing components
+</ParamField>
+
+<ParamField path="@constants/*" type="path">
+  Maps to `src/constants/*` - Use for importing constants like Color and ColorV2
+</ParamField>
+
+<ParamField path="@assets/*" type="path">
+  Maps to `src/assets/*` - Use for importing static assets like Lottie animations
+</ParamField>
+
+### Usage Examples
+
+<CodeGroup>
+```tsx Cross-Directory Imports (Correct)
+// ✅ CORRECT: Use path aliases for cross-directory imports
+import Text from "@components/Text/Text";
+import Color from "@constants/Color";
+import ColorV2 from "@constants/ColorV2";
+import loadingAnimation from "@assets/animations/button-loading.json";
+import checkAnimation from "@assets/animations/button-check.json";
+```
+
+```tsx Same-Directory Imports (Correct)
+// ✅ CORRECT: Use relative paths for same-directory imports
+import ButtonPrimary from "./ButtonPrimary";
+import ButtonSecondary from "./ButtonSecondary";
+import ButtonText from "./ButtonText";
+```
+
+```tsx Avoid Relative Paths (Wrong)
+// ❌ WRONG: Don't use relative paths for cross-directory imports
+import Text from "../../components/Text/Text";
+import Color from "../../../constants/Color";
+import loadingAnimation from "../../assets/animations/button-loading.json";
+```
+</CodeGroup>
+
+### Real-World Example
+
+From `ButtonPrimary.tsx`:
+
+```tsx ButtonPrimary.tsx
+import React, { ComponentPropsWithoutRef, useEffect, useState } from "react";
+import styled from "styled-components";
+import { Player } from "@lottiefiles/react-lottie-player";
+
+// Path aliases for cross-directory imports
+import AnimationCheck from "@assets/animations/button-check.json";
+import AnimationLoading from "@assets/animations/button-loading.json";
+import Text from "@components/Text/Text";
+import Color from "@constants/Color";
+
+const ButtonPrimary = styled.button<{
+  $size?: "small" | "normal";
+  $loading?: boolean;
+  $success?: boolean;
+}>`
+  background-color: ${(props) =>
+    props.$success ? Color.status.color.success : Color.background.primary};
+  // ... rest of styles
+`;
+```
+
+### Benefits
+
+<CardGroup cols={2}>
+  <Card title="Location Independent" icon="map-location">
+    Imports work the same regardless of where the file is located in the project
+  </Card>
+  
+  <Card title="Refactor Friendly" icon="arrows-rotate">
+    Moving files doesn't break imports that use path aliases
+  </Card>
+  
+  <Card title="Better Readability" icon="book-open">
+    Clear indication of where imports come from (components, constants, or assets)
+  </Card>
+  
+  <Card title="IDE Autocomplete" icon="wand-magic-sparkles">
+    Enhanced TypeScript and IDE support for import suggestions
+  </Card>
+</CardGroup>
+
+## Component Type Definitions
+
+All components export comprehensive TypeScript interfaces with JSDoc comments.
+
+### Button Component Types
+
+```tsx Button.tsx
+import { ComponentPropsWithoutRef } from "react";
+
+/**
+ * Button component with multiple visual variants and built-in loading/success states.
+ *
+ * @example
+ * ```tsx
+ * <Button design="primary" loading={isLoading}>
+ *   Submit
+ * </Button>
+ * ```
+ */
+export interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
+  /** Visual variant: `primary` for main actions, `secondary` for less emphasis */
+  design?: "primary" | "secondary" | "text" | "image" | "call-to-action";
+  /** Button size: `normal` (default) or `small` for compact layouts */
+  size?: "small" | "normal";
+  icon?: React.ReactElement;
+  iconPosition?: "left" | "right";
+  /** Shows animated loading spinner (Lottie animation) */
+  loading?: boolean;
+  disabled?: boolean;
+  /** Triggers success animation (Lottie checkmark) */
+  success?: boolean;
+  /** Delay in milliseconds before showing loading animation */
+  animationDelay?: number;
+  /** Duration in milliseconds for success animation before callback */
+  animationTime?: number;
+  /** Time in seconds to display countdown on button */
+  countdown?: number;
+  /** Callback fired when success animation completes */
+  onSuccess?: (success: boolean) => void;
+  /** Callback fired when countdown reaches zero */
+  onCountdownEnd?: () => void;
+}
+```
+
+<Tip>
+Extending `ComponentPropsWithoutRef<"button">` ensures all standard HTML button attributes are supported with proper types.
+</Tip>
+
+### Text Component Types
+
+```tsx Text.tsx
+/**
+ * Unified typography component that renders headers (h1-h6, d1), 
+ * paragraphs (p, p2, c1, c2, o1, o2), or button text (b1, b2, b3).
+ * Automatically chooses the correct semantic HTML element based on the `type` prop.
+ *
+ * @example
+ * ```tsx
+ * <Text type="h1" weight="bold">Page Title</Text>
+ * <Text type="p" color={ColorV2.text.neutralMedium}>Body text</Text>
+ * <Text type="b1">Button text</Text>
+ * ```
+ */
+export type TextProps = HeaderProps | ParagraphProps | ButtonProps;
+```
+
+### Variant Component Types
+
+Variant implementations define their own interfaces:
+
+```tsx ButtonPrimary.tsx
+export interface Props extends ComponentPropsWithoutRef<"button"> {
+  size?: "small" | "normal";
+  icon?: React.ReactElement;
+  iconPosition?: "left" | "right";
+  loading?: boolean;
+  success?: boolean;
+  animationDelay?: number;
+  animationTime?: number;
+  countdown?: number;
+  onSuccess?: (success: boolean) => void;
+  onCountdownEnd?: () => void;
+}
+```
+
+## Styled Components with TypeScript
+
+### Typing Styled Components
+
+Use TypeScript generics to type styled-components:
+
+```tsx
+import styled from "styled-components";
+
+const ButtonPrimary = styled.button<{
+  $size?: "small" | "normal";
+  $loading?: boolean;
+  $countdown?: boolean;
+  $success?: boolean;
+}>`
+  height: ${(props) => (props.$size === "small" ? "40px" : "56px")};
+  background-color: ${(props) =>
+    props.$success ? Color.status.color.success : Color.background.primary};
+  cursor: ${(props) =>
+    props.disabled || props.$loading || props.$countdown
+      ? "default"
+      : "pointer"};
+`;
+```
+
+<Warning>
+Always use **transient props** (prefixed with `$`) for props that should not be passed to the DOM element.
+</Warning>
+
+### Composing Styled Components
+
+When extending other components, specify types:
+
+```tsx
+import Text from "@components/Text/Text";
+
+const Label = styled(Text)<{
+  $size?: "small" | "normal";
+  $icon: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: ${(props) => (props.$size === "small" ? "14px" : "15px")};
+  margin-left: ${(props) => (props.$icon ? "6px" : "0")};
+`;
+```
+
+## Type Imports from Library
+
+Consumers can import types from the library:
+
+```tsx YourApp.tsx
+import { ButtonProps } from "@adoptaunabuelo/react-components";
+import type { ComponentPropsWithoutRef } from "react";
+
+interface MyCustomButtonProps extends ButtonProps {
+  customProp?: string;
+}
+
+const MyButton: React.FC<MyCustomButtonProps> = (props) => {
+  return <Button {...props} />;
+};
+```
+
+## Generic Type Patterns
+
+### ComponentPropsWithoutRef
+
+Use `ComponentPropsWithoutRef` to inherit all standard HTML element props:
+
+```tsx
+import { ComponentPropsWithoutRef } from "react";
+
+// Inherits all button props (onClick, disabled, type, etc.)
+export interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
+  design?: "primary" | "secondary";
+  loading?: boolean;
+}
+
+// Inherits all input props (value, onChange, placeholder, etc.)
+export interface InputProps extends ComponentPropsWithoutRef<"input"> {
+  error?: string;
+  label?: string;
+}
+```
+
+### Union Types
+
+Use union types for variant discrimination:
+
+```tsx
+export type TextProps = HeaderProps | ParagraphProps | ButtonProps;
+
+type ButtonDesign = "primary" | "secondary" | "text" | "image" | "call-to-action";
+type ButtonSize = "small" | "normal";
+```
+
+### Optional Props
+
+Use `?` for optional properties:
+
+```tsx
+export interface ButtonProps {
+  design?: "primary" | "secondary";  // Optional, defaults in component
+  size?: "small" | "normal";         // Optional, defaults in component
+  loading?: boolean;                 // Optional, defaults to false
+  icon?: React.ReactElement;         // Optional
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // Optional callback
+}
+```
+
+## JSON Module Types
+
+The library imports JSON files (like Lottie animations) with proper typing:
+
+```tsx
+import AnimationCheck from "@assets/animations/button-check.json";
+import AnimationLoading from "@assets/animations/button-loading.json";
+
+// TypeScript resolves JSON files thanks to "resolveJsonModule": true
+```
+
+## Build Output
+
+The build process generates TypeScript declarations:
+
+```bash
+dist/
+├── esm/                    # ESM modules
+│   ├── components/
+│   ├── constants/
+│   └── ...
+└── index.d.ts              # Type declarations
+```
+
+Consumers get full TypeScript support when importing from the library:
+
+```tsx
+import { Button, Text, Color, ColorV2 } from "@adoptaunabuelo/react-components";
+// IDE provides full autocomplete and type checking ✨
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Use Path Aliases Consistently">
+    ```tsx
+    // ✅ Good - consistent use of aliases
+    import Text from "@components/Text/Text";
+    import Color from "@constants/Color";
+    
+    // ❌ Bad - mixing aliases and relative paths
+    import Text from "../../Text/Text";
+    import Color from "@constants/Color";
+    ```
+  </Accordion>
+  
+  <Accordion title="Document Props with JSDoc">
+    ```tsx
+    export interface ButtonProps {
+      /** Visual variant: `primary` for main actions, `secondary` for less emphasis */
+      design?: "primary" | "secondary";
+      /** Shows animated loading spinner (Lottie animation) */
+      loading?: boolean;
+    }
+    ```
+  </Accordion>
+  
+  <Accordion title="Use Transient Props in Styled Components">
+    ```tsx
+    // ✅ Good - transient props don't leak to DOM
+    const Button = styled.button<{ $loading: boolean }>`
+      opacity: ${p => p.$loading ? 0.5 : 1};
+    `;
+    
+    // ❌ Bad - causes React warnings
+    const Button = styled.button<{ loading: boolean }>`
+      opacity: ${p => p.loading ? 0.5 : 1};
+    `;
+    ```
+  </Accordion>
+  
+  <Accordion title="Extend Standard HTML Props">
+    ```tsx
+    import { ComponentPropsWithoutRef } from "react";
+    
+    // Inherits all standard button attributes automatically
+    export interface ButtonProps extends ComponentPropsWithoutRef<"button"> {
+      design?: "primary" | "secondary";
+    }
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Component Architecture" icon="layer-group" href="/concepts/architecture">
+    Learn about the variant router pattern and export structure
+  </Card>
+  
+  <Card title="Styling Guide" icon="paintbrush" href="/concepts/styling">
+    Understand styled-components and color constants
+  </Card>
+</CardGroup>

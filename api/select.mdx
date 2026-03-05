@@ -1,0 +1,133 @@
+---
+title: Select
+description: Dropdown select component with icons and keyboard-friendly navigation that auto-closes when clicking outside
+---
+
+## Import
+
+```tsx
+import { Select } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<Select
+  id="language-select"
+  options={[
+    { label: "English", icon: <FlagIcon /> },
+    { label: "Spanish", icon: <FlagIcon /> }
+  ]}
+  selectedItem={currentLanguage}
+  onChange={(option) => setLanguage(option)}
+/>
+```
+
+## Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection
+</ParamField>
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of selectable options
+</ParamField>
+
+<ParamField path="selectedItem" type="OptionProps">
+  Current selected option (controlled component)
+</ParamField>
+
+<ParamField path="onChange" type="(option: OptionProps) => void">
+  Callback fired when selection changes
+</ParamField>
+
+<ParamField path="optionStyle" type="React.CSSProperties">
+  Custom styles for the dropdown options container
+</ParamField>
+
+<ParamField path="hideTitle" type="boolean">
+  Hide the selected item label (icon-only mode)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the select container
+</ParamField>
+
+## OptionProps
+
+<ParamField path="label" type="string" required>
+  Display text for the option
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Optional icon displayed before label
+</ParamField>
+
+## Features
+
+- Auto-closes when clicking outside using window event listeners
+- Displays chevron up/down indicator based on menu state
+- Scrollable dropdown with max height of 220px
+- Hover effects on options
+- Icon support for visual selection cues
+- Height: 36px, border radius: 4px
+- Supports controlled and uncontrolled modes
+- Defaults to first option if no selectedItem provided
+
+## Examples
+
+### Basic Select
+
+```tsx
+<Select
+  id="fruit-select"
+  options={[
+    { label: "Apple" },
+    { label: "Banana" },
+    { label: "Orange" }
+  ]}
+  onChange={(option) => console.log(option.label)}
+/>
+```
+
+### With Icons
+
+```tsx
+import { Globe, Flag } from 'lucide-react';
+
+<Select
+  id="language-select"
+  options={[
+    { label: "English", icon: <Flag /> },
+    { label: "Spanish", icon: <Globe /> }
+  ]}
+  selectedItem={language}
+  onChange={(option) => setLanguage(option)}
+/>
+```
+
+### Icon Only Mode
+
+```tsx
+<Select
+  id="icon-select"
+  options={[
+    { label: "Settings", icon: <SettingsIcon /> },
+    { label: "Profile", icon: <UserIcon /> }
+  ]}
+  hideTitle
+  onChange={handleChange}
+/>
+```
+
+### Custom Styling
+
+```tsx
+<Select
+  id="styled-select"
+  options={options}
+  style={{ width: '200px' }}
+  optionStyle={{ maxHeight: '150px' }}
+  onChange={handleChange}
+/>
+```

@@ -1,0 +1,66 @@
+---
+title: FAQs
+description: API reference for the FAQs component
+---
+
+## FAQs
+
+FAQ accordion component with expandable/collapsible question-answer pairs. Only one question can be expanded at a time.
+
+### Import
+
+```tsx
+import { FAQs } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="options" type="Array<FAQOption>" required>
+  Array of FAQ items with question and answer
+</ParamField>
+
+<ParamField path="onClick" type="(index: number) => void">
+  Callback fired when FAQ item is clicked, receives item index
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+### FAQOption
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the FAQ item
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Question text (always visible)
+</ParamField>
+
+<ParamField path="description" type="string" required>
+  Answer text (visible when expanded)
+</ParamField>
+
+### Usage
+
+```tsx
+<FAQs
+  options={[
+    {
+      id: "1",
+      title: "How do I get started?",
+      description: "To get started, simply..."
+    }
+  ]}
+  onClick={(index) => trackFaqClick(index)}
+/>
+```
+
+### Notes
+
+- Only one FAQ can be expanded at a time
+- Clicking an expanded FAQ collapses it
+- Chevron icon indicates expanded/collapsed state (ChevronUp/ChevronDown)
+- Hover effect adds underline to collapsed questions
+- First question (index 0) is expanded by default
+- Questions use medium weight text, answers use regular weight

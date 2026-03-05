@@ -1,0 +1,315 @@
+---
+title: InputImage
+description: Image upload with crop, compression, and webcam capture
+---
+
+Image upload component with built-in crop editor, compression, and webcam capture capabilities. Uses react-image-crop for 1:1 aspect ratio cropping and compressorjs for image compression to WebP format.
+
+## Import
+
+```tsx
+import { InputImage } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputImage } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [image, setImage] = useState(null);
+  
+  return (
+    <InputImage
+      maxHeight={1200}
+      maxWidth={1200}
+      onChange={(base64Image) => {
+        setImage(base64Image);
+        console.log('Image uploaded:', base64Image);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Camera Option
+import { InputImage } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <InputImage
+      options={['camera', 'library']}
+      maxHeight={800}
+      maxWidth={800}
+      buttonText="Subir foto de perfil"
+      onChange={(base64Image) => {
+        uploadProfilePhoto(base64Image);
+      }}
+    />
+  );
+}
+```
+
+```tsx Without Crop
+import { InputImage } from '@adoptaunabuelo/react-components';
+
+function App() {
+  // Skip crop UI and immediately compress
+  return (
+    <InputImage
+      hideCrop={true}
+      maxHeight={1920}
+      maxWidth={1080}
+      onChange={(base64Image) => {
+        saveImage(base64Image);
+      }}
+    />
+  );
+}
+```
+
+```tsx Custom Button Style
+import { InputImage } from '@adoptaunabuelo/react-components';
+import { Upload } from 'lucide-react';
+
+function App() {
+  return (
+    <InputImage
+      icon={<Upload />}
+      buttonText="Upload Photo"
+      buttonStyle={{
+        backgroundColor: '#0088ff',
+        color: 'white',
+        padding: '12px 24px',
+        fontSize: '16px',
+      }}
+      maxHeight={1000}
+      maxWidth={1000}
+      onChange={(base64) => setPhoto(base64)}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="options" type="Array<'camera' | 'library'>" default="['library']">
+  Image source options. On mobile, shows a modal if multiple options are provided.
+  - `'camera'`: Opens webcam for photo capture
+  - `'library'`: Opens file picker for image selection
+</ParamField>
+
+<ParamField path="maxHeight" type="number">
+  Maximum height in pixels for the compressed output image. Image maintains aspect ratio.
+</ParamField>
+
+<ParamField path="maxWidth" type="number">
+  Maximum width in pixels for the compressed output image. Image maintains aspect ratio.
+</ParamField>
+
+<ParamField path="hideCrop" type="boolean" default="false">
+  Skip the crop UI and immediately compress and return the image.
+</ParamField>
+
+<ParamField path="onChange" type="(image: string | ArrayBuffer | null) => void">
+  Callback with base64-encoded WebP image after cropping and compression.
+</ParamField>
+
+<ParamField path="buttonText" type="string" default="Subir foto">
+  Text displayed on the upload button.
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Icon element to display on the upload button.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS for the container wrapper.
+</ParamField>
+
+<ParamField path="buttonStyle" type="CSSProperties">
+  Custom CSS for the upload button. Default button has secondary design with 32px height.
+</ParamField>
+
+<ParamField path="previewStyle" type="CSSProperties">
+  Custom CSS for the crop preview canvas (shown in bottom-right during cropping).
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text for the input (not currently implemented in UI).
+</ParamField>
+
+## Features
+
+### Image Cropping
+
+- **1:1 aspect ratio**: Perfect for profile photos and avatars
+- **Interactive crop area**: Drag and resize the crop box
+- **Live preview**: See cropped result in bottom-right corner
+- **Toolbar**: "Recortar" button to confirm, X button to cancel
+
+### Image Compression
+
+- **WebP format**: Modern image format with better compression
+- **Quality: 1.0**: High-quality output (lossless)
+- **Size constraints**: Respects `maxWidth` and `maxHeight`
+- **Maintains aspect ratio**: Images are scaled proportionally
+
+### Webcam Capture
+
+- **Environment camera**: Uses rear camera on mobile devices
+- **Full-screen on mobile**: Immersive capture experience
+- **Capture button**: Centered button to take photo
+- **Preview and retake**: Option to cancel and retake
+
+## Examples
+
+### Profile Photo Upload
+
+```tsx
+import { InputImage } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import { Camera } from 'lucide-react';
+
+function ProfilePhotoUpload() {
+  const [photoUrl, setPhotoUrl] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  
+  const handlePhotoChange = async (base64Image) => {
+    setUploading(true);
+    
+    try {
+      const response = await fetch('/api/upload-photo', {
+        method: 'POST',
+        body: JSON.stringify({ image: base64Image }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      const data = await response.json();
+      setPhotoUrl(data.url);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+  
+  return (
+    <div>
+      {photoUrl && (
+        <img 
+          src={photoUrl} 
+          alt="Profile" 
+          style={{ width: 100, height: 100, borderRadius: '50%' }}
+        />
+      )}
+      
+      <InputImage
+        options={['camera', 'library']}
+        icon={<Camera />}
+        buttonText="Change Profile Photo"
+        maxHeight={500}
+        maxWidth={500}
+        onChange={handlePhotoChange}
+      />
+      
+      {uploading && <p>Uploading...</p>}
+    </div>
+  );
+}
+```
+
+### Document Upload (No Crop)
+
+```tsx
+import { InputImage } from '@adoptaunabuelo/react-components';
+import { FileText } from 'lucide-react';
+
+function DocumentUpload() {
+  return (
+    <InputImage
+      hideCrop={true}
+      options={['library']}
+      icon={<FileText />}
+      buttonText="Upload Document"
+      maxHeight={1920}
+      maxWidth={1080}
+      onChange={(base64) => {
+        // Document uploaded without cropping
+        saveDocument(base64);
+      }}
+    />
+  );
+}
+```
+
+### Multiple Image Upload
+
+```tsx
+import { InputImage } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function GalleryUpload() {
+  const [images, setImages] = useState([]);
+  
+  return (
+    <div>
+      <InputImage
+        options={['camera', 'library']}
+        maxHeight={800}
+        maxWidth={800}
+        onChange={(base64Image) => {
+          setImages([...images, base64Image]);
+        }}
+      />
+      
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+        {images.map((img, index) => (
+          <img 
+            key={index} 
+            src={img} 
+            alt={`Upload ${index + 1}`}
+            style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover' }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+## Mobile vs Desktop
+
+### Mobile Behavior
+- **Options modal**: Shows modal with "Cámara" and "Imagen de librería" options
+- **Full-screen capture**: Webcam uses full screen
+- **Touch-friendly**: Capture button optimized for touch
+
+### Desktop Behavior
+- **Direct file picker**: Single option goes straight to file picker
+- **Modal for multiple options**: Shows centered modal at 400px width
+- **Webcam in modal**: Camera view contained in modal window
+
+## Output Format
+
+The `onChange` callback receives a **base64-encoded WebP image string**:
+
+```
+data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA=
+```
+
+You can:
+- Display it directly in an `<img>` tag
+- Send it to your backend API
+- Convert it to a Blob for FormData uploads
+- Store it in localStorage/database
+
+## Browser Support
+
+- **WebP**: Supported in all modern browsers
+- **Webcam**: Requires `getUserMedia` API support
+- **File picker**: Universal support
+- **Canvas cropping**: Universal support

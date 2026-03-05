@@ -1,0 +1,125 @@
+---
+title: InputCode
+description: 6-digit verification code input with monospace font and letter spacing
+---
+
+## Import
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputCode
+  autoFocus
+  error={codeError}
+  loading={isVerifying}
+  onChange={(code) => verifyCode(code)}
+/>
+```
+
+## Props
+
+<ParamField path="onChange" type="(code: string) => void">
+  Callback fired when all 6 digits are entered. The input automatically blurs after the 6th digit is typed, triggering this callback.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input in red text.
+</ParamField>
+
+<ParamField path="loading" type="boolean">
+  Disables input and reduces opacity to 0.5.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean">
+  Automatically focuses the input when component mounts.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the input container.
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties for the outer container wrapper.
+</ParamField>
+
+## Styling Details
+
+- **Font**: DM Mono (monospace)
+- **Font size**: 24px
+- **Letter spacing**: 12px (creates separation between digits)
+- **Width**: 160px
+- **Height**: 56px
+- **Border radius**: 12px
+- **Input type**: Number (shows numeric keyboard on mobile)
+- **Placeholder**: `"------"` (6 dashes)
+
+## Behavior
+
+- **Auto-blur**: Automatically blurs the input after 6 digits are entered
+- **Length validation**: Only accepts exactly 6 digits, rejects additional input
+- **Number-only**: Uses `type="number"` with spinner arrows hidden
+- **Focus styling**: Blue 2px border on focus
+- **Error styling**: Red 1px border when error prop is set
+
+## Examples
+
+### Basic Usage
+
+```tsx
+const [code, setCode] = useState('');
+
+<InputCode
+  autoFocus
+  onChange={(code) => setCode(code)}
+/>
+```
+
+### With Verification Flow
+
+```tsx
+const [code, setCode] = useState('');
+const [error, setError] = useState('');
+const [isVerifying, setIsVerifying] = useState(false);
+
+const verifyCode = async (code: string) => {
+  setIsVerifying(true);
+  setError('');
+  try {
+    await verifyEmailCode(code);
+    // Success - redirect or show success message
+  } catch (err) {
+    setError('Invalid code. Please try again.');
+  } finally {
+    setIsVerifying(false);
+  }
+};
+
+<InputCode
+  autoFocus
+  error={error}
+  loading={isVerifying}
+  onChange={verifyCode}
+/>
+```
+
+### With Custom Styling
+
+```tsx
+<InputCode
+  containerStyle={{ marginTop: 24 }}
+  style={{ backgroundColor: '#f5f5f5' }}
+  onChange={(code) => console.log('Code:', code)}
+/>
+```
+
+## Use Cases
+
+- Email verification codes
+- Two-factor authentication (2FA)
+- SMS verification
+- One-time passwords (OTP)
+- PIN code entry

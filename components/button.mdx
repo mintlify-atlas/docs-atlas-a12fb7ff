@@ -1,0 +1,222 @@
+---
+title: Button
+description: Button component with multiple visual variants and built-in loading/success states
+---
+
+Button component with multiple visual variants and built-in loading/success states. Supports animated loading and success animations using Lottie.
+
+## Import
+
+```tsx
+import { Button } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Primary Button
+import { Button } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Button design="primary">
+      Submit
+    </Button>
+  );
+}
+```
+
+```tsx Secondary Button
+import { Button } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Button design="secondary">
+      Cancel
+    </Button>
+  );
+}
+```
+
+```tsx Text Button
+import { Button } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Button design="text">
+      Learn more
+    </Button>
+  );
+}
+```
+
+```tsx With Icon
+import { Button } from '@adoptaunabuelo/react-components';
+import { ArrowRight } from 'lucide-react';
+
+function App() {
+  return (
+    <Button 
+      design="primary" 
+      icon={<ArrowRight />}
+      iconPosition="right"
+    >
+      Continue
+    </Button>
+  );
+}
+```
+
+```tsx Loading State
+import { Button } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [loading, setLoading] = useState(false);
+  
+  const handleSubmit = async () => {
+    setLoading(true);
+    await submitForm();
+    setLoading(false);
+  };
+  
+  return (
+    <Button 
+      design="primary" 
+      loading={loading}
+      onClick={handleSubmit}
+    >
+      Submit
+    </Button>
+  );
+}
+```
+
+```tsx Success Animation
+import { Button } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [success, setSuccess] = useState(false);
+  
+  const handleSubmit = () => {
+    setSuccess(true);
+  };
+  
+  return (
+    <Button 
+      design="primary" 
+      success={success}
+      onSuccess={() => {
+        console.log('Success animation completed!');
+        setSuccess(false);
+      }}
+      onClick={handleSubmit}
+    >
+      Save
+    </Button>
+  );
+}
+```
+</CodeGroup>
+
+## Design Variants
+
+### Primary
+Main action button with solid background color. Use for primary CTAs.
+
+### Secondary
+Less prominent button for secondary actions.
+
+### Text
+Minimal styling for tertiary actions or links.
+
+### Image
+Icon-only button without text label.
+
+### Call to Action
+Prominent CTA button with special styling.
+
+## Props
+
+<ParamField path="design" type="'primary' | 'secondary' | 'text' | 'image' | 'call-to-action'" default="primary">
+  Visual variant of the button. Use `primary` for main actions, `secondary` for less emphasis, `text` for minimal style, `image` for icon-only, and `call-to-action` for prominent CTAs.
+</ParamField>
+
+<ParamField path="size" type="'small' | 'normal'" default="normal">
+  Button size. Use `small` for compact layouts.
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Icon element to display alongside the button text.
+</ParamField>
+
+<ParamField path="iconPosition" type="'left' | 'right'" default="left">
+  Position of the icon relative to the button text.
+</ParamField>
+
+<ParamField path="loading" type="boolean" default="false">
+  Shows animated loading spinner (Lottie animation) when true. Button is disabled during loading state.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the button and reduces opacity.
+</ParamField>
+
+<ParamField path="success" type="boolean" default="false">
+  Triggers success animation (Lottie checkmark). Button shows animated checkmark when true.
+</ParamField>
+
+<ParamField path="animationDelay" type="number" default="600">
+  Delay in milliseconds before showing loading animation.
+</ParamField>
+
+<ParamField path="animationTime" type="number" default="300">
+  Duration in milliseconds for success animation before callback.
+</ParamField>
+
+<ParamField path="countdown" type="number">
+  Time in seconds to display countdown on button. Button is disabled during countdown.
+</ParamField>
+
+<ParamField path="onSuccess" type="(success: boolean) => void">
+  Callback fired when success animation completes.
+</ParamField>
+
+<ParamField path="onCountdownEnd" type="() => void">
+  Callback fired when countdown reaches zero.
+</ParamField>
+
+## Additional Props
+
+The Button component extends all native HTML button attributes (`onClick`, `type`, `disabled`, `className`, `style`, etc.).
+
+## Examples
+
+### Small Button
+
+```tsx
+<Button design="primary" size="small">
+  Save
+</Button>
+```
+
+### With Countdown
+
+```tsx
+<Button 
+  design="primary" 
+  countdown={5}
+  onCountdownEnd={() => console.log('Countdown finished!')}
+>
+  Resend Code
+</Button>
+```
+
+### Image Button (Icon Only)
+
+```tsx
+import { X } from 'lucide-react';
+
+<Button design="image" icon={<X />} />
+```

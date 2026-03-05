@@ -1,0 +1,372 @@
+---
+title: Filter
+description: Multi-variant filter component with checkbox, date range, and numeric range support
+---
+
+## Overview
+
+Filter is a router component that provides three distinct filter types: checkbox (multi-select with search), date (date range picker), and ratio (numeric range slider). Each type renders a specialized UI optimized for its data type.
+
+## Basic Usage
+
+```tsx
+import { Filter } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [selected, setSelected] = useState([]);
+
+  return (
+    <Filter
+      id="status-filter"
+      placeholder="Filter by status"
+      type="checkbox"
+      options={[
+        { id: 'active', label: 'Active' },
+        { id: 'pending', label: 'Pending' },
+        { id: 'completed', label: 'Completed' }
+      ]}
+      selectedOptions={selected}
+      onChange={setSelected}
+    />
+  );
+}
+```
+
+## Filter Types
+
+### Checkbox Filter
+
+Multi-select or single-select filter with search functionality.
+
+```tsx
+const [selectedCategories, setSelectedCategories] = useState([]);
+
+<Filter
+  id="category-filter"
+  placeholder="Categories"
+  type="checkbox"
+  shape="square"
+  options={[
+    { id: '1', label: 'Technology', sublabel: '24 items' },
+    { id: '2', label: 'Healthcare', sublabel: '18 items' },
+    { id: '3', label: 'Education', sublabel: '32 items' },
+    { id: '4', label: 'Finance', sublabel: '15 items' }
+  ]}
+  selectedOptions={selectedCategories}
+  onChange={(items) => setSelectedCategories(items)}
+/>
+```
+
+#### Single Selection Mode
+
+```tsx
+<Filter
+  id="priority-filter"
+  placeholder="Priority"
+  type="single"
+  shape="circle"
+  options={[
+    { id: 'high', label: 'High Priority' },
+    { id: 'medium', label: 'Medium Priority' },
+    { id: 'low', label: 'Low Priority' }
+  ]}
+  selectedOptions={selectedPriority}
+  onChange={setSelectedPriority}
+/>
+```
+
+### Date Range Filter
+
+Interactive date range picker with calendar UI.
+
+```tsx
+import moment from 'moment';
+
+const [dateRange, setDateRange] = useState({
+  startDate: null,
+  endDate: null
+});
+
+<Filter
+  id="date-filter"
+  placeholder="Date Range"
+  type="date"
+  selectedOptions={dateRange}
+  onChange={(range) => {
+    console.log('Start:', range.startDate?.format('YYYY-MM-DD'));
+    console.log('End:', range.endDate?.format('YYYY-MM-DD'));
+    setDateRange(range);
+  }}
+/>
+```
+
+### Ratio (Range) Filter
+
+Numeric range slider for filtering by values.
+
+```tsx
+const [priceRange, setPriceRange] = useState(undefined);
+
+<Filter
+  id="price-filter"
+  placeholder="Price"
+  type="ratio"
+  min={0}
+  max={1000}
+  unit="€"
+  selectedOptions={priceRange}
+  onChange={(value) => {
+    console.log('Selected price:', value);
+    setPriceRange(value);
+  }}
+/>
+```
+
+## Props
+
+### Common Props (All Types)
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the filter component.
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Text displayed on the filter button when nothing is selected.
+</ParamField>
+
+<ParamField path="type" type="'checkbox' | 'single' | 'multiple' | 'date' | 'ratio'" required>
+  Filter variant to render:
+  - `checkbox` or `multiple`: Multi-select with checkboxes
+  - `single`: Single-select with radio buttons
+  - `date`: Date range picker
+  - `ratio`: Numeric range slider
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  When `true`, disables the filter interaction.
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left'">
+  Position of the filter dropdown relative to the trigger button.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the filter container.
+</ParamField>
+
+### Checkbox Filter Props
+
+<ParamField path="options" type="Array<CheckboxOption>" required>
+  Array of selectable options:
+  ```tsx
+  {
+    id: string;        // Unique identifier
+    label: string;     // Display text
+    sublabel?: string; // Optional secondary text
+  }
+  ```
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<CheckboxOption>">
+  Currently selected options (controlled component).
+</ParamField>
+
+<ParamField path="onChange" type="(items: Array<CheckboxOption>) => void">
+  Callback fired when selection changes.
+</ParamField>
+
+<ParamField path="shape" type="'circle' | 'square'">
+  Shape of checkbox/radio indicators.
+</ParamField>
+
+### Date Filter Props
+
+<ParamField path="selectedOptions" type="{ startDate: Moment | null; endDate: Moment | null }">
+  Currently selected date range using Moment.js.
+</ParamField>
+
+<ParamField path="onChange" type="(range: { startDate: Moment | null; endDate: Moment | null }) => void">
+  Callback fired when date selection changes.
+</ParamField>
+
+### Ratio Filter Props
+
+<ParamField path="min" type="number" required>
+  Minimum value for the range slider.
+</ParamField>
+
+<ParamField path="max" type="number" required>
+  Maximum value for the range slider.
+</ParamField>
+
+<ParamField path="unit" type="string">
+  Unit suffix displayed with the value (e.g., "€", "km", "%").
+</ParamField>
+
+<ParamField path="selectedOptions" type="number">
+  Currently selected value.
+</ParamField>
+
+<ParamField path="onChange" type="(value: number | undefined) => void">
+  Callback fired when value changes.
+</ParamField>
+
+## Ref Methods
+
+All filter variants support ref forwarding with a `clean` method:
+
+```tsx
+const filterRef = useRef<FilterCheckboxRef | FilterDateRef | FilterRatioRef>(null);
+
+// Reset filter to initial state
+filterRef.current?.clean();
+```
+
+<ParamField path="clean" type="() => void">
+  Clears all selections and resets the filter to its initial state.
+</ParamField>
+
+## Advanced Examples
+
+### Multiple Filters Combined
+
+```tsx
+function FilterBar() {
+  const [status, setStatus] = useState([]);
+  const [dateRange, setDateRange] = useState({ startDate: null, endDate: null });
+  const [priceRange, setPriceRange] = useState(undefined);
+
+  const applyFilters = () => {
+    fetchData({
+      status: status.map(s => s.id),
+      startDate: dateRange.startDate?.toISOString(),
+      endDate: dateRange.endDate?.toISOString(),
+      maxPrice: priceRange
+    });
+  };
+
+  return (
+    <div style={{ display: 'flex', gap: 16 }}>
+      <Filter
+        id="status"
+        placeholder="Status"
+        type="multiple"
+        options={statusOptions}
+        selectedOptions={status}
+        onChange={setStatus}
+      />
+      <Filter
+        id="dates"
+        placeholder="Date Range"
+        type="date"
+        selectedOptions={dateRange}
+        onChange={setDateRange}
+      />
+      <Filter
+        id="price"
+        placeholder="Max Price"
+        type="ratio"
+        min={0}
+        max={1000}
+        unit="€"
+        selectedOptions={priceRange}
+        onChange={setPriceRange}
+      />
+      <Button onClick={applyFilters}>Apply</Button>
+    </div>
+  );
+}
+```
+
+### Reset Filters Programmatically
+
+```tsx
+const statusRef = useRef(null);
+const dateRef = useRef(null);
+const priceRef = useRef(null);
+
+const resetAllFilters = () => {
+  statusRef.current?.clean();
+  dateRef.current?.clean();
+  priceRef.current?.clean();
+};
+
+<>
+  <Filter ref={statusRef} id="status" placeholder="Status" type="multiple" options={options} />
+  <Filter ref={dateRef} id="date" placeholder="Date" type="date" />
+  <Filter ref={priceRef} id="price" placeholder="Price" type="ratio" min={0} max={1000} />
+  <Button onClick={resetAllFilters}>Clear All Filters</Button>
+</>
+```
+
+### Checkbox Filter with Search
+
+Checkbox filters automatically include search functionality:
+
+```tsx
+<Filter
+  id="tags-filter"
+  placeholder="Tags"
+  type="multiple"
+  options={[
+    { id: '1', label: 'React', sublabel: '120 posts' },
+    { id: '2', label: 'TypeScript', sublabel: '95 posts' },
+    { id: '3', label: 'JavaScript', sublabel: '200 posts' },
+    { id: '4', label: 'Node.js', sublabel: '80 posts' },
+    // ... many more options
+  ]}
+  selectedOptions={selectedTags}
+  onChange={setSelectedTags}
+/>
+// Search bar automatically appears in the dropdown
+```
+
+### Date Filter with Position
+
+```tsx
+<Filter
+  id="date-filter"
+  placeholder="Created Date"
+  type="date"
+  position="bottom-left"
+  selectedOptions={dateRange}
+  onChange={setDateRange}
+/>
+```
+
+## Behavior Notes
+
+### Checkbox Filter
+- Includes built-in search with fuzzy matching (using Fuse.js)
+- "Select All" button appears in multiple selection mode
+- Shows count of selected items in button label (e.g., "3 seleccionados")
+- Remembers selection state until explicitly saved or cleared
+
+### Date Filter
+- Uses `react-dates` for calendar UI
+- Displays formatted date range in button (e.g., "1 Jan - 15 Jan")
+- Start date and end date are set to beginning/end of day
+- Calendar adapts size for mobile devices
+
+### Ratio Filter
+- Uses custom range input slider
+- Displays current value with unit in button
+- Input field allows direct numeric entry
+- Value constrained between min and max
+
+## Styling Notes
+
+- All filters use consistent dropdown UI
+- Mobile-responsive with adapted layouts
+- Search bar styling matches component design system
+- Date picker calendar styled with component colors
+- Range slider styled with primary brand colors
+
+## Accessibility
+
+- Proper ARIA labels for all interactive elements
+- Keyboard navigation supported in all filter types
+- Date picker includes keyboard date selection
+- Range slider supports keyboard value adjustment
+- Clear visual focus indicators

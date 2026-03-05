@@ -1,0 +1,129 @@
+---
+title: Introduction
+description: A simple, customizable, and accessible library of React components built with TypeScript and styled-components
+---
+
+# Introduction to Adopta Un Abuelo React Components
+
+Adopta Un Abuelo React Components is a comprehensive, production-ready React component library designed to help you build beautiful, accessible user interfaces quickly and efficiently.
+
+## What is this library?
+
+This library provides a collection of over 40 React components built with TypeScript and styled-components, offering:
+
+- **Type-safe components** with full TypeScript support
+- **Flexible styling** powered by styled-components
+- **Accessible by design** following best practices for web accessibility
+- **Production-tested** components used in real-world applications
+- **Modern React** compatible with React 18 and 19
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="TypeScript First" icon="code">
+    Built entirely in TypeScript with comprehensive type definitions for excellent IDE support and type safety.
+  </Card>
+  
+  <Card title="Styled Components" icon="paintbrush">
+    Leverages styled-components for powerful, dynamic styling with full theme support.
+  </Card>
+  
+  <Card title="Variant Pattern" icon="layer-group">
+    Components use a variant router pattern for clean separation of concerns and easy customization.
+  </Card>
+  
+  <Card title="Rich Component Set" icon="boxes">
+    Over 40 components including inputs, buttons, modals, forms, progress bars, and more.
+  </Card>
+</CardGroup>
+
+## Component Highlights
+
+### Core Components
+
+- **Button** - Multiple design variants (primary, secondary, text, image, call-to-action) with built-in loading and success animations
+- **Input** - Text inputs with three design variants plus specialized inputs for phone numbers, locations, dates, prices, and more
+- **Text** - Unified typography component for headers, paragraphs, and button text
+- **Modal** - Flexible modal dialogs with customizable content
+- **ProgressBar** - Animated progress indicators with optional percentage display
+
+### Advanced Components
+
+- **InputPhone** - International phone input with country selector and validation
+- **InputLocation** - Google Maps-powered location autocomplete
+- **TextArea** - Rich text editor powered by Tiptap
+- **Payout** - Stripe integration for payment processing
+- **Form** - Smart form component with validation
+- **Chat** - Complete chat interface with message bubbles
+
+<Note>
+  The library is actively maintained and used in production by Adopta Un Abuelo. Check out the [Storybook](https://www.chromatic.com/library?appId=64650038c7589bed568201a8) for live component examples.
+</Note>
+
+## Architecture
+
+### Variant Router Pattern
+
+Components follow a consistent architecture pattern:
+
+1. **Main Component** - Acts as a router that delegates to variant implementations
+2. **Variant Components** - Actual implementations for different designs
+3. **TypeScript Interfaces** - Comprehensive prop types with JSDoc comments
+
+```tsx
+// Button.tsx routes to variants based on design prop
+const Button = ({ design, ...props }) => {
+  return design === "secondary" ? <ButtonSecondary {...props} />
+    : design === "text" ? <ButtonText {...props} />
+    : <ButtonPrimary {...props} />;
+};
+```
+
+### Path Aliases
+
+The library uses TypeScript path aliases for clean, maintainable imports:
+
+- `@components/*` - Component imports
+- `@constants/*` - Constants (Color, ColorV2, Country)
+- `@assets/*` - Static assets and animations
+
+## Browser Support
+
+The library targets modern browsers with ES6 support:
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Requirements
+
+<CardGroup cols={3}>
+  <Card title="React" icon="react">
+    Version 18.0.0+ or 19.0.0+
+  </Card>
+  
+  <Card title="React DOM" icon="react">
+    Version 18.0.0+ or 19.0.0+
+  </Card>
+  
+  <Card title="styled-components" icon="paintbrush">
+    Version 5.0.0+ or 6.0.0+
+  </Card>
+</CardGroup>
+
+## License
+
+This project is licensed under the [MIT License](https://github.com/Adopta-Un-Abuelo/react-components/blob/main/LICENSE), making it free to use in both personal and commercial projects.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Installation" icon="download" href="/installation">
+    Learn how to install the library and its dependencies
+  </Card>
+  
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Get up and running with your first components
+  </Card>
+</CardGroup>

@@ -1,0 +1,69 @@
+---
+title: CurrencySelector
+description: API reference for the CurrencySelector component
+---
+
+## CurrencySelector
+
+Currency selector dropdown with modal for choosing from available currencies. Displays symbol and currency code (e.g., "€ EUR"). Responsive with full-screen modal on mobile.
+
+### Import
+
+```tsx
+import { CurrencySelector } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="options" type="Array<CurrencySelectorOption>" required>
+  Available currency options
+</ParamField>
+
+<ParamField path="selectedOption" type="CurrencySelectorOption">
+  Currently selected currency (defaults to first option)
+</ParamField>
+
+<ParamField path="onChange" type="(option: CurrencySelectorOption) => void">
+  Callback when currency is selected
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+### CurrencySelectorOption
+
+<ParamField path="currency" type="string" required>
+  ISO currency code (e.g., "EUR", "USD")
+</ParamField>
+
+<ParamField path="name" type="string" required>
+  Full currency name (e.g., "Euro")
+</ParamField>
+
+<ParamField path="symbol" type="string" required>
+  Currency symbol (e.g., "€", "$")
+</ParamField>
+
+### Usage
+
+```tsx
+<CurrencySelector
+  options={[
+    { currency: "EUR", name: "Euro", symbol: "€" },
+    { currency: "USD", name: "US Dollar", symbol: "$" },
+    { currency: "GBP", name: "British Pound", symbol: "£" }
+  ]}
+  selectedOption={{ currency: "EUR", name: "Euro", symbol: "€" }}
+  onChange={(option) => setCurrency(option.currency)}
+/>
+```
+
+### Notes
+
+- Opens modal on click to select currency
+- Modal is full-screen on mobile (less than 450px width)
+- Shows checkmark icon next to selected currency
+- Displays as "Symbol Code" format (e.g., "€ EUR")
+- Auto-selects first option if no `selectedOption` provided
+- Closes modal automatically when selection is made

@@ -1,0 +1,122 @@
+---
+title: Input
+description: Text input component with three visual design variants
+---
+
+## Import
+
+```tsx
+import { Input } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<Input
+  design="secondary"
+  placeholder="Enter your email"
+  error="Invalid email format"
+  onChange={(e) => handleChange(e.target.value)}
+/>
+```
+
+## Props
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'">
+  Visual design variant. Default is "secondary".
+  - `primary`: Compact input with gray background (40px height)
+  - `secondary`: Floating label input with white background (56px height)
+  - `third`: Underlined input with bottom border (34px height)
+</ParamField>
+
+<ParamField path="type" type="'text' | 'email' | 'date' | 'password' | 'time' | 'number'">
+  Input type: determines keyboard type and validation on mobile devices. Default is "text".
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text. For `design="secondary"`, animates as floating label on focus.
+</ParamField>
+
+<ParamField path="value" type="string | number | readonly string[]">
+  Controlled input value.
+</ParamField>
+
+<ParamField path="defaultValue" type="string | number | readonly string[]">
+  Uncontrolled default value.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input in red text with fade-in animation.
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the input and reduces opacity.
+</ParamField>
+
+<ParamField path="LeftContent" type="ReactElement">
+  Custom React element to display on the left side of the input (e.g., icon, prefix).
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties for the outer container wrapper.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the input container.
+</ParamField>
+
+<ParamField path="onChange" type="(e: ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when input value changes.
+</ParamField>
+
+<ParamField path="onFocus" type="(e: FocusEvent<HTMLInputElement>) => void">
+  Callback fired when input receives focus.
+</ParamField>
+
+<ParamField path="onBlur" type="(e: FocusEvent<HTMLInputElement>) => void">
+  Callback fired when input loses focus.
+</ParamField>
+
+<Note>
+  Input accepts all standard HTML input attributes (name, id, autoComplete, maxLength, etc.) via `ComponentPropsWithRef<"input">`.
+</Note>
+
+## Examples
+
+### Primary Design (Compact)
+
+```tsx
+<Input
+  design="primary"
+  placeholder="Search..."
+  LeftContent={<SearchIcon />}
+/>
+```
+
+### Secondary Design (Floating Label)
+
+```tsx
+<Input
+  design="secondary"
+  placeholder="Email address"
+  type="email"
+  error={emailError}
+  onChange={(e) => setEmail(e.target.value)}
+/>
+```
+
+### Third Design (Underlined)
+
+```tsx
+<Input
+  design="third"
+  placeholder="Full name"
+  LeftContent={<UserIcon />}
+/>
+```
+
+## Design Variants
+
+- **primary**: Compact input with soft gray background, 40px height, 6px border radius
+- **secondary**: Modern floating label design, white background, 56px height, 12px border radius
+- **third**: Minimalist underlined input with bottom border only, 34px height

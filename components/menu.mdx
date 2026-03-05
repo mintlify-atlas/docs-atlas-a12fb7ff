@@ -1,0 +1,257 @@
+---
+title: Menu
+description: Dropdown menu component with customizable positioning and icon trigger
+---
+
+## Overview
+
+The `Menu` component is a dropdown menu with customizable positioning and trigger options. It automatically closes when clicking outside and supports both predefined menu options and custom content. Features smooth animations and flexible positioning.
+
+## Basic Usage
+
+```tsx
+import { Menu } from '@adoptaunabuelo/react-components';
+import { Edit, Trash } from 'lucide-react';
+
+function MyComponent() {
+  return (
+    <Menu
+      id="actions-menu"
+      position="bottom-right"
+      options={[
+        { id: "edit", label: "Edit", icon: <Edit size={16} /> },
+        { id: "delete", label: "Delete", icon: <Trash size={16} />, labelColor: "red" }
+      ]}
+      onClick={(option) => console.log(option.id)}
+    />
+  );
+}
+```
+
+## Examples
+
+### Basic Dropdown Menu
+
+```tsx
+<Menu
+  id="user-menu"
+  position="bottom-left"
+  options={[
+    { id: "profile", label: "Profile" },
+    { id: "settings", label: "Settings" },
+    { id: "logout", label: "Logout", labelColor: "#E53E3E" }
+  ]}
+  onClick={(option) => handleAction(option.id)}
+/>
+```
+
+### Custom Icon Trigger
+
+```tsx
+import { Settings } from 'lucide-react';
+
+<Menu
+  id="settings-menu"
+  position="bottom-right"
+  icon={<Settings size={20} />}
+  options={[
+    { id: "general", label: "General" },
+    { id: "advanced", label: "Advanced" }
+  ]}
+  onClick={(option) => navigate(`/settings/${option.id}`)}
+/>
+```
+
+### Custom Icon Element (Without Button Wrapper)
+
+```tsx
+import { MoreVertical } from 'lucide-react';
+
+<Menu
+  id="custom-trigger"
+  position="bottom-right"
+  Icon={<MoreVertical size={24} color="blue" />}
+  options={[
+    { id: "view", label: "View Details" },
+    { id: "share", label: "Share" }
+  ]}
+  onClick={handleMenuClick}
+/>
+```
+
+### Custom Content
+
+```tsx
+<Menu
+  id="custom-menu"
+  position="bottom-left"
+  menuStyle={{ padding: '16px' }}
+>
+  <div style={{ width: '200px' }}>
+    <h3>Custom Content</h3>
+    <p>You can put any React content here</p>
+    <button>Action</button>
+  </div>
+</Menu>
+```
+
+### With Change Handler
+
+```tsx
+<Menu
+  id="monitored-menu"
+  position="top-right"
+  options={menuOptions}
+  onChange={(visible) => console.log('Menu is', visible ? 'open' : 'closed')}
+  onClick={(option) => console.log('Selected:', option.label)}
+/>
+```
+
+### Programmatic Control with Ref
+
+```tsx
+import { useRef } from 'react';
+import { Menu, MenuRef } from '@adoptaunabuelo/react-components';
+
+function MyComponent() {
+  const menuRef = useRef<MenuRef>(null);
+  
+  const handleComplete = () => {
+    menuRef.current?.close();
+  };
+  
+  return (
+    <Menu
+      ref={menuRef}
+      id="controlled-menu"
+      position="bottom-right"
+      options={options}
+      onClick={handleComplete}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection. Must be unique across your application.
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'" required>
+  Positioning of the dropdown menu relative to the trigger button.
+  
+  - `bottom-right`: Menu appears below trigger, aligned to the left
+  - `bottom-left`: Menu appears below trigger, aligned to the right
+  - `top-right`: Menu appears above trigger, aligned to the left
+  - `top-left`: Menu appears above trigger, aligned to the right
+</ParamField>
+
+<ParamField path="options" type="Array<OptionsProps>">
+  Array of menu items to display. Each option should have an `id`, `label`, and optional `icon` and `labelColor`. Alternative to using `children`.
+</ParamField>
+
+<ParamField path="onClick" type="(option: OptionsProps) => void">
+  Callback fired when a menu option is clicked. Receives the clicked option object.
+</ParamField>
+
+<ParamField path="onChange" type="(visible: boolean) => void">
+  Callback fired when menu visibility changes. Receives `true` when opened, `false` when closed.
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Icon for the button trigger (lowercase prop name). Used with the internal Button component wrapper.
+</ParamField>
+
+<ParamField path="Icon" type="React.ReactElement">
+  Icon element for custom trigger (uppercase prop name). Replaces the Button component entirely for full control over the trigger appearance.
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Custom content to display inside the menu dropdown. Alternative to using the `options` prop. Useful for complex menu content.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles to apply to the container element.
+</ParamField>
+
+<ParamField path="menuStyle" type="CSSProperties">
+  Custom CSS styles to apply to the dropdown menu container.
+</ParamField>
+
+## OptionsProps Interface
+
+```tsx
+interface OptionsProps {
+  id: string;
+  label: string;
+  labelColor?: string;  // Custom text color for the label
+  icon?: React.ReactElement;
+}
+```
+
+## MenuRef Interface
+
+```tsx
+interface MenuRef {
+  close: () => void;  // Programmatically close the menu
+}
+```
+
+## Styling
+
+The menu dropdown includes:
+
+- **Background**: White with subtle shadow
+- **Border**: 1px solid `Color.line.soft`
+- **Border radius**: 12px
+- **Animation**: Scale and opacity transition (0.2s ease-in-out)
+- **Hover state**: `Color.status.neutral.hover` background
+- **Menu cells**: 12px vertical padding, 16px horizontal padding
+- **Z-index**: 1000
+
+## Accessibility
+
+- The container has `role="menu"` for semantic meaning
+- Automatically closes on outside clicks for better UX
+- Keyboard navigation support through standard button interactions
+- Menu cells have hover states for clear interaction feedback
+
+## TypeScript
+
+```tsx
+import { CSSProperties } from 'react';
+
+interface MenuProps {
+  id: string;
+  style?: CSSProperties;
+  menuStyle?: CSSProperties;
+  icon?: React.ReactElement;
+  Icon?: React.ReactElement;
+  position: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  children?: React.ReactNode;
+  options?: Array<OptionsProps>;
+  onChange?: (visible: boolean) => void;
+  onClick?: (option: OptionsProps) => void;
+}
+
+interface OptionsProps {
+  id: string;
+  label: string;
+  labelColor?: string;
+  icon?: React.ReactElement;
+}
+
+interface MenuRef {
+  close: () => void;
+}
+```
+
+## Best Practices
+
+- Always provide a unique `id` prop to ensure proper click-outside detection
+- Use `labelColor` sparingly, primarily for destructive actions (e.g., delete)
+- Choose `position` based on available screen space to prevent clipping
+- Use `icon` prop for simple icon changes, `Icon` prop for full trigger customization
+- Leverage the `onChange` callback for analytics or state management
+- Use the ref's `close()` method when you need to close the menu programmatically

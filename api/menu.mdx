@@ -1,0 +1,376 @@
+---
+title: Menu
+description: Dropdown menu component with customizable positioning and icon trigger
+---
+
+## Import
+
+```tsx
+import { Menu } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<Menu
+  id="actions-menu"
+  position="bottom-right"
+  options={[
+    { id: "edit", label: "Edit", icon: <EditIcon /> },
+    { id: "delete", label: "Delete", labelColor: "red" }
+  ]}
+  onClick={(option) => handleAction(option.id)}
+/>
+```
+
+## Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection. Must be unique across all Menu instances on the page.
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'" required>
+  Positioning of the dropdown relative to the trigger button.
+  - `bottom-right`: Dropdown appears below and aligned to right
+  - `bottom-left`: Dropdown appears below and aligned to left
+  - `top-right`: Dropdown appears above and aligned to right
+  - `top-left`: Dropdown appears above and aligned to left
+</ParamField>
+
+<ParamField path="options" type="Array<{ id: string; label: string; labelColor?: string; icon?: ReactElement }>">
+  Array of menu items with labels and icons. Each option creates a clickable menu cell.
+</ParamField>
+
+<ParamField path="onClick" type="(option: OptionsProps) => void">
+  Callback fired when a menu option is clicked. Receives the full option object.
+</ParamField>
+
+<ParamField path="onChange" type="(visible: boolean) => void">
+  Callback fired when menu visibility changes (opens or closes).
+</ParamField>
+
+<ParamField path="icon" type="ReactElement">
+  Icon for the button trigger (lowercase prop). Used with the default Button component. Default: `<MoreVertical />` (three dots).
+</ParamField>
+
+<ParamField path="Icon" type="ReactElement">
+  Icon element for custom trigger (uppercase prop). Replaces the Button component with a custom clickable div.
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  Custom content to display in menu (alternative to options). Allows full control over menu content.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+<ParamField path="menuStyle" type="CSSProperties">
+  Custom CSS properties for the dropdown menu container.
+</ParamField>
+
+## Ref Methods
+
+<ParamField path="close" type="() => void">
+  Programmatically close the menu. Access via ref.
+</ParamField>
+
+## Features
+
+### Auto-close on Outside Click
+- Listens for clicks outside the menu
+- Automatically closes when clicking elsewhere
+- Uses `mousedown` event for better UX
+
+### Animated Transitions
+- **Scale animation**: Grows from 0 to 1
+- **Opacity animation**: Fades in/out
+- **Duration**: 0.2s ease-in-out
+- **Transform origin**: Matches position (e.g., top-right origin for bottom-left menu)
+
+### Button States
+- **Active state**: Button shows active background when menu is open
+- **Neutral active color**: Light gray background
+- **Icon rotation**: Optional (depending on icon)
+
+## Examples
+
+### Basic Actions Menu
+
+```tsx
+import { Edit, Trash2, Copy } from 'lucide-react';
+
+<Menu
+  id="actions"
+  position="bottom-right"
+  options={[
+    { id: "edit", label: "Edit", icon: <Edit size={16} /> },
+    { id: "copy", label: "Duplicate", icon: <Copy size={16} /> },
+    { id: "delete", label: "Delete", icon: <Trash2 size={16} />, labelColor: "red" }
+  ]}
+  onClick={(option) => {
+    switch(option.id) {
+      case "edit": openEditor(); break;
+      case "copy": duplicateItem(); break;
+      case "delete": confirmDelete(); break;
+    }
+  }}
+/>
+```
+
+### With Custom Trigger Icon
+
+```tsx
+import { Settings } from 'lucide-react';
+
+<Menu
+  id="settings-menu"
+  position="bottom-left"
+  icon={<Settings />}
+  options={[
+    { id: "profile", label: "Profile" },
+    { id: "account", label: "Account" },
+    { id: "logout", label: "Logout", labelColor: "red" }
+  ]}
+  onClick={(option) => navigate(`/${option.id}`)}
+/>
+```
+
+### With Custom Icon Element (No Button)
+
+```tsx
+import { MoreHorizontal } from 'lucide-react';
+
+<Menu
+  id="custom-trigger"
+  position="bottom-right"
+  Icon={
+    <div style={{ cursor: 'pointer', padding: 8 }}>
+      <MoreHorizontal size={20} />
+    </div>
+  }
+  options={[
+    { id: "action1", label: "Action 1" },
+    { id: "action2", label: "Action 2" }
+  ]}
+  onClick={(option) => console.log(option.id)}
+/>
+```
+
+### With onChange Handler
+
+```tsx
+const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+<Menu
+  id="tracked-menu"
+  position="bottom-right"
+  options={menuOptions}
+  onChange={(visible) => {
+    setIsMenuOpen(visible);
+    if (visible) {
+      console.log('Menu opened');
+    }
+  }}
+  onClick={handleAction}
+/>
+```
+
+### With Custom Content
+
+```tsx
+<Menu
+  id="custom-content"
+  position="bottom-right"
+>
+  <div style={{ padding: 16 }}>
+    <Text type="h6">Custom Menu</Text>
+    <div style={{ marginTop: 12 }}>
+      <Input placeholder="Search..." />
+    </div>
+    <div style={{ marginTop: 12 }}>
+      <Button onClick={() => console.log('Action')}>Submit</Button>
+    </div>
+  </div>
+</Menu>
+```
+
+### Using Ref to Close Programmatically
+
+```tsx
+import { useRef } from 'react';
+
+const menuRef = useRef<MenuRef>(null);
+
+const handleAction = (option: OptionsProps) => {
+  performAction(option.id);
+  // Close menu after action
+  menuRef.current?.close();
+};
+
+<Menu
+  ref={menuRef}
+  id="controlled-menu"
+  position="bottom-right"
+  options={options}
+  onClick={handleAction}
+/>
+```
+
+### Table Row Actions
+
+```tsx
+const TableRow = ({ item }: { item: any }) => (
+  <tr>
+    <td>{item.name}</td>
+    <td>{item.email}</td>
+    <td>
+      <Menu
+        id={`row-${item.id}`}
+        position="bottom-left"
+        options={[
+          { id: "view", label: "View Details" },
+          { id: "edit", label: "Edit" },
+          { id: "delete", label: "Delete", labelColor: "#ff0000" }
+        ]}
+        onClick={(option) => handleRowAction(item.id, option.id)}
+      />
+    </td>
+  </tr>
+);
+```
+
+### Context Menu with Sections
+
+```tsx
+<Menu
+  id="context-menu"
+  position="bottom-right"
+>
+  <div>
+    <div style={{ padding: '8px 16px', borderBottom: '1px solid #eee' }}>
+      <Text type="c1" weight="semibold" style={{ color: '#666' }}>File Actions</Text>
+    </div>
+    <MenuCell onClick={() => openFile()}>Open</MenuCell>
+    <MenuCell onClick={() => renameFile()}>Rename</MenuCell>
+    
+    <div style={{ padding: '8px 16px', borderBottom: '1px solid #eee', marginTop: 8 }}>
+      <Text type="c1" weight="semibold" style={{ color: '#666' }}>Danger Zone</Text>
+    </div>
+    <MenuCell onClick={() => deleteFile()} style={{ color: 'red' }}>Delete</MenuCell>
+  </div>
+</Menu>
+```
+
+## Styling Details
+
+### Dropdown Container
+- **Position**: Absolute
+- **Background**: White
+- **Border radius**: 12px
+- **Shadow**: `6px 6px 10px 1px rgba(0, 0, 0, 0.1)`
+- **Border**: 1px solid line soft
+- **Z-index**: 1000
+- **Width**: `max-content`
+
+### Menu Cells
+- **Padding**: 12px 16px
+- **Gap**: 12px (icon and text)
+- **Cursor**: Pointer
+- **Hover background**: Neutral hover color
+- **Border**: Bottom border between cells (except last)
+
+### Positioning
+
+**Bottom-right**:
+```css
+top: 44px
+left: 8px
+transform-origin: left top
+```
+
+**Bottom-left**:
+```css
+top: 44px
+right: 8px
+transform-origin: right top
+```
+
+**Top-right**:
+```css
+bottom: 44px
+left: 8px
+transform-origin: left bottom
+```
+
+**Top-left**:
+```css
+bottom: 44px
+right: 8px
+transform-origin: right bottom
+```
+
+## OptionsProps Interface
+
+```tsx
+interface OptionsProps {
+  id: string;              // Unique identifier
+  label: string;           // Display text
+  labelColor?: string;     // Custom text color (e.g., "red" for delete)
+  icon?: ReactElement;     // Optional icon
+}
+```
+
+## Click-Outside Detection
+
+The menu automatically closes when clicking outside by:
+1. Checking if click target is within the menu container (by `id`)
+2. If outside, triggering close animation
+3. Using `mousedown` event (fires before `click`)
+
+<Warning>
+  Ensure each Menu instance has a unique `id` prop. Duplicate IDs will cause click-outside detection to fail.
+</Warning>
+
+## Accessibility
+
+- **Semantic HTML**: Uses button for trigger
+- **Keyboard support**: Inherits from Button component
+- **Focus management**: Menu stays open until explicitly closed
+- **ARIA**: Consider adding `aria-haspopup="menu"` and `aria-expanded` for better screen reader support
+
+## Common Patterns
+
+### User Menu
+```tsx
+const UserMenu = () => (
+  <Menu
+    id="user-menu"
+    position="bottom-left"
+    Icon={<Avatar src={user.photo} />}
+    options={[
+      { id: "profile", label: "Profile" },
+      { id: "settings", label: "Settings" },
+      { id: "logout", label: "Logout", labelColor: "red" }
+    ]}
+    onClick={(option) => handleUserAction(option.id)}
+  />
+);
+```
+
+### Bulk Actions Menu
+```tsx
+const BulkActionsMenu = ({ selectedCount }: { selectedCount: number }) => (
+  <Menu
+    id="bulk-actions"
+    position="bottom-right"
+    icon={<MoreVertical />}
+    options={[
+      { id: "export", label: `Export ${selectedCount} items` },
+      { id: "archive", label: "Archive" },
+      { id: "delete", label: "Delete All", labelColor: "red" }
+    ]}
+    onClick={(option) => handleBulkAction(option.id)}
+  />
+);
+```

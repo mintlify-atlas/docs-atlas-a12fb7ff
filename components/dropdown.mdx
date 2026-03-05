@@ -1,0 +1,326 @@
+---
+title: Dropdown
+description: Dropdown select component with single/multi-select, search, and icon support
+---
+
+## Overview
+
+Dropdown is a versatile select component that supports both single and multiple selection modes. It includes built-in search functionality, custom icons for options, and automatic click-outside detection.
+
+## Basic Usage
+
+```tsx
+import { Dropdown } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [selected, setSelected] = useState([]);
+
+  const options = [
+    { id: '1', title: 'Option 1' },
+    { id: '2', title: 'Option 2' },
+    { id: '3', title: 'Option 3' }
+  ];
+
+  return (
+    <Dropdown
+      id="my-dropdown"
+      placeholder="Select an option"
+      type="single"
+      options={options}
+      selectedOptions={selected}
+      onChange={setSelected}
+    />
+  );
+}
+```
+
+## Selection Modes
+
+### Single Selection
+
+Radio-style selection where only one option can be selected at a time.
+
+```tsx
+<Dropdown
+  id="category-dropdown"
+  placeholder="Select category"
+  type="single"
+  options={[
+    { id: 'tech', title: 'Technology' },
+    { id: 'health', title: 'Healthcare' },
+    { id: 'edu', title: 'Education' }
+  ]}
+  selectedOptions={selectedCategory}
+  onChange={(items) => setSelectedCategory(items)}
+/>
+```
+
+### Multiple Selection
+
+Checkbox-style selection allowing multiple options to be selected.
+
+```tsx
+<Dropdown
+  id="tags-dropdown"
+  placeholder="Select tags"
+  type="multiple"
+  options={[
+    { id: 'react', title: 'React' },
+    { id: 'typescript', title: 'TypeScript' },
+    { id: 'nodejs', title: 'Node.js' }
+  ]}
+  selectedOptions={selectedTags}
+  onChange={(items) => setSelectedTags(items)}
+/>
+```
+
+## With Search
+
+Enable search functionality by providing an `onSearchChange` callback.
+
+```tsx
+const [searchText, setSearchText] = useState('');
+const [filteredOptions, setFilteredOptions] = useState(allOptions);
+
+const handleSearch = (text: string) => {
+  setSearchText(text);
+  const filtered = allOptions.filter(option =>
+    option.title.toLowerCase().includes(text.toLowerCase())
+  );
+  setFilteredOptions(filtered);
+};
+
+<Dropdown
+  id="searchable-dropdown"
+  placeholder="Search options"
+  type="multiple"
+  options={filteredOptions}
+  selectedOptions={selected}
+  onSearchChange={handleSearch}
+  onChange={setSelected}
+/>
+```
+
+## With Icons
+
+Add visual icons to options for better recognition.
+
+```tsx
+import { Users, Settings, Bell } from 'lucide-react';
+
+<Dropdown
+  id="actions-dropdown"
+  placeholder="Select action"
+  type="single"
+  options={[
+    {
+      id: 'users',
+      title: 'Manage Users',
+      icon: <Users size={16} />
+    },
+    {
+      id: 'settings',
+      title: 'Settings',
+      icon: <Settings size={16} />
+    },
+    {
+      id: 'notifications',
+      title: 'Notifications',
+      icon: <Bell size={16} />
+    }
+  ]}
+  selectedOptions={selectedAction}
+  onChange={setSelectedAction}
+/>
+```
+
+## Menu Positioning
+
+Control where the dropdown menu appears relative to the trigger.
+
+```tsx
+// Menu opens upward (useful when dropdown is at bottom of viewport)
+<Dropdown
+  id="bottom-dropdown"
+  placeholder="Select option"
+  type="single"
+  options={options}
+  menuPosition="top"
+  onChange={handleChange}
+/>
+
+// Menu opens downward (default)
+<Dropdown
+  id="top-dropdown"
+  placeholder="Select option"
+  type="single"
+  options={options}
+  menuPosition="bottom"
+  onChange={handleChange}
+/>
+```
+
+## Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection functionality.
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Text displayed when no options are selected.
+</ParamField>
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of selectable options:
+  ```tsx
+  {
+    id: string;           // Unique identifier
+    title?: string;       // Display text
+    icon?: ReactElement;  // Optional icon
+  }
+  ```
+</ParamField>
+
+<ParamField path="type" type="'single' | 'multiple'" default="single">
+  Selection mode:
+  - `single`: Only one option can be selected (radio behavior)
+  - `multiple`: Multiple options can be selected (checkbox behavior)
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<OptionProps>">
+  Currently selected options (controlled component pattern).
+</ParamField>
+
+<ParamField path="onChange" type="(items: Array<OptionProps>) => void">
+  Callback fired when selection changes. Receives array of selected options (even for single selection).
+</ParamField>
+
+<ParamField path="onSearchChange" type="(text: string) => void">
+  Callback fired when search input changes. When provided, enables search bar in dropdown menu.
+</ParamField>
+
+<ParamField path="menuPosition" type="'bottom' | 'top'" default="bottom">
+  Position of dropdown menu relative to trigger button.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the dropdown container.
+</ParamField>
+
+<ParamField path="menuStyle" type="CSSProperties">
+  Custom styles applied to the dropdown menu.
+</ParamField>
+
+<ParamField path="optionStyle" type="CSSProperties">
+  Custom styles applied to individual option items.
+</ParamField>
+
+## Advanced Examples
+
+### With Custom Styling
+
+```tsx
+<Dropdown
+  id="styled-dropdown"
+  placeholder="Custom styled"
+  type="multiple"
+  options={options}
+  selectedOptions={selected}
+  onChange={setSelected}
+  style={{
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px'
+  }}
+  menuStyle={{
+    maxHeight: '400px',
+    width: '100%'
+  }}
+  optionStyle={{
+    padding: '12px'
+  }}
+/>
+```
+
+### Async Search
+
+```tsx
+const [loading, setLoading] = useState(false);
+const [options, setOptions] = useState([]);
+
+const handleSearch = async (text: string) => {
+  if (!text) {
+    setOptions([]);
+    return;
+  }
+  
+  setLoading(true);
+  try {
+    const results = await searchAPI(text);
+    setOptions(results);
+  } finally {
+    setLoading(false);
+  }
+};
+
+<Dropdown
+  id="async-dropdown"
+  placeholder="Search users..."
+  type="multiple"
+  options={options}
+  selectedOptions={selected}
+  onSearchChange={handleSearch}
+  onChange={setSelected}
+/>
+```
+
+### Controlled with External State
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+const [selected, setSelected] = useState([]);
+
+const handleChange = (items) => {
+  setSelected(items);
+  // Close dropdown after single selection
+  if (type === 'single' && items.length > 0) {
+    setIsOpen(false);
+  }
+};
+
+<Dropdown
+  id="controlled-dropdown"
+  placeholder="Select"
+  type="single"
+  options={options}
+  selectedOptions={selected}
+  onChange={handleChange}
+/>
+```
+
+## Behavior Notes
+
+- **Auto-close**: Dropdown automatically closes when clicking outside
+- **Single selection**: Dropdown closes immediately after selecting an option
+- **Multiple selection**: Dropdown stays open until user clicks outside
+- **Selected display**: Shows comma-separated list of selected option titles
+- **Overflow**: Selected text is truncated with ellipsis if too long
+- **Max height**: Menu has `250px` max height with scroll
+- **Max width**: Menu is `94%` of container width
+
+## Styling Notes
+
+- Container has `40px` fixed height
+- Background uses `Color.background.soft`
+- Menu appears with `box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08)`
+- Selected options highlighted with `Color.background.primary`
+- Hover state uses `Color.status.neutral.hover`
+- Icons are displayed at `16x16px`
+
+## Accessibility
+
+- Uses semantic `role="dropdown"` attribute
+- Checkboxes visible in multiple selection mode
+- Check icons shown for selected items in single selection mode
+- Keyboard accessible with mouse and keyboard interactions
+- Search input has proper placeholder text

@@ -1,0 +1,117 @@
+---
+title: Switch
+description: Toggle switch component with sliding animation and checkmark indicator
+---
+
+## Import
+
+```tsx
+import { Switch } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Switch
+  active={isEnabled}
+  color={ColorV2.surface.primary}
+  onChange={(on) => setIsEnabled(on)}
+/>
+```
+
+## Props
+
+<ParamField path="active" type="boolean">
+  Current state (controlled component)
+</ParamField>
+
+<ParamField path="color" type="string">
+  Custom color when active (default: primary)
+</ParamField>
+
+<ParamField path="onChange" type="(on: boolean) => void">
+  Callback fired when toggled, receives new state
+</ParamField>
+
+## Features
+
+- Smooth sliding animation (0.3s transition)
+- Checkmark icon (lucide-react Check) appears when active
+- Size: 48px width x 28px height
+- Toggle button: 24px diameter circle
+- Active color customizable, defaults to ColorV2.surface.primary
+- Inactive color: ColorV2.surface.neutralLow (light gray)
+- White toggle button with checkmark in active color
+
+## Examples
+
+### Basic Switch
+
+```tsx
+const [enabled, setEnabled] = useState(false);
+
+<Switch
+  active={enabled}
+  onChange={(on) => setEnabled(on)}
+/>
+```
+
+### Custom Color
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const [darkMode, setDarkMode] = useState(false);
+
+<Switch
+  active={darkMode}
+  color={ColorV2.surface.green}
+  onChange={(on) => setDarkMode(on)}
+/>
+```
+
+### With Label
+
+```tsx
+import { Text } from '@adoptaunabuelo/react-components';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+  <Switch
+    active={notifications}
+    onChange={setNotifications}
+  />
+  <Text type="p">Enable notifications</Text>
+</div>
+```
+
+### Settings Panel
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const [settings, setSettings] = useState({
+  darkMode: false,
+  notifications: true,
+  autoSave: true
+});
+
+<div>
+  <div style={{ marginBottom: '16px' }}>
+    <Switch
+      active={settings.darkMode}
+      color={ColorV2.surface.primary}
+      onChange={(on) => setSettings({...settings, darkMode: on})}
+    />
+    <span>Dark Mode</span>
+  </div>
+  <div style={{ marginBottom: '16px' }}>
+    <Switch
+      active={settings.notifications}
+      onChange={(on) => setSettings({...settings, notifications: on})}
+    />
+    <span>Notifications</span>
+  </div>
+</div>
+```

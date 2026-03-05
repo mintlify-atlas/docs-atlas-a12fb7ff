@@ -1,0 +1,359 @@
+---
+title: Payout
+description: Stripe payment method setup component supporting credit/debit cards and SEPA direct debit. Handles 3D Secure authentication flow.
+---
+
+## Overview
+
+The Payout component provides a seamless integration with Stripe for collecting payment methods. It supports both credit/debit cards and SEPA direct debit, automatically handles 3D Secure authentication in a modal, and exposes methods to retrieve the payment method data.
+
+<Warning>
+  This component requires a valid Stripe publishable API key. You must have a Stripe account and integrate with Stripe's backend APIs to create setup intents.
+</Warning>
+
+## Installation
+
+### Dependencies
+
+The Payout component requires Stripe's React libraries, which are included as dependencies:
+
+- `@stripe/react-stripe-js`
+- `@stripe/stripe-js`
+
+### Stripe Setup
+
+1. Create a [Stripe account](https://stripe.com)
+2. Get your publishable key from the Stripe Dashboard (starts with `pk_`)
+3. Set up backend endpoints to create Stripe SetupIntents
+
+## Basic Usage
+
+```tsx
+import { Payout } from '@adoptaunabuelo/react-components';
+import { useRef } from 'react';
+import type { PayoutRef } from '@adoptaunabuelo/react-components';
+
+function MyComponent() {
+  const payoutRef = useRef<PayoutRef>(null);
+
+  const handleSubmit = async () => {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    if (paymentMethod) {
+      console.log('Payment method ID:', paymentMethod.id);
+      // Send paymentMethod.id to your backend
+    }
+  };
+
+  return (
+    <div>
+      <Payout
+        ref={payoutRef}
+        stripeKey={process.env.REACT_APP_STRIPE_KEY}
+        paymentOption="card"
+        onLoading={(isLoading) => console.log('Loading:', isLoading)}
+      />
+      <button onClick={handleSubmit}>Save Payment Method</button>
+    </div>
+  );
+}
+```
+
+## Props
+
+<ParamField path="stripeKey" type="string" required>
+  Your Stripe publishable API key (starts with `pk_`). Get this from your Stripe Dashboard.
+  
+  ```tsx
+  stripeKey="pk_test_51H..."
+  ```
+</ParamField>
+
+<ParamField path="paymentOption" type="'card' | 'sepa_debit'" required>
+  Payment method type to collect:
+  - `"card"` - Credit or debit card
+  - `"sepa_debit"` - SEPA Direct Debit (European bank accounts)
+</ParamField>
+
+<ParamField path="stripeConfirmUrl" type="string">
+  3D Secure confirmation URL returned by Stripe when a setup intent requires additional authentication. When provided, automatically opens the confirmation modal.
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'">
+  Visual design variant for the payment form. Defaults to `"primary"`.
+</ParamField>
+
+<ParamField path="userData" type="object">
+  Pre-filled user data for the payment form.
+  
+  ```tsx
+  {
+    email?: string;  // Required for SEPA direct debit
+  }
+  ```
+</ParamField>
+
+<ParamField path="placeholderName" type="string">
+  Custom placeholder text for the cardholder name input.
+</ParamField>
+
+<ParamField path="placeholderEmail" type="string">
+  Custom placeholder text for the email input (used in SEPA).
+</ParamField>
+
+<ParamField path="error" type="boolean">
+  Whether to display the form in an error state.
+</ParamField>
+
+<ParamField path="cardStyle" type="CSSProperties">
+  Custom CSS styles for the card input form element.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles for the main container.
+</ParamField>
+
+<ParamField path="onSetupConfirmed" type="function">
+  Callback fired when 3D Secure authentication completes successfully.
+  
+  ```tsx
+  () => void
+  ```
+</ParamField>
+
+<ParamField path="onLoading" type="function">
+  Callback fired when the loading state changes (e.g., when processing payment method).
+  
+  ```tsx
+  (isLoading: boolean) => void
+  ```
+</ParamField>
+
+## Ref Methods
+
+The Payout component exposes methods via ref:
+
+<ParamField path="getPaymentMethod" type="function">
+  Collects and returns the payment method from Stripe.
+  
+  ```tsx
+  getPaymentMethod: () => Promise<PaymentMethod | undefined>
+  ```
+  
+  Returns a Stripe `PaymentMethod` object or `undefined` if collection fails.
+</ParamField>
+
+## Examples
+
+### Card Payment
+
+```tsx
+import { Payout, PayoutRef } from '@adoptaunabuelo/react-components';
+import { useRef, useState } from 'react';
+
+function CardPaymentForm() {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSaveCard = async () => {
+    setLoading(true);
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    if (paymentMethod) {
+      // Send to your backend
+      await fetch('/api/save-payment-method', {
+        method: 'POST',
+        body: JSON.stringify({ paymentMethodId: paymentMethod.id })
+      });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      <h2>Add Payment Card</h2>
+      <Payout
+        ref={payoutRef}
+        stripeKey="pk_test_..."
+        paymentOption="card"
+        design="primary"
+        onLoading={setLoading}
+      />
+      <button onClick={handleSaveCard} disabled={loading}>
+        {loading ? 'Processing...' : 'Save Card'}
+      </button>
+    </div>
+  );
+}
+```
+
+### SEPA Direct Debit
+
+```tsx
+function SepaPaymentForm() {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [userEmail] = useState('user@example.com');
+
+  const handleSaveAccount = async () => {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    console.log('SEPA payment method:', paymentMethod);
+  };
+
+  return (
+    <div>
+      <h2>Add Bank Account</h2>
+      <Payout
+        ref={payoutRef}
+        stripeKey="pk_test_..."
+        paymentOption="sepa_debit"
+        userData={{ email: userEmail }}
+        placeholderEmail="Email address"
+        placeholderName="Account holder name"
+        onLoading={(loading) => console.log('Loading:', loading)}
+      />
+      <button onClick={handleSaveAccount}>Save Account</button>
+    </div>
+  );
+}
+```
+
+### With 3D Secure Authentication
+
+```tsx
+function SecurePaymentForm() {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [confirmUrl, setConfirmUrl] = useState<string>();
+
+  const handleSubmit = async () => {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    // Send to backend to create setup intent
+    const response = await fetch('/api/create-setup-intent', {
+      method: 'POST',
+      body: JSON.stringify({ paymentMethodId: paymentMethod?.id })
+    });
+    
+    const data = await response.json();
+    
+    // If 3DS required, Stripe returns a confirmation URL
+    if (data.requiresAction) {
+      setConfirmUrl(data.confirmUrl);
+    }
+  };
+
+  const handleSetupConfirmed = () => {
+    console.log('3D Secure authentication completed!');
+    setConfirmUrl(undefined);
+    // Continue with your flow
+  };
+
+  return (
+    <Payout
+      ref={payoutRef}
+      stripeKey="pk_test_..."
+      paymentOption="card"
+      stripeConfirmUrl={confirmUrl}
+      onSetupConfirmed={handleSetupConfirmed}
+      onLoading={(loading) => console.log('Loading:', loading)}
+    />
+  );
+}
+```
+
+### With Error Handling
+
+```tsx
+function PaymentFormWithErrors() {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [hasError, setHasError] = useState(false);
+
+  const handleSubmit = async () => {
+    try {
+      const paymentMethod = await payoutRef.current?.getPaymentMethod();
+      
+      if (!paymentMethod) {
+        setHasError(true);
+        return;
+      }
+      
+      setHasError(false);
+      // Process payment method
+    } catch (error) {
+      console.error('Payment method error:', error);
+      setHasError(true);
+    }
+  };
+
+  return (
+    <div>
+      <Payout
+        ref={payoutRef}
+        stripeKey="pk_test_..."
+        paymentOption="card"
+        error={hasError}
+        design="primary"
+      />
+      {hasError && (
+        <p style={{ color: 'red' }}>Please check your card details</p>
+      )}
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  );
+}
+```
+
+## Integration Flow
+
+Typical integration with Stripe involves these steps:
+
+1. **Render Payout component** with your Stripe publishable key
+2. **User enters payment details** in the Stripe-hosted form
+3. **Call `getPaymentMethod()`** when ready to submit
+4. **Send payment method ID to your backend**
+5. **Backend creates SetupIntent** with Stripe API
+6. **If 3DS required**, backend returns confirmation URL
+7. **Set `stripeConfirmUrl`** prop to trigger authentication modal
+8. **User completes 3DS** in the modal
+9. **`onSetupConfirmed` fires** when authentication succeeds
+10. **Continue your payment flow**
+
+## 3D Secure Flow
+
+When 3D Secure authentication is required:
+
+1. Component displays confirmation URL in a modal (600×400px)
+2. User completes authentication in their bank's interface
+3. Bank sends `3DS-authentication-complete` message via `window.postMessage`
+4. Modal closes automatically
+5. `onSetupConfirmed` callback is triggered
+
+## Styling
+
+The component uses Stripe Elements with custom font styling:
+
+- Font: Poppins (loaded from Google Fonts)
+- Fully styled and themed by Stripe Elements
+- Use `cardStyle` prop for custom form styling
+- Use `design` prop to match your app's design system
+
+## Notes
+
+<Warning>
+  - Never expose your Stripe secret key in client-side code
+  - Always use your publishable key (starts with `pk_`)
+  - Use test keys (`pk_test_...`) during development
+  - Use live keys (`pk_live_...`) only in production
+</Warning>
+
+- SEPA direct debit requires user email
+- Card payments may require 3D Secure based on card issuer and amount
+- The component automatically handles Stripe.js loading
+- Payment method data never touches your servers (handled by Stripe)
+- Component is forwardRef-enabled for ref access
+
+## Resources
+
+- [Stripe Documentation](https://stripe.com/docs)
+- [Stripe Elements](https://stripe.com/docs/stripe-js)
+- [SetupIntents API](https://stripe.com/docs/api/setup_intents)
+- [3D Secure Authentication](https://stripe.com/docs/payments/3d-secure)

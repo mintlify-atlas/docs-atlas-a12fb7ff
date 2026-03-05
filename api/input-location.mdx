@@ -1,0 +1,279 @@
+---
+title: InputLocation
+description: Location autocomplete input powered by Google Maps Places API
+---
+
+## Import
+
+```tsx
+import { InputLocation } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputLocation
+  isLoaded={isGoogleMapsLoaded}
+  placeholder="Introduce tu dirección"
+  searchTypes={["address"]}
+  searchFields={["geometry", "address_components"]}
+  onLocationChange={(location) => {
+    console.log(location.address);
+    console.log(location.location); // { lat, lng }
+  }}
+/>
+```
+
+## Props
+
+<ParamField path="isLoaded" type="boolean" required>
+  Must be `true` when Google Maps API is loaded. Displays "Cargando..." placeholder and disables input until loaded.
+</ParamField>
+
+<ParamField path="onLocationChange" type="(result: LocationProps) => void">
+  Callback with parsed location data when a place is selected. See LocationProps interface below for structure.
+</ParamField>
+
+<ParamField path="searchTypes" type="string[]">
+  Google Places API search types. Default: `["address"]`. Options include "address", "geocode", "establishment", etc.
+</ParamField>
+
+<ParamField path="searchFields" type="string[]">
+  Google Places API fields to fetch. Default: `["geometry", "address_components"]`. See Google Places API documentation for available fields.
+</ParamField>
+
+<ParamField path="isForm" type="boolean">
+  If `true`, only shows route + street number in input after selection (e.g., "Calle Mayor 5"). If `false`, shows full address.
+</ParamField>
+
+<Note>
+  Inherits all standard Input component props (placeholder, disabled, style, etc.) via `InputProps`.
+</Note>
+
+## LocationProps Interface
+
+<ParamField path="address" type="string">
+  Full formatted address string (e.g., "Calle Mayor 5, 28013, Madrid, Madrid, España").
+</ParamField>
+
+<ParamField path="sortAddress" type="string">
+  Short address with city, province, and country (e.g., "Madrid, Madrid, España").
+</ParamField>
+
+<ParamField path="route" type="string">
+  Street name (e.g., "Calle Mayor").
+</ParamField>
+
+<ParamField path="routeNumber" type="string">
+  Street number (e.g., "5").
+</ParamField>
+
+<ParamField path="city" type="string">
+  City name from locality address component.
+</ParamField>
+
+<ParamField path="province" type="string">
+  Province/state from administrative_area_level_2.
+</ParamField>
+
+<ParamField path="zipCode" type="string">
+  Postal/ZIP code.
+</ParamField>
+
+<ParamField path="country" type="string">
+  Full country name (e.g., "España").
+</ParamField>
+
+<ParamField path="shortCountry" type="string">
+  ISO country code (e.g., "ES").
+</ParamField>
+
+<ParamField path="location" type="{ lat: number; lng: number }">
+  Coordinates as Google Maps LatLngLiteral object.
+</ParamField>
+
+## Google Maps Setup
+
+<Warning>
+  This component requires Google Maps JavaScript API to be loaded with the Places library.
+</Warning>
+
+### Load the API
+
+Add this script tag to your HTML:
+
+```html
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&language=es"></script>
+```
+
+### Check if Loaded
+
+```tsx
+const [isLoaded, setIsLoaded] = useState(false);
+
+useEffect(() => {
+  if (typeof google !== 'undefined' && google.maps) {
+    setIsLoaded(true);
+  }
+}, []);
+
+<InputLocation
+  isLoaded={isLoaded}
+  // ...
+/>
+```
+
+## Features
+
+- **Debounced search**: 500ms delay using lodash.debounce
+- **Spanish language**: `language: "es-ES"` for API requests
+- **Dropdown suggestions**: Displays autocomplete predictions below input
+- **Address parsing**: Extracts street, city, province, postal code, etc.
+- **Validation**: Requires both route and zipCode, shows error if missing
+- **Error handling**: Spanish error messages for invalid addresses
+
+## Validation Behavior
+
+The component validates that selected addresses have:
+1. **Route** (street name)
+2. **Zip code** (postal code)
+
+If either is missing, displays error:
+> "Necesitamos una dirección más precisa para encontrar tu código postal. Por favor, indica el número de la calle."
+
+## Examples
+
+### Basic Address Input
+
+```tsx
+const [isLoaded, setIsLoaded] = useState(false);
+const [address, setAddress] = useState<LocationProps | null>(null);
+
+useEffect(() => {
+  if (typeof google !== 'undefined') setIsLoaded(true);
+}, []);
+
+<InputLocation
+  isLoaded={isLoaded}
+  placeholder="Enter your address"
+  onLocationChange={(location) => setAddress(location)}
+/>
+```
+
+### Form Mode (Short Display)
+
+```tsx
+<InputLocation
+  isLoaded={isLoaded}
+  isForm
+  placeholder="Street and number"
+  onLocationChange={(location) => {
+    // Input shows: "Calle Mayor 5"
+    // But location object has full data
+    console.log(location.address); // Full address
+    console.log(location.zipCode); // "28013"
+  }}
+/>
+```
+
+### Search Cities Only
+
+```tsx
+<InputLocation
+  isLoaded={isLoaded}
+  searchTypes={["(cities)"]}
+  placeholder="Enter city name"
+  onLocationChange={(location) => {
+    console.log(location.city);
+    console.log(location.location); // City coordinates
+  }}
+/>
+```
+
+### Complete Form Integration
+
+```tsx
+const [formData, setFormData] = useState({
+  street: '',
+  streetNumber: '',
+  city: '',
+  zipCode: '',
+  coordinates: null as { lat: number; lng: number } | null
+});
+
+<InputLocation
+  isLoaded={isGoogleMapsLoaded}
+  placeholder="Dirección completa"
+  searchTypes={["address"]}
+  onLocationChange={(location) => {
+    setFormData({
+      street: location.route || '',
+      streetNumber: location.routeNumber || '',
+      city: location.city || '',
+      zipCode: location.zipCode || '',
+      coordinates: location.location || null
+    });
+  }}
+/>
+```
+
+### With Default Value
+
+```tsx
+<InputLocation
+  isLoaded={isLoaded}
+  defaultValue="Calle Mayor 5, Madrid"
+  onLocationChange={(location) => setAddress(location)}
+/>
+```
+
+### Custom Search Fields
+
+```tsx
+<InputLocation
+  isLoaded={isLoaded}
+  searchTypes={["address"]}
+  searchFields={[
+    "geometry",
+    "address_components",
+    "formatted_address",
+    "place_id"
+  ]}
+  onLocationChange={(location) => {
+    // Access all requested fields from the place object
+    console.log(location);
+  }}
+/>
+```
+
+## Dropdown Styling
+
+- **Position**: Absolute, 64px from top
+- **Shadow**: `0px 4px 12px rgba(0, 0, 0, 0.08)`
+- **Border radius**: 12px
+- **Hover effect**: Neutral soft background
+- **Padding**: 8px
+
+## API Limits
+
+Google Maps Places API has usage limits and costs. Consider:
+- **Per-session pricing**: More cost-effective for autocomplete
+- **Quota limits**: Monitor usage in Google Cloud Console
+- **Billing**: Ensure billing is enabled for your API key
+
+## Troubleshooting
+
+### Input shows "Cargando..."
+- Ensure Google Maps API script is loaded
+- Check `isLoaded` prop is `true`
+- Verify API key is valid and billing is enabled
+
+### No suggestions appear
+- Check browser console for API errors
+- Verify Places library is included in the API script
+- Ensure API key has Places API enabled
+
+### Error: "Necesitamos una dirección más precisa..."
+- User must select a complete address with street number
+- Some places don't have postal codes
+- Try selecting from dropdown instead of typing full address

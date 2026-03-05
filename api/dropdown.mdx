@@ -1,0 +1,98 @@
+---
+title: Dropdown
+description: API reference for the Dropdown component
+---
+
+## Dropdown
+
+Dropdown select with optional search, multi-select, and icon support. Auto-closes when clicking outside. Displays selected items as comma-separated text.
+
+### Import
+
+```tsx
+import { Dropdown } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Placeholder text shown when nothing is selected
+</ParamField>
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of selectable options
+</ParamField>
+
+<ParamField path="type" type="'single' | 'multiple'" default="single">
+  Selection mode: `single` for one item, `multiple` for checkboxes
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<OptionProps>">
+  Currently selected options (controlled component)
+</ParamField>
+
+<ParamField path="onChange" type="(array: Array<OptionProps>) => void">
+  Callback fired when selection changes
+</ParamField>
+
+<ParamField path="onSearchChange" type="(text: string) => void">
+  Callback fired when search input changes, enables search functionality
+</ParamField>
+
+<ParamField path="menuPosition" type="'bottom' | 'top'" default="bottom">
+  Position of dropdown menu relative to trigger
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+<ParamField path="menuStyle" type="React.CSSProperties">
+  Custom styles for the dropdown menu container
+</ParamField>
+
+<ParamField path="optionStyle" type="React.CSSProperties">
+  Custom styles for individual option items
+</ParamField>
+
+### OptionProps
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the option
+</ParamField>
+
+<ParamField path="title" type="string">
+  Display text for the option
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Optional icon displayed before title
+</ParamField>
+
+### Usage
+
+```tsx
+<Dropdown
+  id="category-dropdown"
+  placeholder="Select categories"
+  type="multiple"
+  options={categories}
+  selectedOptions={selected}
+  onSearchChange={(text) => filterOptions(text)}
+  onChange={(items) => setSelected(items)}
+/>
+```
+
+### Notes
+
+- Automatically closes when clicking outside the dropdown
+- Search functionality only enabled when `onSearchChange` is provided
+- In `multiple` mode, shows checkboxes for each option
+- In `single` mode, shows checkmark for selected option
+- Selected items displayed as comma-separated list in trigger
+- Max height of menu is 250px with scrolling
+- Chevron icon indicates open/closed state

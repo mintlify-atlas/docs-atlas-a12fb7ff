@@ -1,0 +1,278 @@
+---
+title: InputPrice
+description: Price selector with predefined options in horizontal scroll and optional custom input
+---
+
+## Import
+
+```tsx
+import { InputPrice } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputPrice
+  options={[
+    { price: 10, data: [{ title: "1 coffee", icon: "Coffee" }] },
+    { price: 25, data: [{ title: "3 coffees", icon: "Coffee" }] },
+    { price: 50 }
+  ]}
+  currency="€"
+  label="Equivale a {{value}} cafés"
+  labelValueConversion={0.1}
+  defaultOption={25}
+  onChange={(price) => setDonationAmount(price)}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<{ price: number; data?: Array<{ title: string; icon?: string }> }>" required>
+  Predefined price options (scrollable horizontally).
+  - `price`: Amount in the specified currency
+  - `data`: Optional feature list shown below price with Lucide icons
+</ParamField>
+
+<ParamField path="currency" type="string" required>
+  Currency symbol (e.g., `"€"`, `"$"`, `"£"`).
+</ParamField>
+
+<ParamField path="onChange" type="(value: number) => void">
+  Callback with selected/entered price. Validates minimum from first option.
+</ParamField>
+
+<ParamField path="label" type="string">
+  Floating label above options. Use `{{value}}` for dynamic calculation based on `labelValueConversion`.
+</ParamField>
+
+<ParamField path="labelValueConversion" type="number">
+  Multiplier for `{{value}}` in label (e.g., `0.1` converts 100€ to "10 coffees").
+</ParamField>
+
+<ParamField path="defaultOption" type="number">
+  Pre-select an option by price. Component auto-scrolls to center this option.
+</ParamField>
+
+<ParamField path="hideCustomAmount" type="boolean">
+  Hide custom amount input field at the end. Default: `false`.
+</ParamField>
+
+<ParamField path="customAmountData" type="ReactElement">
+  Custom element shown below custom amount input (e.g., benefits list).
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties for the options row container.
+</ParamField>
+
+## Option Cell Structure
+
+Each price option displays:
+- **Price**: Large number with currency symbol (responsive font size)
+- **Data items** (optional): Icon + text list below a divider
+- **Selection state**: Primary blue border and background when selected
+- **Hover effect**: Blue background and border on hover
+
+## Features
+
+### Auto-centering
+- Selected option automatically scrolls to center horizontally
+- Smooth scroll animation
+- Works on initial mount and when selection changes
+
+### Dynamic Font Sizing
+Adjusts number font size based on the largest price:
+- > 5 digits: 16px
+- > 4 digits: 18px  
+- > 3 digits: 21px
+- ≤ 3 digits: 24px (default)
+
+### Custom Amount Validation
+- Minimum price enforced from `options[0].price`
+- Spanish error message: `"La donación mínima es de {min}€"`
+- Validates on blur
+- Red border on error
+
+### Spanish Number Formatting
+Uses `toLocaleString("es-ES")` with thousand separators:
+- `1000` → `"1.000"`
+- `50000` → `"50.000"`
+
+## Examples
+
+### Donation Amounts
+
+```tsx
+<InputPrice
+  options={[
+    { 
+      price: 10,
+      data: [
+        { title: "Apoyo básico", icon: "Heart" }
+      ]
+    },
+    { 
+      price: 25,
+      data: [
+        { title: "Apoyo estándar", icon: "Heart" },
+        { title: "Certificado de donación", icon: "FileText" }
+      ]
+    },
+    { 
+      price: 50,
+      data: [
+        { title: "Apoyo premium", icon: "Heart" },
+        { title: "Certificado de donación", icon: "FileText" },
+        { title: "Reconocimiento público", icon: "Award" }
+      ]
+    }
+  ]}
+  currency="€"
+  label="Equivale a {{value}} cafeses"
+  labelValueConversion={0.1}
+  defaultOption={25}
+  onChange={(price) => setDonation(price)}
+/>
+```
+
+### Subscription Plans
+
+```tsx
+<InputPrice
+  options={[
+    { 
+      price: 9,
+      data: [
+        { title: "Básico", icon: "Check" },
+        { title: "5 GB storage", icon: "HardDrive" }
+      ]
+    },
+    { 
+      price: 19,
+      data: [
+        { title: "Pro", icon: "Check" },
+        { title: "50 GB storage", icon: "HardDrive" },
+        { title: "Priority support", icon: "Headphones" }
+      ]
+    },
+    { 
+      price: 49,
+      data: [
+        { title: "Enterprise", icon: "Check" },
+        { title: "Unlimited storage", icon: "HardDrive" },
+        { title: "24/7 support", icon: "Headphones" },
+        { title: "Custom integrations", icon: "Plug" }
+      ]
+    }
+  ]}
+  currency="$"
+  hideCustomAmount
+  onChange={(price) => selectPlan(price)}
+/>
+```
+
+### Simple Price Selection (No Data)
+
+```tsx
+<InputPrice
+  options={[
+    { price: 5 },
+    { price: 10 },
+    { price: 20 },
+    { price: 50 }
+  ]}
+  currency="€"
+  onChange={(price) => console.log('Selected:', price)}
+/>
+```
+
+### With Custom Amount Benefits
+
+```tsx
+<InputPrice
+  options={[
+    { price: 10 },
+    { price: 25 },
+    { price: 50 }
+  ]}
+  currency="€"
+  customAmountData={
+    <div>
+      <Text type="c1" weight="medium">Beneficios:</Text>
+      <Text type="c1">• Certificado personalizado</Text>
+      <Text type="c1">• Agradecimiento especial</Text>
+    </div>
+  }
+  onChange={(price) => setCustomDonation(price)}
+/>
+```
+
+### Responsive Width Control
+
+```tsx
+<InputPrice
+  options={[
+    { price: 10 },
+    { price: 25 },
+    { price: 50 }
+  ]}
+  currency="€"
+  containerStyle={{ maxWidth: 800, margin: '0 auto' }}
+  onChange={(price) => setAmount(price)}
+/>
+```
+
+## Styling Details
+
+### Option Cell
+- **Width**: 247px (minimum when data exists)
+- **Border radius**: 16px
+- **Default**: 1px neutral soft border
+- **Selected**: 2px primary blue border + primary soft background
+- **Hover**: 2px primary blue border + primary soft background
+
+### Custom Amount Input
+- **Border radius**: 16px
+- **Height**: 56px
+- **Font**: Same responsive sizing as options
+- **Placeholder**: "Otra cantidad"
+- **Dynamic width**: Expands based on number of digits entered
+
+### Label
+- **Background**: Primary blue
+- **Color**: White
+- **Border radius**: 8px
+- **Max width**: 50% (100% on mobile)
+- **Arrow**: Positioned based on selected option (left/center/right)
+
+## Icon Names
+
+Use Lucide React icon names as strings in the `data.icon` field:
+- `"Check"`, `"X"`, `"Heart"`, `"Star"`
+- `"Coffee"`, `"Gift"`, `"Award"`, `"Crown"`
+- `"FileText"`, `"Download"`, `"Upload"`
+- `"Headphones"`, `"Phone"`, `"Mail"`
+- See [lucide.dev](https://lucide.dev) for full list
+
+## Validation Behavior
+
+```tsx
+// Options: [10, 25, 50]
+// Currency: €
+
+User enters: 5     → Error: "La donación mínima es de 10€"
+User enters: 100   → Valid, onChange(100) called
+User enters: empty → No error, onChange(0) called
+```
+
+## Mobile Behavior
+
+- **Horizontal scroll**: Swipe to browse options
+- **Touch-friendly**: 247px minimum width for easy tapping
+- **Centered selection**: Auto-scrolls selected option to center
+- **Label max-width**: 100% on small screens

@@ -1,0 +1,243 @@
+---
+title: Input
+description: Text input component with three visual design variants
+---
+
+Text input component with three visual design variants. Supports all native HTML input attributes plus custom styling and error handling.
+
+## Import
+
+```tsx
+import { Input } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Primary Design
+import { Input } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Input
+      design="primary"
+      placeholder="Enter your name"
+    />
+  );
+}
+```
+
+```tsx Secondary Design
+import { Input } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Input
+      design="secondary"
+      placeholder="Enter your email"
+    />
+  );
+}
+```
+
+```tsx With Error
+import { Input } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+  
+  const validateEmail = (value: string) => {
+    if (!value.includes('@')) {
+      setError('Invalid email format');
+    } else {
+      setError('');
+    }
+  };
+  
+  return (
+    <Input
+      design="secondary"
+      placeholder="Email"
+      type="email"
+      value={email}
+      error={error}
+      onChange={(e) => {
+        setEmail(e.target.value);
+        validateEmail(e.target.value);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Left Content
+import { Input } from '@adoptaunabuelo/react-components';
+import { Mail } from 'lucide-react';
+
+function App() {
+  return (
+    <Input
+      design="primary"
+      placeholder="Email"
+      LeftContent={<Mail size={20} />}
+    />
+  );
+}
+```
+
+```tsx Password Input
+import { Input } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Input
+      design="secondary"
+      placeholder="Password"
+      type="password"
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Design Variants
+
+### Primary
+Compact input with subtle background color. Height: 40px with 6px border radius.
+- Background: Neutral soft color
+- Focus: White background with 1px hard border
+- Padding: 0px 8px
+
+### Secondary (Default)
+Larger input with floating label animation. Height: 56px with 12px border radius.
+- Background: White
+- Focus: 2px medium border
+- Padding: 0px 16px
+- Animated placeholder that moves up on focus
+
+### Third
+Alternative design variant with custom styling.
+
+## Props
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'" default="secondary">
+  Visual variant of the input. Each design has different sizes, borders, and interaction states.
+</ParamField>
+
+<ParamField path="type" type="'text' | 'email' | 'date' | 'password' | 'time' | 'number'" default="text">
+  Input type that determines keyboard type and validation on mobile devices.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text displayed in the input. For `secondary` design, this becomes a floating label.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input in red text with fade-in animation.
+</ParamField>
+
+<ParamField path="LeftContent" type="React.ReactElement">
+  Custom React element to display on the left side of the input (e.g., icon, prefix).
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties for the outer container wrapper.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the input and reduces opacity.
+</ParamField>
+
+<ParamField path="value" type="string | number">
+  Controlled input value.
+</ParamField>
+
+<ParamField path="defaultValue" type="string | number">
+  Uncontrolled input default value.
+</ParamField>
+
+<ParamField path="onChange" type="(e: ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when input value changes.
+</ParamField>
+
+<ParamField path="onFocus" type="(e: FocusEvent<HTMLInputElement>) => void">
+  Callback fired when input receives focus.
+</ParamField>
+
+<ParamField path="onBlur" type="(e: FocusEvent<HTMLInputElement>) => void">
+  Callback fired when input loses focus.
+</ParamField>
+
+## Additional Props
+
+The Input component extends all native HTML input attributes (`maxLength`, `minLength`, `pattern`, `required`, `autoComplete`, `autoFocus`, etc.).
+
+## Examples
+
+### Controlled Input
+
+```tsx
+import { Input } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [value, setValue] = useState('');
+  
+  return (
+    <Input
+      design="secondary"
+      placeholder="Name"
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
+}
+```
+
+### Numeric Input with Validation
+
+```tsx
+import { Input } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [age, setAge] = useState('');
+  const [error, setError] = useState('');
+  
+  const validateAge = (value: string) => {
+    const num = parseInt(value);
+    if (num < 0 || num > 120) {
+      setError('Please enter a valid age');
+    } else {
+      setError('');
+    }
+  };
+  
+  return (
+    <Input
+      design="secondary"
+      placeholder="Age"
+      type="number"
+      value={age}
+      error={error}
+      onChange={(e) => {
+        setAge(e.target.value);
+        validateAge(e.target.value);
+      }}
+    />
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+<Input
+  design="primary"
+  placeholder="Custom input"
+  containerStyle={{ maxWidth: '400px' }}
+  style={{ fontSize: '16px', fontWeight: 500 }}
+/>
+```

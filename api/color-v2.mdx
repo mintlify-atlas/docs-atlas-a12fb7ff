@@ -1,0 +1,272 @@
+---
+title: ColorV2
+description: Modern color constants with semantic naming organized by surface, transparent, border, and text categories
+---
+
+## Import
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+// Surface colors
+const primaryBg = ColorV2.surface.primary;
+const softBg = ColorV2.surface.neutralSoft;
+
+// Transparent overlays
+const overlay = ColorV2.transparent.neutralHard;
+
+// Border colors
+const primaryBorder = ColorV2.border.primary;
+
+// Text colors
+const bodyText = ColorV2.text.neutralHard;
+const linkText = ColorV2.text.primary;
+```
+
+## Color Categories
+
+### Surface
+
+Background and surface colors for UI elements.
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| neutralHigh | #66839E | Medium neutral blue-gray |
+| neutralMedium | #A6BACB | Light neutral blue-gray |
+| neutralLow | #D8DFE5 | Very light neutral gray |
+| neutralSoft | #F0F3F6 | Extremely light neutral |
+| background | #F9F6F3 | Page background (warm white) |
+| invert | #FFFFFF | White surface |
+| primaryHard | #00315C | Dark primary blue |
+| primaryHigh | #005AA8 | Medium dark primary blue |
+| primary | #008FF5 | Primary blue |
+| primaryLow | #93CCF5 | Light primary blue |
+| primarySoft | #ECF4FB | Very light primary blue |
+| secondaryHard | #A25700 | Dark secondary orange |
+| secondaryHigh | #C76B00 | Medium dark secondary orange |
+| secondary | #FFAA47 | Secondary orange |
+| secondarySoft | #FFF6E5 | Light secondary orange |
+| orange | #FF773D | Accent orange |
+| brown | #D6AA91 | Neutral brown |
+| red | #E02D2D | Error red |
+| redMedium | #FF5A5A | Medium error red |
+| redSoft | #FFE5E5 | Light error red |
+| greenHard | #1A5B3C | Dark success green |
+| green | #08A85B | Success green |
+| greenMedium | #7EE0B1 | Medium success green |
+| greenSoft | #E4F8EE | Light success green |
+
+### Transparent
+
+Semi-transparent colors for overlays and subtle effects.
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| neutralHard | rgba(0, 29, 61, 0.92) | Dark overlay (92% opacity) |
+| neutralHigh | rgba(0, 29, 61, 0.56) | Medium overlay (56% opacity) |
+| neutralMedium | rgba(0, 29, 61, 0.34) | Light overlay (34% opacity) |
+| neutralLow | rgba(0, 29, 61, 0.24) | Very light overlay (24% opacity) |
+| neutralSoft | rgba(0, 29, 61, 0.10) | Subtle overlay (10% opacity) |
+| invertHard | #FFFFFFEB | White overlay (92% opacity) |
+| invertHigh | #FFFFFF8F | White overlay (56% opacity) |
+| invertMedium | #FFFFFF5C | White overlay (36% opacity) |
+| invertLow | #FFFFFF47 | White overlay (28% opacity) |
+| invertSoft | #FFFFFF1F | White overlay (12% opacity) |
+
+### Border
+
+Border and divider colors.
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| neutralHard | #001D3DEB | Dark border (92% opacity) |
+| neutralHigh | #00315C8F | Medium dark border (56% opacity) |
+| neutralMedium | #00315C57 | Medium border (34% opacity) |
+| neutral | #00315C24 | Light border (14% opacity) |
+| neutralSoft | #00315C1A | Very light border (10% opacity) |
+| invert | #FFFFFF | White border |
+| invertSoft | #FFFFFF33 | White border (20% opacity) |
+| primary | #008FF5 | Primary blue border |
+| primarySoft | #D3E5F5 | Light primary border |
+| secondary | #FFAA47 | Secondary orange border |
+| secondarySoft | #FFD5A3 | Light secondary border |
+| orange | #FF773D | Orange border |
+| red | #E02D2D | Error red border |
+| redSoft | #F5CFCF | Light error border |
+| green | #08A85B | Success green border |
+| greenSoft | #B2EBD0 | Light success border |
+
+### Text
+
+Text and icon colors.
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| neutralHard | rgba(0, 29, 61, 0.92) | Primary body text (92% opacity) |
+| neutralMedium | rgba(0, 29, 61, 0.56) | Secondary text (56% opacity) |
+| neutralSoft | rgba(0, 29, 61, 0.24) | Disabled text (24% opacity) |
+| invert | #FFFFFF | White text |
+| invertHigh | #FFFFFFAD | White text (68% opacity) |
+| invertMedium | #FFFFFF75 | White text (46% opacity) |
+| invertSoft | #FFFFFF47 | White text (28% opacity) |
+| primary | #008FF5 | Primary blue text |
+| orange | #FF773D | Orange text |
+| redHard | #701E09 | Dark error text |
+| red | #E02D2D | Error red text |
+| greenHard | #1A5B3C | Dark success text |
+| green | #08A85B | Success green text |
+
+## Examples
+
+### Modern Button
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+import styled from 'styled-components';
+
+const PrimaryButton = styled.button`
+  background-color: ${ColorV2.surface.primary};
+  color: ${ColorV2.text.invert};
+  border: 1px solid ${ColorV2.border.primary};
+  padding: 12px 24px;
+  border-radius: 8px;
+  
+  &:hover {
+    background-color: ${ColorV2.surface.primaryHigh};
+  }
+  
+  &:disabled {
+    background-color: ${ColorV2.surface.neutralSoft};
+    color: ${ColorV2.text.neutralSoft};
+    border-color: ${ColorV2.border.neutralSoft};
+  }
+`;
+```
+
+### Card with Overlay
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const Card = styled.div`
+  background-color: ${ColorV2.surface.invert};
+  border: 1px solid ${ColorV2.border.neutralSoft};
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+`;
+
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: ${ColorV2.transparent.neutralHard};
+  border-radius: 12px;
+`;
+```
+
+### Status Messages
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const SuccessMessage = styled.div`
+  background-color: ${ColorV2.surface.greenSoft};
+  color: ${ColorV2.text.greenHard};
+  border: 1px solid ${ColorV2.border.green};
+  padding: 16px;
+  border-radius: 8px;
+`;
+
+const ErrorMessage = styled.div`
+  background-color: ${ColorV2.surface.redSoft};
+  color: ${ColorV2.text.redHard};
+  border: 1px solid ${ColorV2.border.red};
+  padding: 16px;
+  border-radius: 8px;
+`;
+
+const WarningMessage = styled.div`
+  background-color: ${ColorV2.surface.secondarySoft};
+  color: ${ColorV2.text.orange};
+  border: 1px solid ${ColorV2.border.secondary};
+  padding: 16px;
+  border-radius: 8px;
+`;
+```
+
+### Typography System
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const Title = styled.h1`
+  color: ${ColorV2.text.neutralHard};
+  font-weight: 600;
+`;
+
+const BodyText = styled.p`
+  color: ${ColorV2.text.neutralMedium};
+  line-height: 1.6;
+`;
+
+const Caption = styled.span`
+  color: ${ColorV2.text.neutralSoft};
+  font-size: 12px;
+`;
+
+const Link = styled.a`
+  color: ${ColorV2.text.primary};
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+```
+
+### Form Elements
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+const Input = styled.input`
+  background-color: ${ColorV2.surface.invert};
+  border: 1px solid ${ColorV2.border.neutralSoft};
+  color: ${ColorV2.text.neutralHard};
+  padding: 12px;
+  border-radius: 8px;
+  
+  &:focus {
+    outline: none;
+    border-color: ${ColorV2.border.primary};
+    box-shadow: 0 0 0 3px ${ColorV2.transparent.neutralSoft};
+  }
+  
+  &::placeholder {
+    color: ${ColorV2.text.neutralSoft};
+  }
+  
+  &:disabled {
+    background-color: ${ColorV2.surface.neutralSoft};
+    color: ${ColorV2.text.neutralSoft};
+  }
+`;
+```
+
+## Design System Benefits
+
+ColorV2 provides:
+
+- **Semantic naming** for better code readability
+- **Consistent opacity values** for transparent colors
+- **Complete color scales** for neutral, primary, and secondary colors
+- **Success/error states** with multiple shades
+- **Better accessibility** with defined contrast ratios
+- **Modern color palette** aligned with current design trends

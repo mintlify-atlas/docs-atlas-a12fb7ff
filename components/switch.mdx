@@ -1,0 +1,144 @@
+---
+title: Switch
+description: Toggle switch component with sliding animation and checkmark indicator
+---
+
+A toggle switch component with smooth sliding animation and an optional checkmark icon when active.
+
+## Basic Usage
+
+```tsx
+import { Switch } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function NotificationSettings() {
+  const [enabled, setEnabled] = useState(false);
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <Switch
+        active={enabled}
+        onChange={(on) => setEnabled(on)}
+      />
+      <span>Enable notifications</span>
+    </div>
+  );
+}
+```
+
+## Custom Color
+
+```tsx
+import { Switch } from '@adoptaunabuelo/react-components';
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+function CustomColorSwitch() {
+  const [active, setActive] = useState(true);
+
+  return (
+    <Switch
+      active={active}
+      color="#FF6B6B"
+      onChange={(on) => setActive(on)}
+    />
+  );
+}
+```
+
+## Settings List Example
+
+```tsx
+import { Switch } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function SettingsList() {
+  const [settings, setSettings] = useState({
+    notifications: true,
+    darkMode: false,
+    autoSave: true
+  });
+
+  const updateSetting = (key, value) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span>Notifications</span>
+        <Switch
+          active={settings.notifications}
+          onChange={(on) => updateSetting('notifications', on)}
+        />
+      </div>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span>Dark Mode</span>
+        <Switch
+          active={settings.darkMode}
+          onChange={(on) => updateSetting('darkMode', on)}
+        />
+      </div>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span>Auto Save</span>
+        <Switch
+          active={settings.autoSave}
+          onChange={(on) => updateSetting('autoSave', on)}
+        />
+      </div>
+    </div>
+  );
+}
+```
+
+## Props
+
+<ParamField path="active" type="boolean" default="false">
+  Current state of the switch (controlled component).
+</ParamField>
+
+<ParamField path="color" type="string">
+  Custom color when active. Defaults to the primary surface color from ColorV2.
+</ParamField>
+
+<ParamField path="onChange" type="(on: boolean) => void">
+  Callback fired when the switch is toggled. Receives the new state as a boolean.
+</ParamField>
+
+## Features
+
+- **Smooth Animation**: 0.3s transition for background color and toggle position
+- **Checkmark Indicator**: Shows a checkmark icon when active
+- **Custom Colors**: Support for custom active color
+- **Accessible**: Clickable area covers the entire switch
+- **Visual Feedback**: Clear distinction between on/off states
+
+## Dimensions
+
+- **Container**: 48px width × 28px height
+- **Toggle Circle**: 24px diameter
+- **Border Radius**: 100px (fully rounded)
+- **Padding**: 2px from container edges
+
+## Animation Details
+
+### Background Color
+- **Active**: Custom color or primary surface color
+- **Inactive**: Neutral low surface color
+- **Transition**: 0.3s ease
+
+### Toggle Position
+- **Inactive**: Left position (2px from left edge)
+- **Active**: Right position (22px from left edge)
+- **Transition**: 0.3s ease
+
+### Checkmark Icon
+- **Color**: Matches the custom color or primary text color
+- **Size**: 18px × 18px
+- **Stroke Width**: 3px
+- **Visibility**: Only shown when active
+
+## Styling
+
+The switch uses styled-components with transient props (`$active`, `$color`) to prevent props from being passed to the DOM. The component automatically handles internal state updates while remaining a controlled component through the `active` prop.

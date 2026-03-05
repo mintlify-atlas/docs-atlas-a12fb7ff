@@ -1,0 +1,100 @@
+---
+title: Stamp
+description: Decorative postage stamp component with perforated edges displaying an emoji icon and title
+---
+
+## Import
+
+```tsx
+import { Stamp } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Stamp
+  icon="🎉"
+  title="Celebration"
+  backgroundColor={ColorV2.surface.greenSoft}
+/>
+```
+
+## Props
+
+<ParamField path="icon" type="string" required>
+  Emoji or single character to display (rendered large)
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Text label below the icon (truncates with ellipsis if too long)
+</ParamField>
+
+<ParamField path="backgroundColor" type="string" required>
+  Background color for the icon area
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the stamp container
+</ParamField>
+
+## Features
+
+- Authentic postage stamp appearance with perforated SVG edges
+- Responsive sizing: 108x132px (desktop), 96x120px (mobile breakpoint less than 450px)
+- Icon container: 96x96px (desktop), 84x84px (mobile)
+- Title font: DM Mono at 13px, truncates with ellipsis
+- Drop shadow for realistic depth effect
+- White stamp background with customizable icon background color
+
+## Examples
+
+### Basic Stamp
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Stamp
+  icon="❤️"
+  title="Love"
+  backgroundColor={ColorV2.surface.redSoft}
+/>
+```
+
+### Multiple Stamps
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<div style={{ display: 'flex', gap: '16px' }}>
+  <Stamp
+    icon="🎂"
+    title="Birthday"
+    backgroundColor={ColorV2.surface.primarySoft}
+  />
+  <Stamp
+    icon="🎓"
+    title="Graduation"
+    backgroundColor={ColorV2.surface.secondarySoft}
+  />
+  <Stamp
+    icon="🎄"
+    title="Christmas"
+    backgroundColor={ColorV2.surface.greenSoft}
+  />
+</div>
+```
+
+### Custom Styling
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Stamp
+  icon="⭐"
+  title="Featured"
+  backgroundColor={ColorV2.surface.secondary}
+  style={{ transform: 'rotate(-5deg)' }}
+/>
+```

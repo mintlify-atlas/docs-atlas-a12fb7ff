@@ -1,0 +1,304 @@
+---
+title: SwitchTag
+description: Icon-based toggle switch for switching between multiple options
+---
+
+## Overview
+
+SwitchTag is a compact toggle component that displays options as icons in a pill-shaped container. It highlights the active option and automatically colors icons based on selection state.
+
+## Basic Usage
+
+```tsx
+import { SwitchTag } from '@adoptaunabuelo/react-components';
+import { Grid, List } from 'lucide-react';
+import { useState } from 'react';
+
+function App() {
+  const [viewMode, setViewMode] = useState('grid');
+
+  return (
+    <SwitchTag
+      options={[
+        { id: 'grid', icon: <Grid /> },
+        { id: 'list', icon: <List /> }
+      ]}
+      onChange={(option) => setViewMode(option.id)}
+    />
+  );
+}
+```
+
+## Examples
+
+### View Mode Toggle
+
+Switch between different view layouts.
+
+```tsx
+import { Grid3x3, LayoutList, Table } from 'lucide-react';
+
+function ViewModeSwitch() {
+  const [view, setView] = useState('grid');
+
+  return (
+    <>
+      <SwitchTag
+        options={[
+          { id: 'grid', icon: <Grid3x3 /> },
+          { id: 'list', icon: <LayoutList /> },
+          { id: 'table', icon: <Table /> }
+        ]}
+        onChange={(option) => setView(option.id)}
+      />
+      
+      {view === 'grid' && <GridView />}
+      {view === 'list' && <ListView />}
+      {view === 'table' && <TableView />}
+    </>
+  );
+}
+```
+
+### Text Alignment Toggle
+
+```tsx
+import { AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'left', icon: <AlignLeft /> },
+    { id: 'center', icon: <AlignCenter /> },
+    { id: 'right', icon: <AlignRight /> }
+  ]}
+  onChange={(option) => setTextAlign(option.id)}
+/>
+```
+
+### Chart Type Selector
+
+```tsx
+import { BarChart3, LineChart, PieChart } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'bar', icon: <BarChart3 /> },
+    { id: 'line', icon: <LineChart /> },
+    { id: 'pie', icon: <PieChart /> }
+  ]}
+  onChange={(option) => {
+    console.log('Chart type:', option.id);
+    setChartType(option.id);
+  }}
+/>
+```
+
+### Sort Direction Toggle
+
+```tsx
+import { ArrowUpAZ, ArrowDownZA } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'asc', icon: <ArrowUpAZ /> },
+    { id: 'desc', icon: <ArrowDownZA /> }
+  ]}
+  onChange={(option) => setSortDirection(option.id)}
+/>
+```
+
+### Theme Toggle
+
+```tsx
+import { Sun, Moon } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'light', icon: <Sun /> },
+    { id: 'dark', icon: <Moon /> }
+  ]}
+  onChange={(option) => setTheme(option.id)}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<{ id: string; icon: ReactElement }>" required>
+  Array of icon options. Each option requires:
+  - `id`: Unique identifier for the option
+  - `icon`: React element (icon component)
+  
+  Icons are automatically sized to 20x20px and colored based on selection state.
+</ParamField>
+
+<ParamField path="onChange" type="(option: { id: string; icon: ReactElement }) => void">
+  Callback fired when option changes. Receives the selected option object.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the container.
+</ParamField>
+
+## Advanced Examples
+
+### With Custom Icon Sizes
+
+Note: Icon size is automatically set to 20x20, but you can customize via icon props.
+
+```tsx
+<SwitchTag
+  options={[
+    {
+      id: 'small',
+      icon: <Maximize size={16} />  // Will be overridden to 20
+    },
+    {
+      id: 'large',
+      icon: <Minimize size={24} />  // Will be overridden to 20
+    }
+  ]}
+  onChange={handleChange}
+/>
+```
+
+### Controlled Component
+
+```tsx
+const [selectedOption, setSelectedOption] = useState('grid');
+
+// Note: Component manages its own state internally
+// First option is selected by default
+<SwitchTag
+  options={[
+    { id: 'grid', icon: <Grid /> },
+    { id: 'list', icon: <List /> }
+  ]}
+  onChange={(option) => {
+    setSelectedOption(option.id);
+    updateLayout(option.id);
+  }}
+/>
+```
+
+### With State Tracking
+
+```tsx
+function DataViewer() {
+  const [viewType, setViewType] = useState('grid');
+  const [lastChanged, setLastChanged] = useState(null);
+
+  return (
+    <>
+      <SwitchTag
+        options={[
+          { id: 'grid', icon: <Grid /> },
+          { id: 'list', icon: <List /> },
+          { id: 'table', icon: <Table /> }
+        ]}
+        onChange={(option) => {
+          setViewType(option.id);
+          setLastChanged(new Date());
+          trackEvent('view_changed', { view: option.id });
+        }}
+      />
+      <Text>Current view: {viewType}</Text>
+      {lastChanged && <Text>Changed at: {lastChanged.toLocaleTimeString()}</Text>}
+    </>
+  );
+}
+```
+
+### Multiple Switches
+
+```tsx
+import { Grid, List, BarChart, LineChart, Sun, Moon } from 'lucide-react';
+
+function ControlPanel() {
+  return (
+    <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+      <Text>Layout:</Text>
+      <SwitchTag
+        options={[
+          { id: 'grid', icon: <Grid /> },
+          { id: 'list', icon: <List /> }
+        ]}
+        onChange={handleLayoutChange}
+      />
+      
+      <Text>Chart:</Text>
+      <SwitchTag
+        options={[
+          { id: 'bar', icon: <BarChart /> },
+          { id: 'line', icon: <LineChart /> }
+        ]}
+        onChange={handleChartChange}
+      />
+      
+      <Text>Theme:</Text>
+      <SwitchTag
+        options={[
+          { id: 'light', icon: <Sun /> },
+          { id: 'dark', icon: <Moon /> }
+        ]}
+        onChange={handleThemeChange}
+      />
+    </div>
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+<SwitchTag
+  options={[
+    { id: 'option1', icon: <Icon1 /> },
+    { id: 'option2', icon: <Icon2 /> }
+  ]}
+  onChange={handleChange}
+  style={{
+    backgroundColor: '#f0f0f0',
+    padding: '4px',
+    borderRadius: '12px'
+  }}
+/>
+```
+
+## Behavior Notes
+
+- **Default selection**: First option is selected by default on mount
+- **Internal state**: Component manages selected state internally
+- **Icon props**: Icon color, height, and width are automatically set
+  - Selected: Primary border color
+  - Unselected: Neutral medium color
+  - Size: 20x20px
+- **Click handling**: Each option cell is clickable and updates state
+
+## Styling Notes
+
+- Container has pill shape with `border-radius: 100px`
+- Border: `1px solid` neutral soft color
+- Background: Invert surface color with `2px` padding
+- Selected cell:
+  - Background: Neutral soft surface
+  - Border radius: 100px
+  - Padding: 8px
+- Cells use flexbox with centered content
+- Smooth hover and active states
+
+## Color System
+
+The component uses ColorV2 constants:
+- `Color.border.neutralSoft`: Container border
+- `Color.surface.invert`: Container background
+- `Color.surface.neutralSoft`: Selected cell background
+- `Color.border.primary`: Selected icon color
+- `Color.border.neutralMedium`: Unselected icon color
+
+## Accessibility
+
+- Container has `role="container"` attribute
+- Each cell has unique `role` based on option ID
+- Visual indication of selected state
+- Clickable cells with cursor pointer
+- Consider adding aria-labels for icon-only buttons

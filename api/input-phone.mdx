@@ -1,0 +1,244 @@
+---
+title: InputPhone
+description: Phone input with country selector and validation using google-libphonenumber
+---
+
+## Import
+
+```tsx
+import { InputPhone } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputPhone
+  country="ES"
+  countryOptions={countryList}
+  onPhoneChange={({ country, value, isValid }) => {
+    if (isValid) setPhoneNumber(country + value);
+  }}
+/>
+```
+
+## Props
+
+<ParamField path="onPhoneChange" type="(item: { country: string; value?: string | number; isValid: boolean }) => void">
+  Callback fired on input change or country change with validation status.
+  - `country`: Country prefix (e.g., `"+34"`)
+  - `value`: Phone number without prefix
+  - `isValid`: Whether phone is valid for selected country region
+</ParamField>
+
+<ParamField path="country" type="string">
+  ISO country code (e.g., `"ES"`, `"US"`, `"FR"`) to pre-select. Must match a `countryCode` in `countryOptions`.
+</ParamField>
+
+<ParamField path="countryOptions" type="CountryProps[]">
+  Array of country options with prefix and countryCode. Shows country selector on left side when provided.
+</ParamField>
+
+<Note>
+  Inherits all standard Input component props (placeholder, disabled, design, error, etc.) via `InputProps`.
+</Note>
+
+## CountryProps Interface
+
+```tsx
+interface CountryProps {
+  id: string;           // Unique identifier (e.g., "spain")
+  esCountry: string;    // Spanish country name (e.g., "España")
+  enCountry: string;    // English country name (e.g., "Spain")
+  prefix: string;       // Phone prefix (e.g., "+34")
+  countryCode: string;  // ISO country code (e.g., "ES")
+}
+```
+
+## Validation
+
+Uses **google-libphonenumber** library to validate phone numbers:
+- **Region-specific**: Validates format for the selected country
+- **Length check**: Only validates if phone length is between 6-18 characters (with prefix)
+- **Real-time**: Validation runs on every input change
+- **Format tolerant**: Automatically strips whitespace before validation
+
+## Examples
+
+### Basic Usage with Spanish Phone
+
+```tsx
+import { countries } from '@constants/Country';
+
+const [phone, setPhone] = useState('');
+const [isValid, setIsValid] = useState(false);
+
+<InputPhone
+  design="secondary"
+  placeholder="Número de teléfono"
+  country="ES"
+  countryOptions={countries}
+  onPhoneChange={({ country, value, isValid }) => {
+    setIsValid(isValid);
+    if (isValid && value) {
+      setPhone(country + value);
+    }
+  }}
+/>
+
+{isValid && <CheckIcon color="green" />}
+```
+
+### Multiple Countries
+
+```tsx
+const countries: CountryProps[] = [
+  {
+    id: "spain",
+    esCountry: "España",
+    enCountry: "Spain",
+    prefix: "+34",
+    countryCode: "ES"
+  },
+  {
+    id: "usa",
+    esCountry: "Estados Unidos",
+    enCountry: "United States",
+    prefix: "+1",
+    countryCode: "US"
+  },
+  {
+    id: "uk",
+    esCountry: "Reino Unido",
+    enCountry: "United Kingdom",
+    prefix: "+44",
+    countryCode: "GB"
+  }
+];
+
+<InputPhone
+  country="ES"
+  countryOptions={countries}
+  onPhoneChange={({ country, value, isValid }) => {
+    console.log(`${country}${value} is ${isValid ? 'valid' : 'invalid'}`);
+  }}
+/>
+```
+
+### Form Integration with Error Handling
+
+```tsx
+const [phoneError, setPhoneError] = useState('');
+
+const handlePhoneChange = ({ country, value, isValid }: any) => {
+  if (value && value.length > 0 && !isValid) {
+    setPhoneError('Número de teléfono inválido');
+  } else {
+    setPhoneError('');
+  }
+  
+  if (isValid) {
+    setFormData({ ...formData, phone: country + value });
+  }
+};
+
+<InputPhone
+  design="secondary"
+  placeholder="Teléfono"
+  country="ES"
+  countryOptions={countries}
+  error={phoneError}
+  onPhoneChange={handlePhoneChange}
+/>
+```
+
+### With Default Value
+
+```tsx
+<InputPhone
+  country="ES"
+  countryOptions={countries}
+  defaultValue="612345678"
+  onPhoneChange={({ country, value, isValid }) => {
+    // Validates on mount with default value
+    console.log('Is valid:', isValid);
+  }}
+/>
+```
+
+### Without Country Selector
+
+```tsx
+// If countryOptions is not provided, no country selector appears
+<InputPhone
+  placeholder="Phone number"
+  onPhoneChange={({ value }) => {
+    console.log('Phone:', value);
+  }}
+/>
+```
+
+## Country Selector Behavior
+
+- **LeftContent**: Country selector appears as `LeftContent` prop of Input component
+- **Focus styling**: Only shows selector focus when input has `design="secondary"` and is focused or has value
+- **Flag icons**: Typically includes flag emoji or icon (handled by SelectPhone component)
+- **Searchable**: SelectPhone component allows searching countries
+
+## SelectPhone Component
+
+The country selector is a separate component (`SelectPhone`) that:
+- Displays current country with flag and prefix
+- Opens dropdown to search and select countries
+- Handles focus states
+- Accepts `CountryProps[]` as options
+
+## Input Formats Accepted
+
+The component handles various input formats:
+```tsx
+// All valid for Spanish number (612 34 56 78):
+"612345678"        // Without spaces
+"612 34 56 78"     // With spaces (auto-stripped)
+"612-345-678"      // With dashes (auto-stripped)
+```
+
+## Validation Examples
+
+### Spanish Mobile (ES: +34)
+```tsx
+// Valid: 612345678, 712345678, 612 34 56 78
+// Invalid: 12345, 6123456789012
+```
+
+### US Phone (US: +1)
+```tsx
+// Valid: 2025551234, 202-555-1234
+// Invalid: 12345, 202555
+```
+
+### UK Phone (GB: +44)
+```tsx
+// Valid: 7400123456, 2071234567
+// Invalid: 12345, 74001234567890
+```
+
+## Dependencies
+
+- **google-libphonenumber**: Phone validation library
+- Uses `PhoneNumberUtil.getInstance()` for validation
+- `isValidNumberForRegion()` checks format for specific country
+
+## Troubleshooting
+
+### Phone shows as invalid but looks correct
+- Check the country code matches the phone number format
+- Some countries have multiple valid formats
+- Ensure phone number length is within 6-18 characters (including prefix)
+
+### Country selector not appearing
+- Verify `countryOptions` prop is provided
+- Check that CountryProps objects have all required fields
+
+### Default country not selected
+- Ensure `country` prop matches a `countryCode` in `countryOptions`
+- Country codes are case-sensitive ("ES" not "es")

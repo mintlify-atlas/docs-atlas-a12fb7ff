@@ -1,0 +1,271 @@
+---
+title: Counter
+description: Animated flip-clock style counter that counts up to a target number with smooth digit animations
+---
+
+## Overview
+
+The `Counter` component displays an animated flip-clock style counter that animates from zero (or starting value) to the target amount. Each digit flips individually for a mechanical counter effect.
+
+## Import
+
+```tsx
+import { Counter } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Counter
+
+```tsx
+<Counter 
+  amount={12345}
+  height={60}
+  width={40}
+  fontSize={32}
+/>
+```
+
+### Custom Colors
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Counter 
+  amount={999}
+  height={50}
+  width={35}
+  fontSize={28}
+  color={ColorV2.text.white}
+  backgroundColor={ColorV2.surface.primary}
+  borderColor={ColorV2.line.medium}
+/>
+```
+
+### Large Display Counter
+
+```tsx
+<Counter 
+  amount={5000}
+  height={100}
+  width={70}
+  fontSize={56}
+  color="#fff"
+  backgroundColor="#1976d2"
+/>
+```
+
+### Small Counter
+
+```tsx
+<Counter 
+  amount={42}
+  height={40}
+  width={28}
+  fontSize={24}
+/>
+```
+
+### Dynamic Counter
+
+```tsx
+const [count, setCount] = useState(0);
+
+<Counter 
+  amount={count}
+  height={60}
+  width={40}
+  fontSize={32}
+/>
+
+<button onClick={() => setCount(count + 100)}>
+  Add 100
+</button>
+```
+
+## Props
+
+<ParamField path="amount" type="number" required>
+  Target number to count up to.
+  
+  The component automatically:
+  - Starts from `amount - 10` (or 0 if amount < 10)
+  - Counts up by 1 every 400ms
+  - Stops when reaching the target amount
+  - Restarts animation when amount changes
+</ParamField>
+
+<ParamField path="height" type="number" required>
+  Height in pixels for each digit block.
+  
+  ```tsx
+  height={60} // 60px tall digits
+  ```
+</ParamField>
+
+<ParamField path="width" type="number" required>
+  Width in pixels for each digit block.
+  
+  ```tsx
+  width={40} // 40px wide digits
+  ```
+</ParamField>
+
+<ParamField path="fontSize" type="number">
+  Font size in pixels for the numbers.
+  
+  Typically set to ~80% of height for proper visual balance.
+  
+  ```tsx
+  fontSize={32} // Works well with height={40}
+  ```
+</ParamField>
+
+<ParamField path="color" type="string">
+  Text color for the digits.
+  
+  **Default:** Inherits from CSS variables
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Background color for each digit block.
+  
+  **Default:** Inherits from CSS variables
+</ParamField>
+
+<ParamField path="borderColor" type="string">
+  Border/divider color between digit segments.
+  
+  Used for the horizontal line separating top and bottom halves of each digit.
+  
+  **Default:** Inherits from CSS variables
+</ParamField>
+
+## Features
+
+- **Flip animation**: Each digit flips individually like a mechanical counter
+- **Auto-start counting**: Begins from `amount - 10` and counts to target
+- **Dynamic updates**: Re-animates when amount prop changes
+- **Customizable styling**: Full control over colors, sizes, and typography
+- **Multi-digit support**: Automatically handles any number of digits
+- **Smooth transitions**: 400ms intervals for natural counting effect
+- **CSS-based animations**: Uses CSS modules for performant animations
+
+## Animation Behavior
+
+1. **Initial render**: Sets counter to `amount - 10` (or 0 if amount < 10)
+2. **Animation starts**: After mount, increments by 1 every 400ms
+3. **Completion**: Stops when counter reaches target amount
+4. **Re-animation**: Resets and re-animates when amount prop changes
+
+```tsx
+// Example: Counting from 90 to 100
+<Counter amount={100} height={50} width={35} fontSize={28} />
+// Animates: 90 → 91 → 92 → ... → 100
+// Duration: ~4 seconds (10 steps × 400ms)
+```
+
+## Digit Flip Mechanism
+
+Each digit consists of two halves:
+- **Top half**: Shows current digit
+- **Bottom half**: Shows next digit
+- **Animation**: Rotates 180° when value changes
+- **Result**: Smooth flip transition between digits
+
+## Size Guidelines
+
+Recommended proportions for balanced appearance:
+
+| Height | Width | Font Size | Use Case |
+|--------|-------|-----------|----------|
+| 40px | 28px | 24px | Small counters, mobile |
+| 60px | 40px | 32px | Standard desktop |
+| 80px | 55px | 44px | Large displays |
+| 100px | 70px | 56px | Hero sections |
+
+**General formula**: `width ≈ height × 0.7`, `fontSize ≈ height × 0.8`
+
+## CSS Variables
+
+The component uses CSS custom properties for theming:
+
+```css
+--fcc-digit-color: text color
+--fcc-background: background color
+--fcc-digit-block-width: width in px
+--fcc-digit-block-height: height in px
+--fcc-digit-font-size: font size in px
+--fcc-divider-color: border color
+```
+
+These are set automatically from props, but can be overridden via CSS if needed.
+
+## Performance Considerations
+
+- Uses `window.setInterval` for counting animation
+- Automatically clears interval on unmount
+- Re-creates interval when amount changes
+- CSS animations handled by GPU for smooth performance
+- Recommended for amounts < 1,000,000 (digit count affects rendering)
+
+## Best Practices
+
+- Match `fontSize` to height for visual balance (typically 80% of height)
+- Use contrasting colors for readability
+- Keep digit blocks consistent size across your app
+- Consider loading state while calculating amounts
+- Use for impressive number reveals (stats, metrics, achievements)
+- Avoid rapid amount changes (animation needs time to complete)
+- Test with maximum expected digit count for layout stability
+
+## Use Cases
+
+- **Statistics dashboards**: User counts, revenue, metrics
+- **Achievement screens**: Points, scores, milestones
+- **Landing pages**: Impressive numbers (customers, downloads)
+- **Gamification**: Score counters, level progression
+- **Analytics**: Real-time visitor counts
+- **Countdowns**: Days until event (when counting up from 0)
+
+## Accessibility
+
+- Uses `data-testid="fcc-container"` for testing
+- Semantic HTML structure
+- Consider adding `aria-label` with final count:
+
+```tsx
+<div aria-label={`Count: ${amount}`}>
+  <Counter amount={amount} height={60} width={40} fontSize={32} />
+</div>
+```
+
+## Browser Support
+
+- Modern browsers (Chrome, Firefox, Safari, Edge)
+- Requires CSS animations support
+- Uses `window.setInterval` (widely supported)
+
+## Troubleshooting
+
+**Counter doesn't animate:**
+- Check that `amount` prop is changing
+- Ensure component is mounted when amount updates
+
+**Digits appear cut off:**
+- Increase `width` prop
+- Adjust parent container's `overflow` property
+
+**Animation is too fast/slow:**
+- Currently fixed at 400ms intervals
+- Modify source code if custom timing is needed
+
+**Numbers don't fit in blocks:**
+- Increase `fontSize` or decrease `height`/`width`
+- Check font-family renders at expected size
+
+## Related Components
+
+- [ProgressBar](/components/progress-bar) - Alternative progress indicator
+- [Text](/components/text) - For static number display
+- [Label](/components/label) - For badge-style counters

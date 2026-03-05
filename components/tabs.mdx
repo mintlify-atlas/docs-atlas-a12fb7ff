@@ -1,0 +1,248 @@
+---
+title: Tabs
+description: Tab navigation component with two visual designs
+---
+
+## Overview
+
+The `Tabs` component provides tab navigation with two distinct visual designs. The primary design uses an underline indicator for the selected tab, while the secondary design uses a rounded background. Both designs support customizable colors and styles.
+
+## Basic Usage
+
+```tsx
+import { Tabs } from '@adoptaunabuelo/react-components';
+
+function MyComponent() {
+  const [currentTab, setCurrentTab] = useState({ id: "1", title: "Overview" });
+  
+  return (
+    <Tabs
+      design="primary"
+      options={[
+        { id: "1", title: "Overview" },
+        { id: "2", title: "Details" },
+        { id: "3", title: "Settings" }
+      ]}
+      selectedOption={currentTab}
+      onChange={(tab) => setCurrentTab(tab)}
+    />
+  );
+}
+```
+
+## Examples
+
+### Primary Design (Underline)
+
+```tsx
+<Tabs
+  design="primary"
+  options={[
+    { id: "tab1", title: "Dashboard" },
+    { id: "tab2", title: "Analytics" },
+    { id: "tab3", title: "Reports" }
+  ]}
+  onChange={(tab) => console.log('Selected:', tab.title)}
+/>
+```
+
+### Secondary Design (Rounded Background)
+
+```tsx
+<Tabs
+  design="secondary"
+  options={[
+    { id: "all", title: "All" },
+    { id: "active", title: "Active" },
+    { id: "completed", title: "Completed" }
+  ]}
+  selectedOption={{ id: "active", title: "Active" }}
+  onChange={(tab) => filterItems(tab.id)}
+/>
+```
+
+### Custom Colors
+
+```tsx
+<Tabs
+  design="secondary"
+  options={[
+    { id: "1", title: "Personal" },
+    { id: "2", title: "Work" },
+    { id: "3", title: "Other" }
+  ]}
+  cellColor="#E6F3FF"
+  textColor="#0066CC"
+  onChange={handleTabChange}
+/>
+```
+
+### With Custom Styling
+
+```tsx
+<Tabs
+  design="primary"
+  options={options}
+  style={{ marginBottom: '20px' }}
+  cellStyle={{ padding: '0 20px' }}
+  textStyle={{ fontSize: '16px', fontWeight: 'bold' }}
+  onChange={handleTabChange}
+/>
+```
+
+### Controlled Component
+
+```tsx
+function ControlledTabs() {
+  const [activeTab, setActiveTab] = useState({ id: "home", title: "Home" });
+  
+  const tabs = [
+    { id: "home", title: "Home" },
+    { id: "profile", title: "Profile" },
+    { id: "messages", title: "Messages" }
+  ];
+  
+  return (
+    <div>
+      <Tabs
+        design="secondary"
+        options={tabs}
+        selectedOption={activeTab}
+        onChange={setActiveTab}
+      />
+      
+      <div style={{ marginTop: '20px' }}>
+        {activeTab.id === 'home' && <HomePage />}
+        {activeTab.id === 'profile' && <ProfilePage />}
+        {activeTab.id === 'messages' && <MessagesPage />}
+      </div>
+    </div>
+  );
+}
+```
+
+### With Background Container
+
+```tsx
+<Tabs
+  design="secondary"
+  options={options}
+  backgroundColor="#F5F5F5"
+  selectedOption={currentTab}
+  onChange={setCurrentTab}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of tab options. Each option must include an `id` and `title`.
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'" default="primary">
+  Visual design variant:
+  - `primary`: Underline indicator below selected tab
+  - `secondary`: Rounded background behind selected tab
+</ParamField>
+
+<ParamField path="selectedOption" type="OptionProps">
+  Currently selected tab (controlled component). If not provided, the first option is selected by default.
+</ParamField>
+
+<ParamField path="onChange" type="(option: OptionProps) => void">
+  Callback fired when tab selection changes. Receives the newly selected option object.
+</ParamField>
+
+<ParamField path="cellColor" type="string">
+  Background color for the selected tab (secondary design) or underline color (primary design). Defaults to theme colors if not provided.
+</ParamField>
+
+<ParamField path="textColor" type="string">
+  Text color for the selected tab. Defaults to `Color.text.primary` if not provided.
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Background color for the entire tabs container.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles to apply to the container element.
+</ParamField>
+
+<ParamField path="cellStyle" type="CSSProperties">
+  Custom CSS styles to apply to individual tab cells.
+</ParamField>
+
+<ParamField path="textStyle" type="CSSProperties">
+  Custom CSS styles to apply to tab text labels.
+</ParamField>
+
+## OptionProps Interface
+
+```tsx
+interface OptionProps {
+  id: string;
+  title: string;  // Display text for the tab
+}
+```
+
+## Styling
+
+### Primary Design
+
+- **Container height**: 36px
+- **Gap between tabs**: 16px
+- **Selected indicator**: 2px solid border-bottom
+- **Default indicator color**: `Color.line.primary`
+- **Selected text color**: `Color.text.primary`
+- **Unselected text color**: `Color.text.high`
+
+### Secondary Design
+
+- **Gap between tabs**: 4px
+- **Tab padding**: 7px vertical, 16px horizontal
+- **Border radius**: 32px (fully rounded)
+- **Selected background**: `Color.background.primaryLow` (or custom)
+- **Hover background**: `Color.status.neutral.hover`
+- **Transition**: 0.15s ease-in
+
+## Accessibility
+
+- Container has `role="container"` attribute
+- Each tab cell has a `role` attribute set to its `id`
+- Hover states provide visual feedback
+- Click targets are adequately sized for touch and mouse interaction
+
+## TypeScript
+
+```tsx
+import { CSSProperties } from 'react';
+
+interface TabsProps {
+  style?: CSSProperties;
+  cellStyle?: CSSProperties;
+  textStyle?: CSSProperties;
+  cellColor?: string;
+  textColor?: string;
+  backgroundColor?: string;
+  options: Array<OptionProps>;
+  selectedOption?: OptionProps;
+  design?: 'primary' | 'secondary';
+  onChange?: (option: OptionProps) => void;
+}
+
+interface OptionProps {
+  id: string;
+  title: string;
+}
+```
+
+## Best Practices
+
+- Use `primary` design for main navigation, `secondary` for filters or views
+- Keep tab titles concise (1-2 words) for better readability
+- Provide `selectedOption` if you need controlled component behavior
+- Use consistent tab counts across different screen sizes
+- Consider responsive design: secondary tabs work better on mobile
+- Use `onChange` callback to update your view or fetch data
+- Ensure tab IDs are unique within the component

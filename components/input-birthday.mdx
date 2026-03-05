@@ -1,0 +1,304 @@
+---
+title: InputBirthday
+description: Birthday input split into three numeric fields with validation
+---
+
+Birthday input component split into three separate numeric fields (Day/Month/Year). Auto-focuses the next field when complete and validates the date using moment.js.
+
+## Import
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [birthDate, setBirthDate] = useState(null);
+  
+  return (
+    <InputBirthday
+      design="secondary"
+      onChange={(date) => {
+        setBirthDate(date);
+        console.log('Birthday:', date);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Default Value
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <InputBirthday
+      design="secondary"
+      defaultValue="1990-05-15"
+      onChange={(date) => {
+        console.log('Birthday:', date);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Validation
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [error, setError] = useState('');
+  
+  const validateAge = (date) => {
+    const age = new Date().getFullYear() - date.getFullYear();
+    if (age < 18) {
+      setError('Debes ser mayor de 18 años');
+    } else {
+      setError('');
+    }
+  };
+  
+  return (
+    <InputBirthday
+      design="secondary"
+      error={error}
+      onChange={(date) => {
+        validateAge(date);
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'" default="secondary">
+  Visual variant inherited from Input component. All three fields use the same design.
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default date value in format `YYYY-MM-DD` (e.g., "1990-05-15"). This will populate the three fields.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the inputs with red text and fade-in animation. Automatically shows "Fecha no válida" for invalid dates.
+</ParamField>
+
+<ParamField path="onChange" type="(date: Date) => void">
+  Callback with a valid Date object when all three fields are complete and the date is valid. Only fires when:
+  - Day has 2 digits
+  - Month has 2 digits  
+  - Year has 4 digits
+  - Date is valid (moment.js validation)
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties applied to each input's container wrapper.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables all three input fields.
+</ParamField>
+
+## Additional Props
+
+InputBirthday extends Input component props that apply to all three fields (excluding `onChange` which is overridden).
+
+## Features
+
+### Auto-Focus Navigation
+
+- **Day → Month**: Auto-focuses month field when day has 2 digits
+- **Month → Year**: Auto-focuses year field when month has 2 digits
+- **Backspace navigation**: Focuses previous field when current field is empty
+
+### Validation
+
+- **Numeric only**: Only allows digits (0-9)
+- **Length limits**: Day (2), Month (2), Year (4)
+- **Date validity**: Validates actual date using moment.js
+  - Invalid dates like 31/02/2023 show error
+  - Leap years are handled correctly
+- **Built-in error**: Shows "Fecha no válida" for invalid dates
+
+### Input Format
+
+```
+┌────────┐ ┌────────┐ ┌──────────┐
+│  DD    │ │  MM    │ │  YYYY    │
+└────────┘ └────────┘ └──────────┘
+  Día        Mes         Año
+```
+
+## Examples
+
+### Age Validation
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function AgeRestrictedForm() {
+  const [birthDate, setBirthDate] = useState(null);
+  const [error, setError] = useState('');
+  
+  const validateAge = (date) => {
+    const today = new Date();
+    const age = today.getFullYear() - date.getFullYear();
+    const monthDiff = today.getMonth() - date.getMonth();
+    
+    // Adjust age if birthday hasn't occurred this year
+    const actualAge = monthDiff < 0 || 
+      (monthDiff === 0 && today.getDate() < date.getDate()) 
+      ? age - 1 
+      : age;
+    
+    if (actualAge < 18) {
+      setError('Debes tener al menos 18 años');
+    } else if (actualAge > 120) {
+      setError('Por favor, introduce una fecha válida');
+    } else {
+      setError('');
+      setBirthDate(date);
+    }
+  };
+  
+  return (
+    <InputBirthday
+      design="secondary"
+      error={error}
+      onChange={validateAge}
+    />
+  );
+}
+```
+
+### Form Integration
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function RegistrationForm() {
+  const [formData, setFormData] = useState({
+    name: '',
+    birthDate: null,
+  });
+  const [errors, setErrors] = useState({});
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (!formData.birthDate) {
+      setErrors({ ...errors, birthDate: 'La fecha de nacimiento es requerida' });
+      return;
+    }
+    
+    console.log('Form submitted:', formData);
+  };
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <InputBirthday
+        design="secondary"
+        defaultValue={formData.birthDate}
+        error={errors.birthDate}
+        onChange={(date) => {
+          setFormData({ ...formData, birthDate: date });
+          setErrors({ ...errors, birthDate: '' });
+        }}
+      />
+      
+      <button type="submit">Registrarse</button>
+    </form>
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+
+function StyledBirthday() {
+  return (
+    <InputBirthday
+      design="primary"
+      containerStyle={{ maxWidth: '100px' }}
+      style={{ textAlign: 'center' }}
+      onChange={(date) => console.log(date)}
+    />
+  );
+}
+```
+
+### Pre-filled from Database
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+import { useEffect, useState } from 'react';
+
+function EditProfile() {
+  const [userData, setUserData] = useState(null);
+  
+  useEffect(() => {
+    // Fetch user data
+    fetchUserData().then(data => {
+      setUserData(data);
+    });
+  }, []);
+  
+  if (!userData) return <div>Loading...</div>;
+  
+  return (
+    <InputBirthday
+      design="secondary"
+      defaultValue={userData.birthDate} // Format: "1990-05-15"
+      onChange={(date) => {
+        updateUserBirthDate(date);
+      }}
+    />
+  );
+}
+```
+
+## Default Value Format
+
+The `defaultValue` prop expects a string in **ISO date format**:
+
+```tsx
+"YYYY-MM-DD"
+```
+
+Examples:
+- `"1990-05-15"` → Day: 15, Month: 05, Year: 1990
+- `"2000-12-31"` → Day: 31, Month: 12, Year: 2000
+- `"1985-01-01"` → Day: 01, Month: 01, Year: 1985
+
+## Callback Behavior
+
+The `onChange` callback **only fires** when:
+
+1. All three fields are complete (DD, MM, YYYY)
+2. The date passes moment.js validation
+3. User finishes entering the year (4 digits)
+
+It does **not fire** on:
+- Partial input
+- Invalid dates (e.g., 31/02/2023)
+- Empty fields
+
+## Mobile Experience
+
+- **Numeric keyboard**: `inputMode="numeric"` triggers number pad on mobile
+- **Pattern validation**: `pattern="[0-9]*"` ensures numeric input
+- **Auto-focus**: Seamless navigation between fields
+- **Touch-friendly**: Fields sized appropriately for touch input

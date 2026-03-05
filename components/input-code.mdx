@@ -1,0 +1,385 @@
+---
+title: InputCode
+description: 6-digit verification code input with monospace font
+---
+
+6-digit verification code input with monospace font (DM Mono) and letter spacing. Auto-blurs and triggers callback when all 6 digits are entered.
+
+## Import
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputCode } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [code, setCode] = useState('');
+  
+  return (
+    <InputCode
+      onChange={(code) => {
+        setCode(code);
+        console.log('Code entered:', code);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Verification
+import { InputCode } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
+  
+  const verifyCode = async (code) => {
+    setVerifying(true);
+    setError('');
+    
+    try {
+      const response = await fetch('/api/verify-code', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+      });
+      
+      if (!response.ok) {
+        setError('Código incorrecto. Inténtalo de nuevo.');
+      } else {
+        console.log('Code verified!');
+      }
+    } catch (err) {
+      setError('Error al verificar el código');
+    } finally {
+      setVerifying(false);
+    }
+  };
+  
+  return (
+    <InputCode
+      autoFocus
+      loading={verifying}
+      error={error}
+      onChange={verifyCode}
+    />
+  );
+}
+```
+
+```tsx Auto-Focus
+import { InputCode } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <InputCode
+      autoFocus
+      onChange={(code) => {
+        console.log('Verification code:', code);
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="onChange" type="(code: string) => void">
+  Callback fired when all 6 digits are entered. Input automatically blurs after callback fires.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input in red text.
+</ParamField>
+
+<ParamField path="loading" type="boolean" default="false">
+  Shows loading state with reduced opacity and disables input.
+</ParamField>
+
+<ParamField path="autoFocus" type="boolean" default="false">
+  Auto-focuses the input when component mounts.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS for the input container.
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS for the outer container wrapper.
+</ParamField>
+
+## Features
+
+### Visual Design
+
+- **Monospace font**: DM Mono for clear digit separation
+- **Letter spacing**: 12px spacing between digits
+- **Fixed width**: 160px input width
+- **Large text**: 24px font size for readability
+- **Placeholder**: "------" shows 6-digit format
+- **Border**: 1px border (red when error, medium gray on focus, soft gray default)
+
+### Behavior
+
+- **6-digit limit**: Only accepts up to 6 digits
+- **Numeric only**: Type is set to "number"
+- **Auto-blur**: Input blurs automatically when 6 digits are entered
+- **Auto-callback**: `onChange` fires immediately when complete
+- **No spinner**: Number input spinners are hidden
+
+### States
+
+- **Default**: Soft gray border
+- **Focus**: Medium gray 2px border
+- **Error**: Red 1px border with error message below
+- **Loading**: 50% opacity, disabled input, default cursor
+
+## Examples
+
+### Email Verification Flow
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function EmailVerification() {
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+  
+  const verifyEmailCode = async (code) => {
+    setVerifying(true);
+    setError('');
+    
+    try {
+      const response = await fetch('/api/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      });
+      
+      if (response.ok) {
+        setSuccess(true);
+      } else {
+        setError('Código incorrecto');
+      }
+    } catch (err) {
+      setError('Error de conexión');
+    } finally {
+      setVerifying(false);
+    }
+  };
+  
+  if (success) {
+    return <div>¡Email verificado correctamente!</div>;
+  }
+  
+  return (
+    <div>
+      <h2>Verifica tu email</h2>
+      <p>Introduce el código de 6 dígitos que te hemos enviado</p>
+      
+      <InputCode
+        autoFocus
+        loading={verifying}
+        error={error}
+        onChange={verifyEmailCode}
+      />
+      
+      <button onClick={() => resendCode()}>Reenviar código</button>
+    </div>
+  );
+}
+```
+
+### Two-Factor Authentication
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function TwoFactorAuth() {
+  const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
+  const [attempts, setAttempts] = useState(0);
+  
+  const verify2FA = async (code) => {
+    setVerifying(true);
+    setError('');
+    
+    try {
+      const response = await fetch('/api/2fa/verify', {
+        method: 'POST',
+        body: JSON.stringify({ code }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      
+      if (response.ok) {
+        window.location.href = '/dashboard';
+      } else {
+        setAttempts(attempts + 1);
+        setError(
+          attempts >= 2 
+            ? 'Demasiados intentos. Inténtalo más tarde.'
+            : 'Código incorrecto'
+        );
+      }
+    } catch (err) {
+      setError('Error al verificar');
+    } finally {
+      setVerifying(false);
+    }
+  };
+  
+  return (
+    <div>
+      <h2>Autenticación de dos factores</h2>
+      <p>Introduce el código de tu aplicación de autenticación</p>
+      
+      <InputCode
+        autoFocus
+        loading={verifying}
+        error={error}
+        onChange={verify2FA}
+      />
+    </div>
+  );
+}
+```
+
+### Custom Styling
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+
+function CustomCodeInput() {
+  return (
+    <InputCode
+      containerStyle={{ 
+        display: 'flex', 
+        justifyContent: 'center',
+        margin: '40px 0',
+      }}
+      style={{
+        borderRadius: '8px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      }}
+      onChange={(code) => console.log(code)}
+    />
+  );
+}
+```
+
+### With Countdown Timer
+
+```tsx
+import { InputCode } from '@adoptaunabuelo/react-components';
+import { useState, useEffect } from 'react';
+
+function CodeWithTimer() {
+  const [countdown, setCountdown] = useState(60);
+  const [canResend, setCanResend] = useState(false);
+  
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [countdown]);
+  
+  const resendCode = () => {
+    setCountdown(60);
+    setCanResend(false);
+    // Call API to resend code
+  };
+  
+  return (
+    <div>
+      <InputCode
+        autoFocus
+        onChange={(code) => verifyCode(code)}
+      />
+      
+      {canResend ? (
+        <button onClick={resendCode}>Reenviar código</button>
+      ) : (
+        <p>Reenviar código en {countdown}s</p>
+      )}
+    </div>
+  );
+}
+```
+
+## Input Behavior
+
+### Character Entry
+
+```
+User types: 1 2 3 4 5 6
+Display:    1 2 3 4 5 6 (with 12px spacing)
+```
+
+### Max Length
+
+Input is limited to exactly 6 digits:
+
+```tsx
+if (e.target.value.length <= 6) {
+  setValue(e.target.value);
+}
+```
+
+### Auto-Complete
+
+When 6th digit is entered:
+
+1. Input automatically blurs
+2. `onChange` callback fires with the code
+3. User can implement verification logic
+
+## Styling Details
+
+### Container
+
+- Height: 56px
+- Border radius: 12px
+- Padding: 0px (input has internal padding)
+- Background: White
+
+### Input
+
+- Font: "DM Mono" (monospace)
+- Font size: 24px
+- Letter spacing: 12px
+- Width: 160px
+- Padding: 0px 16px
+- Text color: Neutral hard
+- Placeholder color: Neutral soft
+
+### Error State
+
+- Border: 1px solid red
+- Error text: Red, 14px, below input
+- Margin: 0px 12px
+
+### Loading State
+
+- Opacity: 0.5
+- Cursor: default
+- Input: disabled
+
+## Accessibility
+
+- **Type="number"**: Triggers numeric keyboard on mobile
+- **AutoFocus**: Optional for immediate input
+- **Error role**: Error message has `role="error"`
+- **Input role**: Input has `role="input"`

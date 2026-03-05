@@ -1,0 +1,99 @@
+---
+title: Form
+description: API reference for the Form component
+---
+
+## Form
+
+Form router component (currently only supports location type). Delegates to specific form implementations based on type.
+
+### Import
+
+```tsx
+import { Form } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="type" type="'location'" required>
+  Form type to render
+</ParamField>
+
+<ParamField path="isLoaded" type="boolean" required>
+  Whether Google Maps API is loaded (required for location form)
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'">
+  Visual design variant for input fields
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Custom placeholder text for the address input
+</ParamField>
+
+<ParamField path="defaultLocation" type="LocationProps">
+  Default/initial location data
+</ParamField>
+
+<ParamField path="onSubmit" type="(result: { data?: LocationProps; error?: string }) => void" required>
+  Callback fired when form data changes or validation occurs
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the form container
+</ParamField>
+
+### LocationProps
+
+<ParamField path="route" type="string">
+  Street name
+</ParamField>
+
+<ParamField path="routeNumber" type="string">
+  Street number
+</ParamField>
+
+<ParamField path="routeInfo" type="string">
+  Additional address info (apartment, suite, etc.)
+</ParamField>
+
+<ParamField path="city" type="string">
+  City name
+</ParamField>
+
+<ParamField path="province" type="string">
+  Province/state
+</ParamField>
+
+<ParamField path="zipCode" type="string">
+  Postal/ZIP code
+</ParamField>
+
+<ParamField path="country" type="string">
+  Country name
+</ParamField>
+
+<ParamField path="address" type="string">
+  Full formatted address string
+</ParamField>
+
+### Usage
+
+```tsx
+<Form
+  type="location"
+  isLoaded={isGoogleMapsLoaded}
+  onChange={(location) => setLocation(location)}
+/>
+```
+
+### Notes
+
+- **Requires Google Maps API**: Must load Google Maps JavaScript API with Places library before use
+- Location form includes Google Places autocomplete
+- Validates that street number is provided
+- Shows error message if street number is missing
+- Auto-populates city, province, and postal code from Google Places
+- Additional fields (apartment, etc.) shown after address is selected
+- City, province, and postal code fields are read-only (populated by autocomplete)
+- Form calls `onSubmit` with either `data` (valid location) or `error` (validation message)

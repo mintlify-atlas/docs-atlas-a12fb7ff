@@ -1,0 +1,217 @@
+---
+title: Countdown
+description: Human-readable countdown timer with automatic warning state for urgent deadlines
+---
+
+## Overview
+
+The `Countdown` component displays time remaining (or elapsed) until a target date in human-readable format. It automatically switches to a warning state (red background) when less than 2 hours remain.
+
+## Import
+
+```tsx
+import { Countdown } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Countdown
+
+```tsx
+<Countdown toDate={new Date('2024-12-31')} />
+{/* Displays: "5 días restantes" */}
+```
+
+### Custom Colors
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Countdown 
+  toDate={new Date('2024-06-15')}
+  color={ColorV2.surface.blue}
+  textColor={ColorV2.text.white}
+/>
+```
+
+### Countdown to Future Date
+
+```tsx
+const deadline = new Date();
+deadline.setDate(deadline.getDate() + 7);
+
+<Countdown toDate={deadline} />
+{/* Shows: "7 días restantes" */}
+```
+
+### Overdue/Elapsed Time
+
+```tsx
+const pastDate = new Date('2024-01-01');
+
+<Countdown toDate={pastDate} />
+{/* Shows: "X días de retraso" with warning colors */}
+```
+
+### Custom Styling
+
+```tsx
+<Countdown 
+  toDate={targetDate}
+  style={{
+    padding: '12px 20px',
+    borderRadius: 8,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+  }}
+/>
+```
+
+## Props
+
+<ParamField path="toDate" type="Date" required>
+  Target date to count down to (or count up from if past).
+  
+  The component automatically:
+  - Shows time remaining if future date: "X días restantes"
+  - Shows time elapsed if past date: "X días de retraso"
+  - Updates the warning state based on time remaining
+</ParamField>
+
+<ParamField path="color" type="string">
+  Background color for the countdown container.
+  
+  **Note:** Overridden by warning red (`Color.status.color.error`) when less than 2 hours remain.
+  
+  ```tsx
+  color={ColorV2.surface.purple}
+  ```
+</ParamField>
+
+<ParamField path="textColor" type="string">
+  Color for the text and clock icon.
+  
+  **Default:** `Color.text.full`  
+  **Note:** Overridden by white when warning state is active.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Additional inline styles for the container. Common use cases:
+  - Custom padding
+  - Custom border radius
+  - Margin/positioning
+  - Box shadow
+  
+  The `backgroundColor` in style will be overridden by the `color` prop or warning color.
+</ParamField>
+
+## Features
+
+- **Human-readable format**: Uses Moment.js `humanize()` for natural language output
+- **Automatic warning**: Switches to error state when less than 2 hours remain
+- **Past date support**: Shows elapsed time with "de retraso" suffix
+- **Spanish locale**: All output text is in Spanish
+- **Clock icon**: Visual indicator from Lucide React
+- **Responsive text**: Adapts to show "restantes" or "de retraso"
+- **Automatic updates**: Recalculates when `toDate` prop changes
+
+## Time Format Examples
+
+| Time Remaining | Display Text |
+|----------------|-------------|
+| 5 days | "5 días restantes" |
+| 1 day | "un día restantes" |
+| 12 hours | "12 horas restantes" |
+| 1 hour | "una hora restantes" |
+| **90 minutes** | **"2 horas restantes"** |
+| **45 minutes** | **"una hora restantes" (⚠️ WARNING)** |
+| 30 minutes | "30 minutos restantes" (⚠️ WARNING) |
+| Past deadline | "X días/horas de retraso" (⚠️ WARNING) |
+
+## Warning State
+
+The component automatically enters warning state when:
+- Less than 2 hours remain, OR
+- The deadline has passed
+
+When in warning state:
+- Background: `Color.status.color.error` (red)
+- Text color: White
+- Icon color: White
+- Text changes from "restantes" to "de retraso" (if past)
+
+```tsx
+// This will show warning colors
+const urgent = new Date();
+urgent.setMinutes(urgent.getMinutes() + 90);
+
+<Countdown toDate={urgent} />
+{/* Red background, white text */}
+```
+
+## Design Specifications
+
+- **Padding**: 10px 16px
+- **Border radius**: 6px
+- **Width**: Fits content
+- **Display**: Flexbox row with centered items
+- **Clock icon**: 20px × 20px, 8px margin-right
+- **Text**: p2 type, medium weight
+- **Default background**: Transparent (or custom color)
+- **Warning background**: `Color.status.color.error`
+
+## Localization
+
+The component uses Moment.js with Spanish locale:
+
+```tsx
+import moment from 'moment';
+import 'moment/locale/es';
+
+moment.locale('es');
+```
+
+Output examples:
+- "un día" (1 day)
+- "dos días" (2 days)
+- "una hora" (1 hour)
+- "unos segundos" (a few seconds)
+
+## Best Practices
+
+- Use for deadlines, expiration dates, and time-sensitive tasks
+- The automatic warning state helps draw attention to urgent items
+- Place in prominent locations (headers, cards, notifications)
+- Consider updating `toDate` prop dynamically for live countdowns
+- Pair with other indicators (icons, labels) for additional context
+- For real-time updates, re-render parent component periodically:
+
+```tsx
+const [, forceUpdate] = useReducer(x => x + 1, 0);
+
+useEffect(() => {
+  const interval = setInterval(forceUpdate, 60000); // Update every minute
+  return () => clearInterval(interval);
+}, []);
+
+<Countdown toDate={deadline} />
+```
+
+## Accessibility
+
+- Uses `role="container"` for semantic structure
+- Clock icon provides visual reinforcement
+- High contrast in warning state (white on red)
+- Text is clear and readable
+
+## Dependencies
+
+This component requires:
+- `moment` - Date manipulation and humanization
+- `moment/locale/es` - Spanish localization
+- `lucide-react` - Clock icon
+
+## Related Components
+
+- [Label](/components/label) - For status indicators
+- [Feedback](/components/feedback) - For time-based notifications
+- [Text](/components/text) - Used internally for text display

@@ -1,0 +1,176 @@
+---
+title: InputChat
+description: Chat input with text messaging and voice recording capabilities
+---
+
+A chat input component that supports both text messaging and voice recording with waveform visualization. Includes an optional attachment menu for additional features.
+
+## Basic Usage
+
+```tsx
+import { InputChat } from '@adoptaunabuelo/react-components';
+
+function ChatInterface() {
+  const handleSend = (data) => {
+    if (data.text) {
+      // Handle text message
+      console.log('Text:', data.text);
+    }
+    if (data.media) {
+      // Handle voice recording (base64 audio)
+      console.log('Audio:', data.media.base64);
+    }
+  };
+
+  return (
+    <InputChat
+      placeholder="Type a message..."
+      onSend={handleSend}
+    />
+  );
+}
+```
+
+## With Attachment Options
+
+```tsx
+import { InputChat } from '@adoptaunabuelo/react-components';
+import { Clock, Camera, Paperclip } from 'lucide-react';
+
+function ChatWithAttachments() {
+  const handleSend = (data) => {
+    if (data.text) sendTextMessage(data.text);
+    if (data.media) sendAudioMessage(data.media.base64);
+  };
+
+  const handleAttachment = (id) => {
+    switch (id) {
+      case 'reminder':
+        openReminderDialog();
+        break;
+      case 'photo':
+        openPhotoUpload();
+        break;
+      case 'file':
+        openFileUpload();
+        break;
+    }
+  };
+
+  return (
+    <InputChat
+      placeholder="Type a message..."
+      options={[
+        {
+          id: 'reminder',
+          label: 'Crear recordatorio',
+          icon: <Clock />
+        },
+        {
+          id: 'photo',
+          label: 'Upload Photo',
+          icon: <Camera />
+        },
+        {
+          id: 'file',
+          label: 'Attach File',
+          icon: <Paperclip />
+        }
+      ]}
+      onOptionClick={handleAttachment}
+      onSend={handleSend}
+    />
+  );
+}
+```
+
+## Loading State
+
+```tsx
+<InputChat
+  placeholder="Type a message..."
+  loading={isProcessing}
+  onSend={handleSend}
+/>
+```
+
+## Disabled State
+
+```tsx
+<InputChat
+  placeholder="Type a message..."
+  disabled={!isConnected}
+  onSend={handleSend}
+/>
+```
+
+## Props
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the input field.
+</ParamField>
+
+<ParamField path="onSend" type="(data: { text?: string; media?: { base64: string; contentType: string } }) => void">
+  Callback when message is sent (Enter key or Send button). Audio recordings are automatically converted to base64 WAV format.
+  
+  The callback receives an object with:
+  - `text` (string, optional): The text message content
+  - `media` (object, optional): Voice recording data
+    - `base64` (string): Base64-encoded audio
+    - `contentType` (string): Always "audio/wav"
+</ParamField>
+
+<ParamField path="options" type="Array<{ id: string; label: string; icon?: ReactElement }>">
+  Attachment menu options. When provided, shows a Plus icon button that opens a menu.
+  
+  Each option object:
+  - `id` (string, required): Unique identifier for the option
+  - `label` (string, required): Display text for the menu item
+  - `icon` (ReactElement, optional): Icon to display before the label
+</ParamField>
+
+<ParamField path="onOptionClick" type="(id: string) => void">
+  Callback when an attachment menu item is clicked. Receives the option's `id`.
+</ParamField>
+
+<ParamField path="loading" type="boolean" default="false">
+  Shows loading animation and disables input.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the input field and buttons.
+</ParamField>
+
+<ParamField path="onChange" type="(e: React.ChangeEvent<HTMLInputElement>) => void">
+  Standard onChange handler for the input field.
+</ParamField>
+
+<ParamField path="onFocus" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when input receives focus.
+</ParamField>
+
+<ParamField path="onBlur" type="(e: React.FocusEvent<HTMLInputElement>) => void">
+  Callback when input loses focus.
+</ParamField>
+
+<ParamField path="onKeyDown" type="(e: React.KeyboardEvent<HTMLInputElement>) => void">
+  Callback for keydown events. Note: Enter key is handled internally to send messages.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles for the container.
+</ParamField>
+
+## Features
+
+- **Voice Recording**: Click the microphone icon to start recording audio
+- **Waveform Visualization**: Real-time audio waveform display during recording
+- **Audio Format**: Recordings are automatically converted to base64-encoded WAV format
+- **Send on Enter**: Press Enter to send text messages
+- **Dynamic Icon**: Shows microphone when empty, send icon when text is present
+- **Recording Controls**: 
+  - Trash icon to cancel recording
+  - Send icon to submit the recording
+- **Attachment Menu**: Optional Plus button with dropdown menu for additional actions
+- **Loading State**: Shows Lottie animation when processing
+- **Auto-clear**: Input clears automatically after sending

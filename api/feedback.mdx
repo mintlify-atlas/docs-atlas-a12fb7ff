@@ -1,0 +1,71 @@
+---
+title: Feedback
+description: API reference for the Feedback component
+---
+
+## Feedback
+
+Toast-style feedback notification with slide-in/out animation. Auto-dismisses after specified duration. Supports success, error, and custom types.
+
+### Import
+
+```tsx
+import { Feedback } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="isVisible" type="boolean" required>
+  Controls visibility (triggers show/hide animation)
+</ParamField>
+
+<ParamField path="type" type="'success' | 'error' | 'custom'" required>
+  Visual variant: `success` (green with check), `error` (red with X), `custom` (use your own icon/color)
+</ParamField>
+
+<ParamField path="text" type="string" required>
+  Message text to display
+</ParamField>
+
+<ParamField path="icon" type="React.ReactNode">
+  Custom icon for `type="custom"`
+</ParamField>
+
+<ParamField path="closeAfter" type="number" default="3000">
+  Auto-dismiss duration in milliseconds (default: 3000)
+</ParamField>
+
+<ParamField path="showClose" type="boolean">
+  Show manual close button
+</ParamField>
+
+<ParamField path="onClose" type="() => void">
+  Callback fired when dismissed (auto or manual)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container (e.g., custom background for type="custom")
+</ParamField>
+
+### Usage
+
+```tsx
+<Feedback
+  type="success"
+  text="Changes saved successfully"
+  isVisible={showFeedback}
+  closeAfter={5000}
+  onClose={() => setShowFeedback(false)}
+/>
+```
+
+### Notes
+
+- Positioned fixed at bottom-left of screen
+- Slide-in animation from scale(0,0) to scale(1,1)
+- Auto-dismisses after `closeAfter` milliseconds
+- Success type uses green background with white Check icon
+- Error type uses red background with white X icon
+- Custom type requires `icon` prop and respects `style.background`
+- Close button appears in top-right corner when `showClose` is true
+- Component only renders when `isVisible` has been true at least once

@@ -1,0 +1,92 @@
+---
+title: CellSelector
+description: API reference for the CellSelector component
+---
+
+## CellSelector
+
+Grid of selectable cells with icons, titles, and optional subtitles. Supports single or multiple selection with visual feedback and hover states.
+
+### Import
+
+```tsx
+import { CellSelector } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of selectable cell options
+</ParamField>
+
+<ParamField path="type" type="'single' | 'multiple'" default="single">
+  Selection mode: `single` for radio behavior, `multiple` for checkboxes
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<OptionProps>">
+  Currently selected options (controlled component)
+</ParamField>
+
+<ParamField path="onChange" type="(array: Array<OptionProps>) => void">
+  Callback fired when selection changes, receives array of selected options
+</ParamField>
+
+<ParamField path="onClick" type="(item: OptionProps) => void">
+  Callback fired when individual cell is clicked
+</ParamField>
+
+<ParamField path="design" type="'design1' | 'design2'" default="design1">
+  Visual design variant
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+<ParamField path="cellStyle" type="React.CSSProperties">
+  Custom styles applied to each cell
+</ParamField>
+
+### OptionProps
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the option
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Main title displayed in the cell
+</ParamField>
+
+<ParamField path="subtitle" type="string">
+  Optional subtitle displayed below the cell
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Icon displayed at the top of the cell
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables cell interaction and applies opacity
+</ParamField>
+
+### Usage
+
+```tsx
+<CellSelector
+  type="multiple"
+  options={[
+    { id: "1", title: "Option 1", icon: <Icon />, subtitle: "Description" },
+    { id: "2", title: "Option 2", icon: <Icon />, disabled: true }
+  ]}
+  selectedOptions={selected}
+  onChange={(items) => setSelected(items)}
+/>
+```
+
+### Notes
+
+- Cells display with hover effects and scale animation on click
+- Selected cells show primary color border
+- Disabled cells have reduced opacity and no interaction
+- In `multiple` mode, clicking toggles selection
+- In `single` mode, only one cell can be selected at a time

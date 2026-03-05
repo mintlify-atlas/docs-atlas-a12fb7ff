@@ -1,0 +1,442 @@
+---
+title: Modal
+description: Modal dialog component with three display modes
+---
+
+## Import
+
+```tsx
+import { Modal } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<Modal
+  isVisible={isOpen}
+  title="Modal Title"
+  subtitle="Optional subtitle"
+  onClose={() => setIsOpen(false)}
+  buttonProps={{
+    children: "Save",
+    onClick: handleSave
+  }}
+>
+  <p>Modal content goes here</p>
+</Modal>
+```
+
+## Props
+
+<ParamField path="isVisible" type="boolean" required>
+  Controls modal visibility. Use state to toggle open/close.
+</ParamField>
+
+<ParamField path="onClose" type="() => void" required>
+  Callback fired when modal should close (X button, overlay click if enabled).
+</ParamField>
+
+<ParamField path="type" type="'default' | 'full-screen' | 'form' | 'web' | 'lateral'">
+  Modal display mode:
+  - `default`: Centered modal with max constraints
+  - `full-screen`: Bottom sheet on mobile, centered on desktop
+  - `form`: Two-column form layout with labels (requires `options` prop)
+  - `web`: Embeds external URL in iframe (requires `url` prop)
+  - `lateral`: Side panel from right edge
+</ParamField>
+
+<ParamField path="title" type="string">
+  Modal header title text.
+</ParamField>
+
+<ParamField path="subtitle" type="string">
+  Optional subtitle below title.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed at bottom in red background box.
+</ParamField>
+
+<ParamField path="hideClose" type="boolean">
+  Hides the X close button in top-right corner.
+</ParamField>
+
+<ParamField path="hideHeader" type="boolean">
+  Hides the entire header section (title, subtitle, Header element).
+</ParamField>
+
+<ParamField path="Header" type="ReactElement">
+  Custom React element to render in header area below title/subtitle.
+</ParamField>
+
+<ParamField path="Bottom" type="ReactElement">
+  Custom React element to render in footer before the button.
+</ParamField>
+
+<ParamField path="buttonProps" type="ButtonProps">
+  Props for the action button in footer. If not provided, no footer is rendered.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the modal container.
+</ParamField>
+
+<ParamField path="titleStyle" type="CSSProperties">
+  Custom CSS properties for the title section.
+</ParamField>
+
+<ParamField path="contentStyle" type="CSSProperties">
+  Custom CSS properties for the content area.
+</ParamField>
+
+<ParamField path="footerStyle" type="CSSProperties">
+  Custom CSS properties for the footer section.
+</ParamField>
+
+<ParamField path="shouldCloseOnOverlayClick" type="boolean">
+  Allow closing modal by clicking the dark overlay. Default: `false`.
+</ParamField>
+
+<ParamField path="overlayBackgroundOpacity" type="number">
+  Opacity of the dark overlay background (0-1). Default: `0.6`.
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  Content to display in the modal body.
+</ParamField>
+
+## Form Mode Props
+
+<ParamField path="options" type="Array<{ id: string; title?: string; Data?: ReactElement; hidden?: boolean }>">
+  Array of form field configurations for `type="form"`. Each item creates a labeled row or separator.
+  - `id`: Unique identifier (use `"separator"` for horizontal divider)
+  - `title`: Label text (left column, 112px width)
+  - `Data`: React element for input/content (right column)
+  - `hidden`: Conditionally hide this row
+</ParamField>
+
+## Web Mode Props
+
+<ParamField path="url" type="string">
+  External URL to display in an iframe when `type="web"`. Modal height is set to 100% to accommodate iframe.
+</ParamField>
+
+## Ref Methods
+
+<ParamField path="close" type="() => void">
+  Programmatically close the modal. Access via ref.
+</ParamField>
+
+## Modal Sizes
+
+### Default Mode
+- **Width**: 486px (max: `calc(100% - 96px)` on desktop, `calc(100% - 48px)` on mobile)
+- **Max height**: `calc(100% - 96px)` on desktop, `calc(100% - 48px)` on mobile
+- **Border radius**: 12px
+- **Position**: Center of screen
+
+### Full-screen Mode
+- **Width**: 100%
+- **Height**: Slides from bottom
+- **Border radius**: `12px 12px 0 0` (top corners only)
+- **Mobile-optimized**: Bottom sheet style
+
+### Form Mode
+- **Width**: 80% (max: 600px)
+- **Two-column layout**: 112px labels, flexible content
+
+### Lateral Mode
+- **Width**: 400px on desktop, 100% on mobile
+- **Height**: 100%
+- **Slides from**: Right edge
+- **Border radius**: 0
+
+## Examples
+
+### Basic Modal
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<>
+  <Button onClick={() => setIsOpen(true)}>Open Modal</Button>
+  
+  <Modal
+    isVisible={isOpen}
+    title="Confirm Action"
+    subtitle="Are you sure you want to proceed?"
+    onClose={() => setIsOpen(false)}
+    buttonProps={{
+      children: "Confirm",
+      onClick: () => {
+        handleConfirm();
+        setIsOpen(false);
+      }
+    }}
+  >
+    <p>This action cannot be undone.</p>
+  </Modal>
+</>
+```
+
+### Form Modal
+
+```tsx
+const [formData, setFormData] = useState({ name: '', email: '' });
+
+<Modal
+  type="form"
+  isVisible={isOpen}
+  title="Edit Profile"
+  onClose={() => setIsOpen(false)}
+  buttonProps={{
+    children: "Save",
+    loading: isSaving,
+    onClick: handleSave
+  }}
+  options={[
+    {
+      id: "name",
+      title: "Name",
+      Data: (
+        <Input
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+        />
+      )
+    },
+    { id: "separator" },
+    {
+      id: "email",
+      title: "Email",
+      Data: (
+        <Input
+          type="email"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        />
+      )
+    }
+  ]}
+/>
+```
+
+### Web Modal (iframe)
+
+```tsx
+<Modal
+  type="web"
+  isVisible={isOpen}
+  hideClose
+  url="https://example.com/terms"
+  style={{ width: 600, height: 400 }}
+  onClose={() => setIsOpen(false)}
+/>
+```
+
+### Full-screen Modal
+
+```tsx
+<Modal
+  type="full-screen"
+  isVisible={isOpen}
+  title="Image Gallery"
+  onClose={() => setIsOpen(false)}
+>
+  <ImageGallery images={images} />
+</Modal>
+```
+
+### Lateral Panel
+
+```tsx
+<Modal
+  type="lateral"
+  isVisible={isPanelOpen}
+  title="Settings"
+  onClose={() => setIsPanelOpen(false)}
+  buttonProps={{
+    children: "Save Settings",
+    onClick: handleSaveSettings
+  }}
+>
+  <SettingsForm />
+</Modal>
+```
+
+### With Error Message
+
+```tsx
+const [error, setError] = useState('');
+
+<Modal
+  isVisible={isOpen}
+  title="Delete Account"
+  error={error}
+  onClose={() => setIsOpen(false)}
+  buttonProps={{
+    children: "Delete",
+    design: "secondary",
+    onClick: async () => {
+      try {
+        await deleteAccount();
+        setIsOpen(false);
+      } catch (err) {
+        setError('Failed to delete account. Please try again.');
+      }
+    }
+  }}
+>
+  <p>This will permanently delete your account and all data.</p>
+</Modal>
+```
+
+### Using Ref
+
+```tsx
+const modalRef = useRef<ModalRef>(null);
+
+const handleExternalClose = () => {
+  modalRef.current?.close();
+};
+
+<Modal
+  ref={modalRef}
+  isVisible={isOpen}
+  title="Modal with Ref"
+  onClose={() => setIsOpen(false)}
+>
+  <Button onClick={handleExternalClose}>Close from Inside</Button>
+</Modal>
+```
+
+### With Custom Header and Footer
+
+```tsx
+<Modal
+  isVisible={isOpen}
+  title="Upload Files"
+  onClose={() => setIsOpen(false)}
+  Header={
+    <ProgressBar value={uploadProgress} />
+  }
+  Bottom={
+    <Text type="p2" style={{ color: '#666' }}>
+      {filesUploaded}/{totalFiles} files uploaded
+    </Text>
+  }
+  buttonProps={{
+    children: "Done",
+    disabled: uploadProgress < 100,
+    onClick: () => setIsOpen(false)
+  }}
+>
+  <FileList files={files} />
+</Modal>
+```
+
+### Confirmation Dialog
+
+```tsx
+const ConfirmDialog = ({ isOpen, onConfirm, onCancel, title, message }) => (
+  <Modal
+    isVisible={isOpen}
+    title={title}
+    onClose={onCancel}
+    buttonProps={{
+      children: "Confirm",
+      onClick: onConfirm
+    }}
+    Bottom={
+      <Button design="text" onClick={onCancel}>
+        Cancel
+      </Button>
+    }
+  >
+    <p>{message}</p>
+  </Modal>
+);
+```
+
+## Animations
+
+### Default Mode
+- **Open**: Scales from 0.2 to 1, fades in, moves from 150% to 50% top
+- **Close**: Reverses animation
+- **Duration**: 0.3s ease-out
+
+### Full-screen Mode
+- **Open**: Slides up from -100vh to 0px bottom
+- **Close**: Slides down to -100vh
+- **Duration**: 0.3s ease-out
+
+### Lateral Mode
+- **Open**: Slides in from -100vw to 0 right
+- **Close**: Slides out to -100vw
+- **Duration**: 0.3s ease-out
+
+### Overlay
+- **Open**: Fades to 0.6 opacity (or custom)
+- **Close**: Fades to 0
+- **Duration**: 0.3s ease-out
+
+## Styling Details
+
+### Header
+- **Position**: Sticky (stays at top when scrolling)
+- **Padding**: 10px 24px 16px (or 16px if no close button)
+- **Z-index**: 100
+
+### Content
+- **Padding**: 0 24px
+- **Overflow**: Auto (scrollable)
+
+### Footer
+- **Position**: Sticky (stays at bottom)
+- **Padding**: 16px 24px (8px 16px on mobile)
+- **Background**: White
+- **Alignment**: Flex-end (right-aligned)
+
+### Close Button
+- **Position**: Top-right
+- **Padding**: 10px 10px 0 24px
+- **Icon**: X from lucide-react
+- **Size**: 20x20px
+
+## Responsive Behavior
+
+- **Desktop** (≥768px):
+  - Default modal: 486px width, centered
+  - Lateral panel: 400px width from right
+  - Padding: 24px
+  - Margins: 96px from edges
+
+- **Mobile** (less than 768px):
+  - Default modal: Full width minus 48px margin
+  - Lateral panel: Full width
+  - Full-screen: Bottom sheet style
+  - Padding: 16px
+  - Footer padding: 8px 16px
+
+## Dependencies
+
+- **react-modal**: Underlying modal library
+- **lucide-react**: X icon for close button
+- **styled-media-query**: Responsive styling
+
+## Accessibility
+
+- Sets `ariaHideApp={false}` (should set to `true` in production with proper app element)
+- Keyboard support: ESC to close (if overlay click enabled)
+- Focus trap: Keeps focus within modal
+- Screen reader friendly with semantic HTML
+
+<Warning>
+  For production, set a proper app element for react-modal:
+  ```tsx
+  import Modal from 'react-modal';
+  Modal.setAppElement('#root');
+  ```
+</Warning>

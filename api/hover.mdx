@@ -1,0 +1,46 @@
+---
+title: Hover
+description: API reference for the Hover component
+---
+
+## Hover
+
+Hover trigger component that displays content on hover. Content appears below the trigger element with shadow and border.
+
+### Import
+
+```tsx
+import { Hover } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  Trigger element(s) that show content on hover
+</ParamField>
+
+<ParamField path="modalProps" type="React.ComponentProps<'div'>" required>
+  Props for the hover content container (including children to display)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the trigger container
+</ParamField>
+
+### Usage
+
+```tsx
+<Hover modalProps={{ children: <div>Hover content here</div> }}>
+  <button>Hover over me</button>
+</Hover>
+```
+
+### Notes
+
+- Content is hidden by default and shown on hover
+- Positioned absolutely below the trigger (top: 100%)
+- Content has white background with border and box shadow
+- Border radius of 24px
+- Content container has 24px padding
+- z-index of 10 ensures content appears above other elements
+- Uses CSS `:hover` pseudo-class for simple implementation

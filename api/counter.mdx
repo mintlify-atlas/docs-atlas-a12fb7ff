@@ -1,0 +1,64 @@
+---
+title: Counter
+description: API reference for the Counter component
+---
+
+## Counter
+
+Animated flip-clock style counter that animates from zero to the target amount. Each digit flips individually with a smooth animation effect.
+
+### Import
+
+```tsx
+import { Counter } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="amount" type="number" required>
+  Target number to count up to (animates from amount-10 or 0)
+</ParamField>
+
+<ParamField path="height" type="number" required>
+  Height in pixels for each digit block
+</ParamField>
+
+<ParamField path="width" type="number" required>
+  Width in pixels for each digit block
+</ParamField>
+
+<ParamField path="color" type="string">
+  Text color for the digits
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Background color for each digit block
+</ParamField>
+
+<ParamField path="borderColor" type="string">
+  Border/divider color between digit segments
+</ParamField>
+
+<ParamField path="fontSize" type="number">
+  Font size in pixels for the numbers
+</ParamField>
+
+### Usage
+
+```tsx
+<Counter
+  amount={12345}
+  height={60}
+  width={40}
+  fontSize={32}
+/>
+```
+
+### Notes
+
+- Animation starts from `amount - 10` (or 0 if amount < 10)
+- Each digit flips independently at 400ms intervals
+- Uses CSS custom properties for styling
+- Animation automatically stops when target is reached
+- Displays leading zeros to maintain consistent width
+- Re-triggers animation when `amount` prop changes

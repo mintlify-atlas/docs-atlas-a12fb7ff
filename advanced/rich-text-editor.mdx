@@ -1,0 +1,507 @@
+---
+title: 'Rich Text Editor'
+description: 'Tiptap setup guide for TextArea rich text editing mode'
+icon: 'text'
+---
+
+## Overview
+
+The `TextArea` component supports rich text editing mode powered by Tiptap. When `type="edit"`, it renders a full-featured WYSIWYG editor with formatting toolbar, supporting bold, italic, underline, headings, and text alignment.
+
+<Warning>
+  Multiple Tiptap packages are **required** for rich text mode. The editor will not render without these dependencies installed.
+</Warning>
+
+## Prerequisites
+
+### Install Required Packages
+
+The rich text editor requires five Tiptap packages:
+
+<CodeGroup>
+```bash npm
+npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash yarn
+yarn add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash pnpm
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+</CodeGroup>
+
+<Note>
+  For basic `TextArea` with `type="default"`, these dependencies are **not required**. Only install them if you need rich text editing functionality.
+</Note>
+
+## Package Overview
+
+| Package | Purpose |
+|---------|----------|
+| `@tiptap/react` | Core React integration for Tiptap editor |
+| `@tiptap/starter-kit` | Essential extensions (bold, italic, headings, lists, etc.) |
+| `@tiptap/extension-text-align` | Text alignment support (left, center, right) |
+| `@tiptap/extension-text-style` | Base for custom text styling |
+| `@tiptap/extensions` | Additional extensions including Placeholder |
+
+## Basic Usage
+
+```tsx RichTextEditor.tsx
+import { useState } from 'react';
+import { TextArea } from '@adoptaunabuelo/react-components';
+
+export default function RichTextEditor() {
+  const [content, setContent] = useState('<p>Initial content</p>');
+
+  return (
+    <TextArea
+      type="edit"
+      value={content}
+      placeholder="Start typing..."
+      onChange={(html) => {
+        setContent(html);
+        console.log('HTML output:', html);
+      }}
+      style={{
+        height: 400,
+        border: '1px solid rgba(0, 0, 0, 0.06)',
+      }}
+    />
+  );
+}
+```
+
+## Editor Features
+
+The rich text editor includes a comprehensive formatting toolbar:
+
+### Text Styles
+
+- **Paragraph** - Regular text (default)
+- **Heading 1** - Large heading
+- **Heading 2** - Medium heading
+
+### Text Formatting
+
+- **Bold** - `Ctrl/Cmd + B`
+- **Italic** - `Ctrl/Cmd + I`
+- **Underline** - `Ctrl/Cmd + U`
+
+### Text Alignment
+
+- **Align Left** - Default alignment
+- **Align Center** - Center text
+- **Align Right** - Right-align text
+
+## Component Props
+
+### Required Props
+
+<ResponseField name="type" type="'edit'" required>
+  Must be set to `"edit"` to enable rich text mode.
+</ResponseField>
+
+### Optional Props
+
+<ResponseField name="value" type="string">
+  HTML content to display in the editor. Supports HTML tags like `<p>`, `<h1>`, `<h2>`, `<strong>`, `<em>`, `<u>`.
+</ResponseField>
+
+<ResponseField name="placeholder" type="string">
+  Placeholder text shown when editor is empty.
+</ResponseField>
+
+<ResponseField name="onChange" type="(html: string) => void">
+  Callback fired when editor content changes. Receives HTML string.
+</ResponseField>
+
+<ResponseField name="style" type="CSSProperties">
+  Custom styles for the editor container. Set `height` to control editor size.
+</ResponseField>
+
+<ResponseField name="maxLength" type="number">
+  Maximum character count. Currently tracked but not enforced by the editor.
+</ResponseField>
+
+<ResponseField name="design" type="'primary' | 'secondary'">
+  Visual design variant. Affects toolbar and editor styling.
+</ResponseField>
+
+<ResponseField name="ToolbarButton" type="ReactNode">
+  Custom component rendered in the top-right corner of the toolbar (e.g., a save button or action icon).
+</ResponseField>
+
+## Advanced Usage
+
+### With Custom Toolbar Button
+
+```tsx EditorWithActions.tsx
+import { useState } from 'react';
+import { TextArea } from '@adoptaunabuelo/react-components';
+import { Save } from 'lucide-react';
+
+export default function EditorWithActions() {
+  const [content, setContent] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    // Save content to backend
+    await fetch('/api/save', {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    });
+    setIsSaving(false);
+  };
+
+  return (
+    <TextArea
+      type="edit"
+      value={content}
+      placeholder="Write your post..."
+      onChange={setContent}
+      style={{ height: 500, border: '1px solid #e0e0e0' }}
+      ToolbarButton={
+        <button
+          onClick={handleSave}
+          disabled={isSaving}
+          style={{
+            padding: '8px 16px',
+            borderRadius: '8px',
+            border: 'none',
+            background: '#007bff',
+            color: 'white',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <Save size={16} />
+          {isSaving ? 'Saving...' : 'Save'}
+        </button>
+      }
+    />
+  );
+}
+```
+
+### With Form Integration
+
+```tsx BlogPostForm.tsx
+import { useState, FormEvent } from 'react';
+import { TextArea } from '@adoptaunabuelo/react-components';
+
+interface BlogPost {
+  title: string;
+  content: string;
+}
+
+export default function BlogPostForm() {
+  const [post, setPost] = useState<BlogPost>({
+    title: '',
+    content: '',
+  });
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    // Submit HTML content to backend
+    await fetch('/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(post),
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        type="text"
+        value={post.title}
+        onChange={(e) => setPost({ ...post, title: e.target.value })}
+        placeholder="Post title"
+        required
+      />
+      
+      <TextArea
+        type="edit"
+        value={post.content}
+        placeholder="Write your post content..."
+        onChange={(content) => setPost({ ...post, content })}
+        style={{
+          height: 400,
+          marginTop: '20px',
+          border: '1px solid #ccc',
+          borderRadius: '12px',
+        }}
+      />
+      
+      <button type="submit">Publish Post</button>
+    </form>
+  );
+}
+```
+
+### Loading and Displaying HTML Content
+
+```tsx DisplayPost.tsx
+import { useEffect, useState } from 'react';
+import { TextArea } from '@adoptaunabuelo/react-components';
+
+interface Post {
+  id: string;
+  title: string;
+  content: string;
+}
+
+export default function DisplayPost({ postId }: { postId: string }) {
+  const [post, setPost] = useState<Post | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    // Fetch post from backend
+    fetch(`/api/posts/${postId}`)
+      .then(res => res.json())
+      .then(setPost);
+  }, [postId]);
+
+  if (!post) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h1>{post.title}</h1>
+      
+      {isEditing ? (
+        <TextArea
+          type="edit"
+          value={post.content}
+          onChange={(content) => setPost({ ...post, content })}
+          style={{ height: 500, border: '1px solid #e0e0e0' }}
+        />
+      ) : (
+        // Display rendered HTML
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
+      )}
+      
+      <button onClick={() => setIsEditing(!isEditing)}>
+        {isEditing ? 'Cancel' : 'Edit'}
+      </button>
+    </div>
+  );
+}
+```
+
+## HTML Output
+
+The editor outputs clean HTML with semantic tags:
+
+```html
+<!-- Example output -->
+<h1 style="text-align: center">My Heading</h1>
+<p>This is a paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
+<p style="text-align: right">Right-aligned text</p>
+<h2>Subheading</h2>
+<p>Another paragraph with <u>underlined</u> text.</p>
+```
+
+<Note>
+  The HTML is safe to store in your database and render with `dangerouslySetInnerHTML` or your preferred HTML sanitization library.
+</Note>
+
+## Sanitizing HTML Output
+
+For security, sanitize HTML before rendering user-generated content:
+
+```tsx
+import DOMPurify from 'dompurify';
+
+function SafeHTMLDisplay({ html }: { html: string }) {
+  const sanitized = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['p', 'h1', 'h2', 'strong', 'em', 'u', 'br'],
+    ALLOWED_ATTR: ['style'],
+  });
+  
+  return <div dangerouslySetInnerHTML={{ __html: sanitized }} />;
+}
+```
+
+Install DOMPurify:
+
+```bash
+npm install dompurify
+npm install --save-dev @types/dompurify
+```
+
+## Styling Customization
+
+The editor uses internal CSS classes. Customize with CSS variables:
+
+```css globals.css
+/* Editor container */
+.ProseMirror {
+  padding: 16px;
+  min-height: 200px;
+  outline: none;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+/* Headings */
+.ProseMirror h1 {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0.5em 0;
+}
+
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 0.5em 0;
+}
+
+/* Paragraphs */
+.ProseMirror p {
+  margin: 0.5em 0;
+}
+```
+
+## Keyboard Shortcuts
+
+The editor supports standard keyboard shortcuts:
+
+| Action | Windows/Linux | macOS |
+|--------|---------------|-------|
+| Bold | `Ctrl + B` | `Cmd + B` |
+| Italic | `Ctrl + I` | `Cmd + I` |
+| Underline | `Ctrl + U` | `Cmd + U` |
+| Heading 1 | `Ctrl + Alt + 1` | `Cmd + Alt + 1` |
+| Heading 2 | `Ctrl + Alt + 2` | `Cmd + Alt + 2` |
+| Paragraph | `Ctrl + Alt + 0` | `Cmd + Alt + 0` |
+| Undo | `Ctrl + Z` | `Cmd + Z` |
+| Redo | `Ctrl + Shift + Z` | `Cmd + Shift + Z` |
+
+## Comparison: Default vs. Rich Text Mode
+
+| Feature | Default Mode (`type="default"`) | Rich Text Mode (`type="edit"`) |
+|---------|----------------------------------|--------------------------------|
+| Dependencies | None | 5 Tiptap packages |
+| Toolbar | None | Full formatting toolbar |
+| Output | Plain text | HTML |
+| Formatting | None | Bold, italic, underline, headings, alignment |
+| Use Case | Simple text inputs | Blog posts, descriptions, rich content |
+
+### When to Use Default Mode
+
+```tsx
+<TextArea
+  type="default"
+  placeholder="Enter description"
+  maxLength={500}
+  onChange={(text) => console.log(text)} // Plain text
+/>
+```
+
+- Simple text inputs
+- Comments or short descriptions
+- No formatting needed
+- Character limits important
+
+### When to Use Rich Text Mode
+
+```tsx
+<TextArea
+  type="edit"
+  placeholder="Write your article"
+  onChange={(html) => console.log(html)} // HTML
+  style={{ height: 400 }}
+/>
+```
+
+- Blog posts or articles
+- Product descriptions with formatting
+- Email templates
+- Any content needing rich formatting
+
+## Troubleshooting
+
+### Editor doesn't render
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Verify all 5 Tiptap packages are installed
+    - Check for console errors indicating missing dependencies
+    - Ensure `type="edit"` is set correctly
+    - Verify package versions are compatible (use same major version for all Tiptap packages)
+  </Accordion>
+</AccordionGroup>
+
+### Toolbar buttons don't work
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Check browser console for JavaScript errors
+    - Ensure you're not preventing default click behavior
+    - Verify the editor has focus (click inside the editor area)
+  </Accordion>
+</AccordionGroup>
+
+### Content doesn't persist
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Use controlled component pattern with `value` and `onChange`
+    - Store HTML in state: `const [content, setContent] = useState('')`
+    - Pass `value={content}` and `onChange={setContent}`
+  </Accordion>
+</AccordionGroup>
+
+### Styling looks broken
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Import the editor CSS if using a custom build:
+      ```tsx
+      import '@adoptaunabuelo/react-components/dist/editor.css';
+      ```
+    - Check for conflicting global CSS affecting `.ProseMirror` class
+  </Accordion>
+</AccordionGroup>
+
+## Performance Considerations
+
+<Note>
+  The Tiptap editor adds ~50KB (gzipped) to your bundle. If you only need basic text input, use `type="default"` instead to keep your bundle lean.
+</Note>
+
+- **Code Splitting**: Lazy load the editor for better initial page load:
+  ```tsx
+  const TextArea = lazy(() => import('@adoptaunabuelo/react-components').then(m => ({ default: m.TextArea })));
+  ```
+
+- **Large Content**: For very large documents (>10,000 words), consider implementing auto-save to prevent data loss
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="TextArea Component" icon="text" href="/components/textarea">
+    View full component documentation and examples
+  </Card>
+  
+  <Card title="Tiptap Documentation" icon="book" href="https://tiptap.dev/docs">
+    Official Tiptap editor documentation
+  </Card>
+  
+  <Card title="Optional Dependencies" icon="box" href="/advanced/optional-dependencies">
+    Learn about other optional peer dependencies
+  </Card>
+</CardGroup>

@@ -1,0 +1,111 @@
+---
+title: InputBirthday
+description: Birthday input split into three numeric fields (Day/Month/Year) with auto-focus and validation
+---
+
+## Import
+
+```tsx
+import { InputBirthday } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<InputBirthday
+  defaultValue="1990-05-15"
+  error={validationError}
+  onChange={(date) => setDateOfBirth(date)}
+/>
+```
+
+## Props
+
+<ParamField path="onChange" type="(date: Date | ChangeEvent<HTMLInputElement>) => void">
+  Callback with valid Date object when all three fields (day, month, year) are complete and valid. Only fires when the full date is valid according to moment.js validation.
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default value in `"YYYY-MM-DD"` format (e.g., `"1990-05-15"`).
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the inputs in red text with fade-in animation. Component also displays built-in validation error "Fecha no válida" for invalid dates.
+</ParamField>
+
+<ParamField path="containerStyle" type="CSSProperties">
+  Custom CSS properties applied to each input container.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the input elements.
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables all three input fields.
+</ParamField>
+
+<Note>
+  Inherits all standard HTML input attributes from `InputProps` (excluding `onChange` which is overridden).
+</Note>
+
+## Behavior
+
+- **Auto-focus**: Automatically focuses next field when 2 digits are entered (day → month → year)
+- **Backspace navigation**: Focuses previous field when backspace is pressed on empty field
+- **Numeric-only**: Only accepts numeric input with `inputMode="numeric"` and `pattern="[0-9]*"`
+- **Validation**: Uses moment.js to validate the complete date (e.g., catches invalid dates like Feb 30)
+- **Spanish locale**: Error messages displayed in Spanish
+
+## Examples
+
+### Basic Usage
+
+```tsx
+const [birthDate, setBirthDate] = useState<Date | null>(null);
+
+<InputBirthday
+  onChange={(date) => {
+    if (date instanceof Date) {
+      setBirthDate(date);
+    }
+  }}
+/>
+```
+
+### With Default Value
+
+```tsx
+<InputBirthday
+  defaultValue="1985-12-25"
+  onChange={(date) => console.log(date)}
+/>
+```
+
+### With Error Handling
+
+```tsx
+const [error, setError] = useState('');
+
+<InputBirthday
+  error={error}
+  onChange={(date) => {
+    if (date instanceof Date) {
+      const age = calculateAge(date);
+      if (age < 18) {
+        setError('Debes ser mayor de 18 años');
+      } else {
+        setError('');
+      }
+    }
+  }}
+/>
+```
+
+## Field Configuration
+
+- **Day field**: 2-digit max, placeholder "Día"
+- **Month field**: 2-digit max, placeholder "Mes"
+- **Year field**: 4-digit max, placeholder "Año"
+
+All fields use the base `Input` component with default design.

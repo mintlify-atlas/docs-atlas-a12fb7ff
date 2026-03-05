@@ -1,0 +1,309 @@
+---
+title: InputLocation
+description: Location autocomplete input powered by Google Maps Places API
+---
+
+Location autocomplete input powered by Google Maps Places API with debounced search (500ms) and structured address parsing. Searches and displays results in Spanish.
+
+<Note>
+  **Google Maps API Required**: You must add the Google Maps JavaScript API script to your application and provide a valid API key with Places API enabled.
+</Note>
+
+## Setup
+
+Add the Google Maps script to your HTML:
+
+```html
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&language=es"></script>
+```
+
+For development, add your API key to `.env`:
+
+```bash
+GOOGLE_MAPS_API=YOUR_API_KEY
+```
+
+## Import
+
+```tsx
+import { InputLocation } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputLocation } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  // Check if Google Maps API is loaded
+  useEffect(() => {
+    if (typeof google !== 'undefined') {
+      setIsLoaded(true);
+    }
+  }, []);
+  
+  return (
+    <InputLocation
+      isLoaded={isLoaded}
+      placeholder="Introduce tu dirección"
+      onLocationChange={(location) => {
+        console.log('Address:', location.address);
+        console.log('Coordinates:', location.location);
+      }}
+    />
+  );
+}
+```
+
+```tsx Full Address Details
+import { InputLocation } from '@adoptaunabuelo/react-components';
+
+function App() {
+  const handleLocationChange = (location) => {
+    console.log('Full address:', location.address);
+    console.log('Street:', location.route);
+    console.log('Street number:', location.routeNumber);
+    console.log('City:', location.city);
+    console.log('Province:', location.province);
+    console.log('Zip code:', location.zipCode);
+    console.log('Country:', location.country);
+    console.log('ISO code:', location.shortCountry);
+    console.log('Lat/Lng:', location.location);
+  };
+  
+  return (
+    <InputLocation
+      isLoaded={true}
+      design="secondary"
+      placeholder="Dirección completa"
+      onLocationChange={handleLocationChange}
+    />
+  );
+}
+```
+
+```tsx Form Mode
+import { InputLocation } from '@adoptaunabuelo/react-components';
+
+function App() {
+  // In form mode, only route + number is shown after selection
+  // Full address data is still available in onLocationChange
+  
+  return (
+    <InputLocation
+      isLoaded={true}
+      isForm={true}
+      placeholder="Calle y número"
+      onLocationChange={(location) => {
+        // Full data available for backend
+        saveAddress(location);
+      }}
+    />
+  );
+}
+```
+
+```tsx Custom Search Types
+import { InputLocation } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <InputLocation
+      isLoaded={true}
+      placeholder="Buscar ciudad"
+      searchTypes={['(cities)']}
+      searchFields={['geometry', 'address_components', 'name']}
+      onLocationChange={(location) => {
+        console.log('City:', location.city);
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="isLoaded" type="boolean" required>
+  Must be `true` when Google Maps API is fully loaded. Input is disabled while `false`.
+</ParamField>
+
+<ParamField path="isForm" type="boolean" default="false">
+  If `true`, only shows route + number in input after selection (e.g., "Calle Mayor 15"). Full address data is still provided in `onLocationChange`.
+</ParamField>
+
+<ParamField path="searchTypes" type="string[]" default="['address']">
+  Google Places API search types. Common options:
+  - `['address']`: Street addresses
+  - `['(cities)']`: Cities only
+  - `['establishment']`: Businesses and points of interest
+  - `['geocode']`: Geocoding results
+  
+  See [Google Places API documentation](https://developers.google.com/maps/documentation/javascript/places-autocomplete#add_autocomplete) for all types.
+</ParamField>
+
+<ParamField path="searchFields" type="string[]" default="['geometry', 'address_components']">
+  Google Places API fields to fetch. Determines what data is available in the response.
+  Common fields:
+  - `geometry`: Coordinates (lat/lng)
+  - `address_components`: Parsed address parts
+  - `formatted_address`: Full formatted address
+  - `name`: Place name
+  - `place_id`: Unique identifier
+  
+  Note: Different fields may incur different API costs.
+</ParamField>
+
+<ParamField path="onLocationChange" type="(location: LocationProps) => void">
+  Callback with parsed location data when user selects an address from the dropdown.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the input. Shows "Cargando..." while API is loading.
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'" default="secondary">
+  Visual variant inherited from Input component.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input.
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Default address value to display in the input.
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the input. Note: Input is automatically disabled when `isLoaded` is `false`.
+</ParamField>
+
+## Location Data Interface
+
+```tsx
+interface LocationProps {
+  address?: string;          // Full formatted address
+  sortAddress?: string;      // Short address (city, province, country)
+  route?: string;            // Street name
+  routeNumber?: string;      // Street number
+  routeInfo?: string;        // Additional route information
+  city?: string;             // City name
+  province?: string;         // Province/state name
+  zipCode?: string;          // Postal code
+  country?: string;          // Country name
+  shortCountry?: string;     // ISO country code (e.g., "ES")
+  location?: {               // Coordinates
+    lat: number;
+    lng: number;
+  };
+  timeZone?: string;         // Time zone
+}
+```
+
+## Examples
+
+### With Loading State
+
+```tsx
+import { InputLocation } from '@adoptaunabuelo/react-components';
+import { useState, useEffect } from 'react';
+
+function LocationInput() {
+  const [isLoaded, setIsLoaded] = useState(false);
+  
+  useEffect(() => {
+    // Check if Google Maps is loaded
+    const checkGoogleMaps = setInterval(() => {
+      if (typeof google !== 'undefined' && google.maps) {
+        setIsLoaded(true);
+        clearInterval(checkGoogleMaps);
+      }
+    }, 100);
+    
+    return () => clearInterval(checkGoogleMaps);
+  }, []);
+  
+  return (
+    <InputLocation
+      isLoaded={isLoaded}
+      placeholder="Tu dirección"
+      onLocationChange={(location) => {
+        console.log(location);
+      }}
+    />
+  );
+}
+```
+
+### Address Validation
+
+```tsx
+import { InputLocation } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function ValidatedAddressInput() {
+  const [error, setError] = useState('');
+  
+  const handleLocationChange = (location) => {
+    // Validate that we have all required fields
+    if (!location.route || !location.zipCode) {
+      setError('Please provide a complete address with street number');
+      return;
+    }
+    
+    setError('');
+    saveAddress(location);
+  };
+  
+  return (
+    <InputLocation
+      isLoaded={true}
+      placeholder="Dirección completa"
+      error={error}
+      onLocationChange={handleLocationChange}
+    />
+  );
+}
+```
+
+### Search for Cities Only
+
+```tsx
+import { InputLocation } from '@adoptaunabuelo/react-components';
+
+function CitySearch() {
+  return (
+    <InputLocation
+      isLoaded={true}
+      placeholder="Buscar ciudad"
+      searchTypes={['(cities)']}
+      searchFields={['geometry', 'address_components']}
+      onLocationChange={(location) => {
+        console.log('Selected city:', location.city);
+        console.log('Province:', location.province);
+        console.log('Coordinates:', location.location);
+      }}
+    />
+  );
+}
+```
+
+## Error Handling
+
+The component displays built-in error messages in Spanish:
+
+- **Missing street number**: "Necesitamos una dirección más precisa para encontrar tu código postal. Por favor, indica el número de la calle."
+- **Connection error**: "Parece que hubo un error de conexión al obtener la dirección. Prueba de nuevo más tarde."
+
+## Features
+
+- **Debounced search**: 500ms delay to reduce API calls
+- **Spanish localization**: Results and interface in Spanish
+- **Autocomplete dropdown**: Suggestions appear below input
+- **Structured parsing**: Extracts street, number, city, province, zip code, country
+- **Coordinate support**: Returns lat/lng for mapping
+- **Error validation**: Built-in validation for complete addresses

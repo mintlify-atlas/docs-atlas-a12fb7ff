@@ -1,0 +1,220 @@
+---
+title: Label
+description: Status-aware badge and chip component with automatic color mapping
+---
+
+## Overview
+
+The `Label` component displays badges or chips with automatic status-based coloring. It supports two visual types: `label` (badge style) and `chip` (rounded button style), and includes predefined colors for common status values.
+
+## Import
+
+```tsx
+import { Label } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Status Labels
+
+```tsx
+{/* Automatic color mapping for status values */}
+<Label text="active" />
+<Label text="pending" />
+<Label text="canceled" />
+<Label text="done" />
+```
+
+### Chips
+
+```tsx
+{/* Big chip with full text */}
+<Label type="chip" size="big" text="Pending Review" />
+
+{/* Small chip with initials */}
+<Label type="chip" size="small" text="John Doe" />
+{/* Displays "JD" */}
+
+{/* Selector chip with border */}
+<Label type="chip" size="selector" text="Category" />
+```
+
+### Custom Colors
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Label 
+  text="Custom Status"
+  color={ColorV2.text.white}
+  backgroundColor={ColorV2.surface.purple}
+/>
+```
+
+### With Icons
+
+```tsx
+import { Check } from 'lucide-react';
+
+<Label 
+  text="Completed"
+  icon={<Check size={16} />}
+/>
+```
+
+### Disabled State
+
+```tsx
+<Label type="chip" size="big" text="Inactive" disabled />
+```
+
+## Props
+
+<ParamField path="text" type="string" required>
+  Text to display. For predefined status values, color is automatically applied.
+  
+  **Recognized status values:**
+  - Registration: `inRegister`, `registered`, `waiting`, `training`
+  - Active: `match`, `active`, `done`, `paid`, `Resuelto`
+  - Processing: `inProgress`, `En proceso`, `pending_remittance`, `pending`, `Pendiente`
+  - Inactive: `paused`, `shutdown`, `exVolunteer`
+  - Error: `banned`, `canceled`, `failed`, `cancel`, `No resuelto`
+</ParamField>
+
+<ParamField path="type" type="string" default="label">
+  Visual variant to render.
+  
+  **Options:**
+  - `"label"` - Badge style with rounded corners
+  - `"chip"` - Rounded button style (requires `size` prop)
+</ParamField>
+
+<ParamField path="size" type="string">
+  Size variant for chips. Only used when `type="chip"`.
+  
+  **Options:**
+  - `"big"` - Full text display with padding (height: 32px)
+  - `"small"` - Circular chip with initials only (30px diameter)
+  - `"selector"` - Full text with border (height: 32px)
+</ParamField>
+
+<ParamField path="icon" type="ReactElement">
+  Optional icon displayed before the text. Only applies to `type="label"`.
+  
+  ```tsx
+  import { Star } from 'lucide-react';
+  <Label text="Featured" icon={<Star size={14} />} />
+  ```
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  When `true`, applies disabled styling (muted colors, reduced opacity).
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Custom background color. Overrides automatic status colors.
+</ParamField>
+
+<ParamField path="color" type="string">
+  Custom text color. Overrides automatic status colors.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Additional inline styles. Common use cases:
+  - Custom `fontSize`
+  - Additional spacing with `margin`
+  - Custom dimensions
+</ParamField>
+
+## Status Color Mapping
+
+### Registration & Processing (Blue)
+- `inRegister` → "En registro"
+- `registered` → "Registrado"
+- `waiting` → "Pendiente de match"
+- `training` → "Formación en proceso"
+- Color: `#2D7FD9` on `#E5F1FC`
+
+### Success & Active (Green)
+- `match` → "Match"
+- `active` → "Activa"
+- `done` / `Resuelto` → "Resuelto"
+- `paid` → "Pagado"
+- Colors: `#59C183` / `#448B6D` on `#E7F6ED` / `#E4F8EE`
+
+### Warning & In Progress (Orange)
+- `inProgress` / `En proceso` → "En proceso"
+- Color: `#FF8854` on `#FFF6E5`
+
+### Pending & Neutral (Gray)
+- `pending_remittance` → "Pendiente remesa"
+- `pending` / `Pendiente` → "Pendiente"
+- `paused` → "Pausa"
+- Color: `#0000008F` / `#828282` on `#F2F2F2`
+
+### Error & Inactive (Red)
+- `shutdown` → "Baja"
+- `banned` → "Bloqueado"
+- `exVolunteer` → "Ex-voluntario"
+- `canceled` → "Cancelado"
+- `failed` → "Fallido"
+- `cancel` → "Cancelada"
+- `No resuelto` → "No resuelto"
+- Color: `#FF5A5A` / `Color.text.red` on `#FCEDF1` / `Color.background.redLow`
+
+## Design Specifications
+
+### Label Type
+- **Height**: 28px
+- **Padding**: 0px 8px
+- **Border radius**: 3px
+- **Width**: Fits content
+
+### Chip Type - Big
+- **Height**: 32px
+- **Padding**: 0px 12px
+- **Border radius**: 555px (fully rounded)
+- **Background**: `Color.background.primaryLow`
+
+### Chip Type - Small
+- **Size**: 30px × 32px
+- **Shape**: Circle
+- **Background**: `Color.background.primaryLow`
+- **Text**: First 2 characters, capitalized
+
+### Chip Type - Selector
+- **Height**: 32px
+- **Padding**: 0px 12px
+- **Border**: 1px solid `Color.line.full`
+- **Border radius**: 555px
+
+## Features
+
+- **Automatic status colors**: Predefined color mapping for common status values
+- **Multiple visual styles**: Badge, chip, and selector variants
+- **Icon support**: Add visual indicators to labels
+- **Disabled state**: Muted appearance for inactive items
+- **Custom colors**: Override automatic colors when needed
+- **Text transformation**: Automatic capitalization for chip text
+- **Responsive sizing**: Consistent heights across variants
+
+## Best Practices
+
+- Use `type="label"` for status badges in tables and lists
+- Use `type="chip"` with `size="big"` for filter tags
+- Use `type="chip"` with `size="selector"` for selectable options
+- Use `type="chip"` with `size="small"` for compact user indicators
+- Leverage automatic status colors for consistent UI
+- Add icons to labels for better visual recognition
+- Use `disabled` prop to show inactive or unavailable states
+
+## Accessibility
+
+- Uses `role="chip"` or `role="label"` for semantic identification
+- High contrast color combinations for readability
+- Sufficient padding for touch targets (32px height for interactive chips)
+
+## Related Components
+
+- [Text](/components/text) - Used internally for label text
+- [Button](/components/button) - Similar styling for interactive elements

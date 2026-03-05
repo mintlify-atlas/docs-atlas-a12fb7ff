@@ -1,0 +1,345 @@
+---
+title: CellSelector
+description: Grid-based selector with visual cells for single or multiple selection
+---
+
+## Overview
+
+CellSelector displays options as a grid of clickable cells with icons, titles, and optional subtitles. It provides visual feedback with hover states, selection highlights, and supports disabled states.
+
+## Basic Usage
+
+```tsx
+import { CellSelector } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import { Home, Briefcase, Users } from 'lucide-react';
+
+function App() {
+  const [selected, setSelected] = useState([]);
+
+  const options = [
+    {
+      id: '1',
+      title: 'Home',
+      subtitle: 'Personal space',
+      icon: <Home size={24} />
+    },
+    {
+      id: '2',
+      title: 'Work',
+      subtitle: 'Office',
+      icon: <Briefcase size={24} />
+    },
+    {
+      id: '3',
+      title: 'Team',
+      subtitle: 'Shared',
+      icon: <Users size={24} />
+    }
+  ];
+
+  return (
+    <CellSelector
+      type="single"
+      options={options}
+      selectedOptions={selected}
+      onChange={setSelected}
+    />
+  );
+}
+```
+
+## Selection Modes
+
+### Single Selection
+
+Only one cell can be selected at a time (radio behavior).
+
+```tsx
+<CellSelector
+  type="single"
+  options={[
+    { id: 'option1', title: 'Option 1', icon: <Icon1 /> },
+    { id: 'option2', title: 'Option 2', icon: <Icon2 /> },
+    { id: 'option3', title: 'Option 3', icon: <Icon3 /> }
+  ]}
+  selectedOptions={selected}
+  onChange={(items) => {
+    // items will always contain exactly one item
+    setSelected(items);
+  }}
+/>
+```
+
+### Multiple Selection
+
+Multiple cells can be selected simultaneously (checkbox behavior).
+
+```tsx
+<CellSelector
+  type="multiple"
+  options={[
+    { id: 'react', title: 'React', icon: <ReactIcon /> },
+    { id: 'vue', title: 'Vue', icon: <VueIcon /> },
+    { id: 'angular', title: 'Angular', icon: <AngularIcon /> }
+  ]}
+  selectedOptions={selectedFrameworks}
+  onChange={(items) => {
+    // items contains array of all selected options
+    setSelectedFrameworks(items);
+  }}
+/>
+```
+
+## With Subtitles
+
+Add descriptive text below each cell.
+
+```tsx
+import { Cloud, Server, Database } from 'lucide-react';
+
+<CellSelector
+  type="single"
+  options={[
+    {
+      id: 'saas',
+      title: 'SaaS',
+      subtitle: 'Software as a Service',
+      icon: <Cloud size={28} />
+    },
+    {
+      id: 'paas',
+      title: 'PaaS',
+      subtitle: 'Platform as a Service',
+      icon: <Server size={28} />
+    },
+    {
+      id: 'iaas',
+      title: 'IaaS',
+      subtitle: 'Infrastructure as a Service',
+      icon: <Database size={28} />
+    }
+  ]}
+  selectedOptions={serviceType}
+  onChange={setServiceType}
+/>
+```
+
+## Disabled Options
+
+Disable specific cells to prevent selection.
+
+```tsx
+<CellSelector
+  type="multiple"
+  options={[
+    {
+      id: 'basic',
+      title: 'Basic',
+      subtitle: 'Free',
+      icon: <BasicIcon />
+    },
+    {
+      id: 'pro',
+      title: 'Pro',
+      subtitle: '$29/month',
+      icon: <ProIcon />,
+      disabled: true  // Grayed out and not clickable
+    },
+    {
+      id: 'enterprise',
+      title: 'Enterprise',
+      subtitle: 'Contact sales',
+      icon: <EnterpriseIcon />,
+      disabled: true
+    }
+  ]}
+  selectedOptions={plan}
+  onChange={setPlan}
+/>
+```
+
+## Design Variants
+
+```tsx
+// Design 1: No border (default)
+<CellSelector
+  design="design1"
+  options={options}
+  selectedOptions={selected}
+  onChange={setSelected}
+/>
+
+// Design 2: With border
+<CellSelector
+  design="design2"
+  options={options}
+  selectedOptions={selected}
+  onChange={setSelected}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of cell options:
+  ```tsx
+  {
+    id: string;           // Unique identifier
+    title: string;        // Main text displayed in cell
+    subtitle?: string;    // Optional text below cell
+    icon?: ReactElement;  // Icon displayed in cell
+    disabled?: boolean;   // Disable interaction
+  }
+  ```
+</ParamField>
+
+<ParamField path="type" type="'single' | 'multiple'" default="single">
+  Selection mode:
+  - `single`: Only one cell can be selected (radio behavior)
+  - `multiple`: Multiple cells can be selected (checkbox behavior)
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<OptionProps>">
+  Currently selected options (controlled component pattern).
+</ParamField>
+
+<ParamField path="onChange" type="(items: Array<OptionProps>) => void">
+  Callback fired when selection changes. Receives array of selected options.
+</ParamField>
+
+<ParamField path="onClick" type="(item: OptionProps) => void">
+  Callback fired when an individual cell is clicked. Called before `onChange`.
+</ParamField>
+
+<ParamField path="design" type="'design1' | 'design2'" default="design1">
+  Visual design variant:
+  - `design1`: No border on unselected cells
+  - `design2`: Border on all cells
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the container.
+</ParamField>
+
+<ParamField path="cellStyle" type="CSSProperties">
+  Custom styles applied to each cell.
+</ParamField>
+
+## Advanced Examples
+
+### With Custom Styling
+
+```tsx
+<CellSelector
+  type="multiple"
+  options={options}
+  selectedOptions={selected}
+  onChange={setSelected}
+  style={{
+    gap: '24px',
+    justifyContent: 'flex-start'
+  }}
+  cellStyle={{
+    backgroundColor: '#f8f9fa',
+    borderRadius: '16px'
+  }}
+/>
+```
+
+### With Click Tracking
+
+```tsx
+const handleCellClick = (item: OptionProps) => {
+  console.log('Cell clicked:', item.id);
+  trackEvent('cell_selection', { cellId: item.id });
+};
+
+<CellSelector
+  type="single"
+  options={options}
+  selectedOptions={selected}
+  onClick={handleCellClick}
+  onChange={setSelected}
+/>
+```
+
+### Dynamic Options
+
+```tsx
+const [options, setOptions] = useState([]);
+
+useEffect(() => {
+  fetchCategories().then(categories => {
+    const cellOptions = categories.map(cat => ({
+      id: cat.id,
+      title: cat.name,
+      subtitle: `${cat.count} items`,
+      icon: <CategoryIcon type={cat.type} />,
+      disabled: cat.count === 0
+    }));
+    setOptions(cellOptions);
+  });
+}, []);
+
+<CellSelector
+  type="multiple"
+  options={options}
+  selectedOptions={selected}
+  onChange={setSelected}
+/>
+```
+
+### Conditional Rendering
+
+```tsx
+function ProductSelector() {
+  const [selected, setSelected] = useState([]);
+  const [showDetails, setShowDetails] = useState(false);
+
+  return (
+    <>
+      <CellSelector
+        type="single"
+        options={products}
+        selectedOptions={selected}
+        onChange={(items) => {
+          setSelected(items);
+          setShowDetails(items.length > 0);
+        }}
+      />
+      {showDetails && (
+        <ProductDetails product={selected[0]} />
+      )}
+    </>
+  );
+}
+```
+
+## Behavior Notes
+
+- **Single selection**: Clicking same cell deselects it, then selects the new one
+- **Multiple selection**: Clicking toggles selection on/off
+- **Disabled cells**: Cannot be clicked, reduced opacity (0.3)
+- **Hover effect**: Background color changes on hover (except disabled cells)
+- **Active state**: Scale down to 0.95 on click for tactile feedback
+- **Grid layout**: Uses flex-wrap with `justify-content: space-around`
+- **Cell size**: Each cell is 95px min-width, 72px height
+
+## Styling Notes
+
+- Selected cells have `2px` border in primary color
+- Unselected cells have `1px` border (design2) or no border (design1)
+- Hover background: `Color.line.soft` for unselected, `Color.background.primaryLow` for selected
+- Disabled cells: 30% opacity with default cursor
+- Cell spacing: `4px` margin around each cell
+- Title font: Poppins, 14px, medium weight
+- Subtitle font: 14px with centered alignment
+
+## Accessibility
+
+- Each cell has a unique `role` attribute with cell index
+- Container has `role="container"` attribute
+- Visual focus states on hover and active
+- Disabled state prevents interaction
+- Icons should have appropriate alt text or aria-labels

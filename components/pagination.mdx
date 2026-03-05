@@ -1,0 +1,265 @@
+---
+title: Pagination
+description: Pagination control with first, previous, next, and last navigation buttons
+---
+
+## Overview
+
+The `Pagination` component provides navigation controls for paginated content. It displays the current page number and total pages in a "X de Y" format (e.g., "1 de 5"), along with four navigation buttons: first page, previous page, next page, and last page. The component automatically calculates the total number of pages based on your data length and items per page.
+
+## Basic Usage
+
+```tsx
+import { Pagination } from '@adoptaunabuelo/react-components';
+
+function MyComponent() {
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalItems = 100;
+  const itemsPerPage = 10;
+  
+  return (
+    <Pagination
+      length={totalItems}
+      rowsPerPage={itemsPerPage}
+      start={currentPage}
+      onChange={(page) => setCurrentPage(page)}
+    />
+  );
+}
+```
+
+## Examples
+
+### Simple Pagination
+
+```tsx
+<Pagination
+  length={50}
+  rowsPerPage={10}
+  onChange={(page) => console.log('Page:', page)}
+/>
+```
+
+### Controlled Pagination
+
+```tsx
+function DataTable() {
+  const [page, setPage] = useState(0);
+  const data = [...]; // Your data array
+  const pageSize = 20;
+  
+  const paginatedData = data.slice(
+    page * pageSize,
+    (page + 1) * pageSize
+  );
+  
+  return (
+    <div>
+      <table>
+        {paginatedData.map(item => (
+          <tr key={item.id}>{/* render item */}</tr>
+        ))}
+      </table>
+      
+      <Pagination
+        length={data.length}
+        rowsPerPage={pageSize}
+        start={page}
+        onChange={setPage}
+      />
+    </div>
+  );
+}
+```
+
+### With API Data Fetching
+
+```tsx
+function UserList() {
+  const [page, setPage] = useState(0);
+  const [users, setUsers] = useState([]);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const usersPerPage = 15;
+  
+  useEffect(() => {
+    fetchUsers(page, usersPerPage).then(response => {
+      setUsers(response.data);
+      setTotalUsers(response.total);
+    });
+  }, [page]);
+  
+  return (
+    <div>
+      <ul>
+        {users.map(user => <li key={user.id}>{user.name}</li>)}
+      </ul>
+      
+      <Pagination
+        length={totalUsers}
+        rowsPerPage={usersPerPage}
+        start={page}
+        onChange={(newPage) => setPage(newPage)}
+      />
+    </div>
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+<Pagination
+  length={200}
+  rowsPerPage={25}
+  start={0}
+  style={{
+    marginTop: '20px',
+    padding: '10px',
+    backgroundColor: '#f5f5f5',
+    borderRadius: '8px'
+  }}
+  onChange={handlePageChange}
+/>
+```
+
+### Different Page Sizes
+
+```tsx
+function FlexiblePagination() {
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const totalItems = 237;
+  
+  return (
+    <div>
+      <select value={pageSize} onChange={(e) => {
+        setPageSize(Number(e.target.value));
+        setPage(0); // Reset to first page
+      }}>
+        <option value={10}>10 per page</option>
+        <option value={25}>25 per page</option>
+        <option value={50}>50 per page</option>
+      </select>
+      
+      <Pagination
+        length={totalItems}
+        rowsPerPage={pageSize}
+        start={page}
+        onChange={setPage}
+      />
+    </div>
+  );
+}
+```
+
+## Props
+
+<ParamField path="length" type="number" required>
+  Total number of items to paginate. This is used along with `rowsPerPage` to calculate the total number of pages.
+</ParamField>
+
+<ParamField path="rowsPerPage" type="number" required>
+  Number of items to display per page. The component divides `length` by this value to determine total pages (rounded up).
+</ParamField>
+
+<ParamField path="start" type="number" default="0">
+  Initial or controlled page index (0-based). The first page is 0, second page is 1, etc.
+</ParamField>
+
+<ParamField path="onChange" type="(page: number) => void">
+  Callback fired when the page changes. Receives the new page index (0-based) as its argument.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles to apply to the container element.
+</ParamField>
+
+## Navigation Buttons
+
+The component includes four navigation buttons:
+
+1. **First Page** (`ChevronFirst` icon): Jumps to page 0
+2. **Previous Page** (`ChevronLeft` icon): Goes back one page
+3. **Next Page** (`ChevronRight` icon): Goes forward one page
+4. **Last Page** (`ChevronLast` icon): Jumps to the last page
+
+Buttons are automatically disabled (visual and functional) when:
+- First/Previous buttons: When on the first page (`start === 0`)
+- Next/Last buttons: When on the last page (`start === totalPages - 1`)
+
+## Styling
+
+The pagination component uses:
+
+- **Container**: Flexbox layout with centered alignment
+- **Icon buttons**: 26px × 26px circular hover areas
+- **Border radius**: 42px (fully rounded)
+- **Hover background**: `Color.background.soft`
+- **Active icon color**: `Color.text.full`
+- **Disabled icon color**: `Color.text.low`
+- **Text margin**: 12px horizontal spacing
+- **Current page display**: Bold font weight
+
+## Page Display Format
+
+The component displays the current page in Spanish format:
+
+```
+1 de 5
+```
+
+Where:
+- First number: Current page (1-based for display)
+- "de": Spanish for "of"
+- Second number: Total number of pages
+
+Both numbers are rendered in bold (`font-weight: 700`).
+
+## Accessibility
+
+- Container has `role="pagination"` for semantic meaning
+- Individual buttons have descriptive role attributes:
+  - `role="first-arrow"`
+  - `role="left-arrow"`
+  - `role="right-arrow"`
+  - `role="last-arrow"`
+- Cursor changes to `auto` when buttons are disabled
+- Visual feedback through color changes and hover states
+
+## TypeScript
+
+```tsx
+import { CSSProperties } from 'react';
+
+interface PaginationProps {
+  style?: CSSProperties;
+  start?: number;
+  length: number;
+  rowsPerPage: number;
+  onChange?: (page: number) => void;
+}
+```
+
+## Best Practices
+
+- Always use 0-based indexing for the `start` prop
+- Update your data display in the `onChange` callback
+- Keep `rowsPerPage` consistent with your data fetching strategy
+- Consider adding a page size selector for better UX
+- Reset to page 0 when applying filters or changing page size
+- Ensure `length` is updated when your dataset changes
+- Use the controlled `start` prop for predictable behavior
+- Display loading states while fetching new page data
+
+## Calculation Details
+
+The component calculates total pages using:
+
+```javascript
+Math.ceil(length / rowsPerPage)
+```
+
+Examples:
+- 100 items ÷ 10 per page = 10 pages
+- 95 items ÷ 10 per page = 10 pages (rounded up)
+- 237 items ÷ 25 per page = 10 pages (rounded up from 9.48)

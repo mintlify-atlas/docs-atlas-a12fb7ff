@@ -1,80 +1,527 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quick Start
+description: Get up and running with Adopta Un Abuelo React Components in minutes
 ---
 
-## Get started in three steps
+# Quick Start
 
-Get your documentation site running locally and make your first customization.
+This guide will help you start using Adopta Un Abuelo React Components in your React application with practical, working examples.
 
-### Step 1: Set up your local environment
+## Prerequisites
 
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
+Before you begin, make sure you have:
+
+- Completed the [installation](/installation) steps
+- A React project (React 18+ or React 19+) with styled-components configured
+- Basic knowledge of React and TypeScript
+
+## Your First Component
+
+Let's start with a simple example using the `ProgressBar` component:
+
+```tsx
+import React from 'react';
+import { ProgressBar } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <ProgressBar 
+      maxValue={100}
+      minValue={0}
+      progress={40}
+    />
+  );
+}
+
+export default App;
+```
+
+This renders a progress bar at 40% completion. Simple and straightforward!
+
+## Common Components
+
+<Steps>
+
+<Step title="Button Component">
+
+The `Button` component supports multiple design variants, loading states, and success animations:
+
+```tsx
+import React, { useState } from 'react';
+import { Button } from '@adoptaunabuelo/react-components';
+
+function ButtonExample() {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = () => {
+    setLoading(true);
     
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
+    // Simulate API call
+    setTimeout(() => {
+      setLoading(false);
+      setSuccess(true);
+    }, 2000);
+  };
 
-### Step 2: Deploy your changes
+  return (
+    <div style={{ display: 'flex', gap: '12px' }}>
+      {/* Primary button with loading state */}
+      <Button 
+        design="primary"
+        loading={loading}
+        success={success}
+        onSuccess={() => setSuccess(false)}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
 
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+      {/* Secondary button */}
+      <Button design="secondary">
+        Cancel
+      </Button>
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+      {/* Text button */}
+      <Button design="text">
+        Learn More
+      </Button>
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+      {/* Small button */}
+      <Button design="primary" size="small">
+        Small Button
+      </Button>
+    </div>
+  );
+}
+```
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  To use loading and success animations, install `@lottiefiles/react-lottie-player`.
+</Note>
+
+</Step>
+
+<Step title="Input Component">
+
+The `Input` component offers three design variants and supports all standard HTML input attributes:
+
+```tsx
+import React, { useState } from 'react';
+import { Input } from '@adoptaunabuelo/react-components';
+
+function InputExample() {
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    
+    // Simple validation
+    if (e.target.value && !e.target.value.includes('@')) {
+      setError('Please enter a valid email');
+    } else {
+      setError('');
+    }
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Secondary design (default) */}
+      <Input
+        design="secondary"
+        type="email"
+        placeholder="Enter your email"
+        label="Email Address"
+        value={email}
+        onChange={handleChange}
+        error={error}
+      />
+
+      {/* Primary design */}
+      <Input
+        design="primary"
+        type="text"
+        placeholder="Your name"
+        label="Full Name"
+      />
+
+      {/* Third design */}
+      <Input
+        design="third"
+        type="password"
+        placeholder="Password"
+        label="Password"
+      />
+    </div>
+  );
+}
+```
+
+</Step>
+
+<Step title="Text Component">
+
+The `Text` component provides unified typography for headers, paragraphs, and button text:
+
+```tsx
+import React from 'react';
+import { Text } from '@adoptaunabuelo/react-components';
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+function TextExample() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Headers */}
+      <Text type="h1" weight="bold">
+        Main Title
+      </Text>
+      
+      <Text type="h2" weight="semibold">
+        Section Heading
+      </Text>
+      
+      <Text type="h3">
+        Subsection
+      </Text>
+
+      {/* Paragraphs */}
+      <Text type="p" weight="regular">
+        This is regular paragraph text with normal weight.
+      </Text>
+      
+      <Text type="p2" weight="medium">
+        This is smaller paragraph text with medium weight.
+      </Text>
+
+      {/* Button text styles */}
+      <Text type="b1" weight="semibold">
+        Button Text Large
+      </Text>
+      
+      <Text type="b2">
+        Button Text Medium
+      </Text>
+    </div>
+  );
+}
+```
+
+</Step>
+
+<Step title="Phone Input Component">
+
+The `InputPhone` component includes international country selection and phone validation:
+
+```tsx
+import React, { useState } from 'react';
+import { InputPhone } from '@adoptaunabuelo/react-components';
+
+// Example country list - you can import from @constants/Country
+const countryOptions = [
+  {
+    id: 'spain',
+    esCountry: 'España',
+    enCountry: 'Spain',
+    prefix: '+34',
+    countryCode: 'ES'
+  },
+  {
+    id: 'usa',
+    esCountry: 'Estados Unidos',
+    enCountry: 'United States',
+    prefix: '+1',
+    countryCode: 'US'
+  },
+  {
+    id: 'uk',
+    esCountry: 'Reino Unido',
+    enCountry: 'United Kingdom',
+    prefix: '+44',
+    countryCode: 'GB'
+  }
+];
+
+function PhoneInputExample() {
+  const [phone, setPhone] = useState('');
+  const [isValid, setIsValid] = useState(false);
+
+  const handlePhoneChange = ({ country, value, isValid }) => {
+    if (isValid && value) {
+      setPhone(country + value);
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
+
+  return (
+    <div>
+      <InputPhone
+        design="secondary"
+        country="ES"
+        countryOptions={countryOptions}
+        placeholder="Phone number"
+        label="Phone Number"
+        onPhoneChange={handlePhoneChange}
+      />
+      
+      {isValid && (
+        <Text type="p2" style={{ color: 'green', marginTop: '8px' }}>
+          ✓ Valid phone number: {phone}
+        </Text>
+      )}
+    </div>
+  );
+}
+```
+
+</Step>
+
+</Steps>
+
+## Complete Example Application
+
+Here's a complete example combining multiple components:
+
+```tsx
+import React, { useState } from 'react';
+import {
+  Button,
+  Input,
+  Text,
+  ProgressBar,
+  Modal
+} from '@adoptaunabuelo/react-components';
+
+function CompleteExample() {
+  const [step, setStep] = useState(1);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const totalSteps = 3;
+  const progress = (step / totalSteps) * 100;
+
+  const handleNext = () => {
+    if (step < totalSteps) {
+      setStep(step + 1);
+    } else {
+      setLoading(true);
+      // Simulate form submission
+      setTimeout(() => {
+        setLoading(false);
+        setShowModal(true);
+      }, 2000);
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
+  return (
+    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '40px' }}>
+      {/* Header */}
+      <Text type="h1" weight="bold" style={{ marginBottom: '8px' }}>
+        Welcome to Our App
+      </Text>
+      
+      <Text type="p" style={{ marginBottom: '32px' }}>
+        Complete the steps below to get started
+      </Text>
+
+      {/* Progress indicator */}
+      <div style={{ marginBottom: '32px' }}>
+        <Text type="p2" weight="medium" style={{ marginBottom: '12px' }}>
+          Step {step} of {totalSteps}
+        </Text>
+        <ProgressBar
+          progress={progress}
+          showPercentage
+          animationTime={0.5}
+        />
+      </div>
+
+      {/* Step content */}
+      <div style={{ marginBottom: '32px' }}>
+        {step === 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Text type="h3" weight="semibold">Personal Information</Text>
+            <Input
+              design="secondary"
+              label="Full Name"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        )}
+
+        {step === 2 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Text type="h3" weight="semibold">Contact Details</Text>
+            <Input
+              design="secondary"
+              type="email"
+              label="Email Address"
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+        )}
+
+        {step === 3 && (
+          <div>
+            <Text type="h3" weight="semibold" style={{ marginBottom: '16px' }}>
+              Review Your Information
+            </Text>
+            <div style={{ 
+              backgroundColor: '#F2F2F2', 
+              padding: '16px', 
+              borderRadius: '8px' 
+            }}>
+              <Text type="p" weight="medium">Name: {name || 'Not provided'}</Text>
+              <Text type="p" weight="medium">Email: {email || 'Not provided'}</Text>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Navigation buttons */}
+      <div style={{ display: 'flex', gap: '12px', justifyContent: 'space-between' }}>
+        <Button
+          design="secondary"
+          onClick={handleBack}
+          disabled={step === 1}
+        >
+          Back
+        </Button>
+        
+        <Button
+          design="primary"
+          onClick={handleNext}
+          loading={loading}
+          disabled={loading}
+        >
+          {step === totalSteps ? 'Submit' : 'Next'}
+        </Button>
+      </div>
+
+      {/* Success modal */}
+      {showModal && (
+        <Modal
+          onClose={() => {
+            setShowModal(false);
+            setStep(1);
+            setName('');
+            setEmail('');
+          }}
+        >
+          <div style={{ padding: '32px', textAlign: 'center' }}>
+            <Text type="h2" weight="bold" style={{ marginBottom: '16px' }}>
+              Success!
+            </Text>
+            <Text type="p" style={{ marginBottom: '24px' }}>
+              Your information has been submitted successfully.
+            </Text>
+            <Button design="primary" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+}
+
+export default CompleteExample;
+```
+
+## Importing Constants
+
+The library exports useful constants for colors and countries:
+
+```tsx
+import { Color, ColorV2, Country } from '@adoptaunabuelo/react-components';
+
+// Use predefined colors
+<Button style={{ backgroundColor: Color.background.primary }}>
+  Primary Color
+</Button>
+
+// Use ColorV2 for newer color system
+<Text style={{ color: ColorV2.text.neutralMedium }}>
+  Medium gray text
+</Text>
+
+// Access country data
+<InputPhone countryOptions={Country.list} />
+```
+
+## TypeScript Support
+
+All components are fully typed. Take advantage of IntelliSense in your IDE:
+
+```tsx
+import { Button, ButtonProps } from '@adoptaunabuelo/react-components';
+
+// Props are fully typed
+const CustomButton = (props: ButtonProps) => {
+  return <Button design="primary" {...props} />;
+};
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Design Variants" icon="palette">
+    Components offer multiple design variants (primary, secondary, text). Use them consistently throughout your app for visual hierarchy.
+  </Card>
+  
+  <Card title="Handle Loading States" icon="spinner">
+    Use the built-in loading states for buttons and forms to provide feedback during async operations.
+  </Card>
+  
+  <Card title="Validate Inputs" icon="check">
+    Leverage the error prop on input components to show validation messages.
+  </Card>
+  
+  <Card title="Leverage TypeScript" icon="code">
+    Use TypeScript for better IDE support and catch errors at compile time.
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Explore Components" icon="box" href="https://www.chromatic.com/library?appId=64650038c7589bed568201a8">
+    Browse all components in our Storybook
+  </Card>
+  
+  <Card title="View Source" icon="github" href="https://github.com/Adopta-Un-Abuelo/react-components">
+    Check out the source code on GitHub
+  </Card>
+  
+  <Card title="Report Issues" icon="bug" href="https://github.com/Adopta-Un-Abuelo/react-components/issues">
+    Found a bug? Let us know
+  </Card>
+  
+  <Card title="Changelog" icon="list" href="https://github.com/Adopta-Un-Abuelo/react-components/releases">
+    See what's new in each release
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+If you encounter any issues or have questions:
+
+- Check the [Storybook](https://www.chromatic.com/library?appId=64650038c7589bed568201a8) for interactive examples
+- Review the [source code](https://github.com/Adopta-Un-Abuelo/react-components) on GitHub
+- Open an [issue](https://github.com/Adopta-Un-Abuelo/react-components/issues) for bugs or feature requests
+
+<Note>
+  This library is actively maintained and used in production. We welcome contributions and feedback!
 </Note>

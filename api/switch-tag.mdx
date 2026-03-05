@@ -1,0 +1,112 @@
+---
+title: SwitchTag
+description: Icon-based toggle switch for switching between two or more options with pill-shaped container
+---
+
+## Import
+
+```tsx
+import { SwitchTag } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { Grid, List } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: "grid", icon: <Grid /> },
+    { id: "list", icon: <List /> }
+  ]}
+  onChange={(option) => setViewMode(option.id)}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<{ id: string; icon: React.ReactElement }>" required>
+  Array of icon options (automatically colors icons based on selection)
+</ParamField>
+
+<ParamField path="onChange" type="(option: { id: string; icon: React.ReactElement }) => void">
+  Callback fired when option changes, receives selected option
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+## Features
+
+- Automatically colors icons: selected (primary blue) vs unselected (neutral gray)
+- Icons sized at 20x20px
+- Pill-shaped container with rounded ends (100px border radius)
+- Selected option has gray background (ColorV2.surface.neutralSoft)
+- Smooth hover effects
+- 8px padding per cell
+- 2px container padding with 1px border
+- First option selected by default
+
+## Examples
+
+### View Mode Toggle
+
+```tsx
+import { Grid, List } from 'lucide-react';
+import { SwitchTag } from '@adoptaunabuelo/react-components';
+
+const [viewMode, setViewMode] = useState('grid');
+
+<SwitchTag
+  options={[
+    { id: 'grid', icon: <Grid /> },
+    { id: 'list', icon: <List /> }
+  ]}
+  onChange={(option) => setViewMode(option.id)}
+/>
+```
+
+### Sort Direction
+
+```tsx
+import { ArrowUp, ArrowDown } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'asc', icon: <ArrowUp /> },
+    { id: 'desc', icon: <ArrowDown /> }
+  ]}
+  onChange={(option) => setSortDirection(option.id)}
+/>
+```
+
+### Multiple Options
+
+```tsx
+import { Calendar, Clock, Map } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'date', icon: <Calendar /> },
+    { id: 'time', icon: <Clock /> },
+    { id: 'location', icon: <Map /> }
+  ]}
+  onChange={(option) => setFilterType(option.id)}
+/>
+```
+
+### Custom Styling
+
+```tsx
+import { Sun, Moon } from 'lucide-react';
+
+<SwitchTag
+  options={[
+    { id: 'light', icon: <Sun /> },
+    { id: 'dark', icon: <Moon /> }
+  ]}
+  onChange={(option) => setTheme(option.id)}
+  style={{ backgroundColor: '#F0F3F6' }}
+/>
+```

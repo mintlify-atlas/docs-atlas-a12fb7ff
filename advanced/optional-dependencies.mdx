@@ -1,0 +1,182 @@
+---
+title: 'Optional Dependencies'
+description: 'Peer dependencies required for specific components'
+icon: 'box'
+---
+
+## Overview
+
+The Adopta Un Abuelo React Components library uses optional peer dependencies to keep the core bundle lightweight. Install only the dependencies you need based on which components you're using.
+
+<Warning>
+  Optional dependencies must be installed separately and are **required** for specific components to function. The component will not work if its dependencies are missing.
+</Warning>
+
+## Component Dependencies
+
+### InputLocation Component
+
+Required for location autocomplete functionality powered by Google Maps Places API.
+
+**Package:** `@react-google-maps/api`
+
+<CodeGroup>
+```bash npm
+npm install @react-google-maps/api
+```
+
+```bash yarn
+yarn add @react-google-maps/api
+```
+
+```bash pnpm
+pnpm add @react-google-maps/api
+```
+</CodeGroup>
+
+**Additional Setup Required:** See [Google Maps Integration](/advanced/google-maps-integration) for API key configuration.
+
+---
+
+### Payout Component
+
+Required for Stripe payment method collection (cards and SEPA direct debit).
+
+**Packages:** `@stripe/react-stripe-js` and `@stripe/stripe-js`
+
+<CodeGroup>
+```bash npm
+npm install @stripe/react-stripe-js @stripe/stripe-js
+```
+
+```bash yarn
+yarn add @stripe/react-stripe-js @stripe/stripe-js
+```
+
+```bash pnpm
+pnpm add @stripe/react-stripe-js @stripe/stripe-js
+```
+</CodeGroup>
+
+**Additional Setup Required:** See [Stripe Integration](/advanced/stripe-integration) for publishable key configuration.
+
+---
+
+### TextArea Rich Text Editor
+
+Required for rich text editing with formatting toolbar (bold, italic, headings, alignment).
+
+**Packages:** Multiple Tiptap extensions
+
+<CodeGroup>
+```bash npm
+npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash yarn
+yarn add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash pnpm
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+</CodeGroup>
+
+**Additional Setup Required:** See [Rich Text Editor](/advanced/rich-text-editor) for configuration details.
+
+---
+
+### Button Loading Animations
+
+Required for Lottie-based loading and success animations in Button components.
+
+**Package:** `@lottiefiles/react-lottie-player`
+
+<CodeGroup>
+```bash npm
+npm install @lottiefiles/react-lottie-player
+```
+
+```bash yarn
+yarn add @lottiefiles/react-lottie-player
+```
+
+```bash pnpm
+pnpm add @lottiefiles/react-lottie-player
+```
+</CodeGroup>
+
+---
+
+### InputImage Component
+
+Required for webcam capture functionality in image inputs.
+
+**Package:** `react-webcam`
+
+<CodeGroup>
+```bash npm
+npm install react-webcam
+```
+
+```bash yarn
+yarn add react-webcam
+```
+
+```bash pnpm
+pnpm add react-webcam
+```
+</CodeGroup>
+
+---
+
+### Styled Components (Optional)
+
+Optional utility for filtering DOM props in styled-components v6+.
+
+**Package:** `@emotion/is-prop-valid`
+
+<CodeGroup>
+```bash npm
+npm install @emotion/is-prop-valid
+```
+
+```bash yarn
+yarn add @emotion/is-prop-valid
+```
+
+```bash pnpm
+pnpm add @emotion/is-prop-valid
+```
+</CodeGroup>
+
+## Dependency Matrix
+
+Quick reference table:
+
+| Component(s) | Required Packages | Additional Setup |
+|--------------|-------------------|------------------|
+| `InputLocation` | `@react-google-maps/api` | Google Maps API key |
+| `Payout` | `@stripe/react-stripe-js`<br/>`@stripe/stripe-js` | Stripe publishable key |
+| `TextArea` (rich text) | `@tiptap/react`<br/>`@tiptap/starter-kit`<br/>`@tiptap/extension-text-align`<br/>`@tiptap/extension-text-style`<br/>`@tiptap/extensions` | None |
+| `Button` (animations) | `@lottiefiles/react-lottie-player` | None |
+| `InputImage` | `react-webcam` | Camera permissions |
+
+## Version Compatibility
+
+All optional dependencies are tested with the versions specified in the library's `devDependencies`. Current tested versions:
+
+- `@react-google-maps/api`: ^2.20.8
+- `@stripe/react-stripe-js`: ^5.6.0
+- `@stripe/stripe-js`: ^8.7.0
+- `@tiptap/react`: ^3.19.0
+- `@tiptap/starter-kit`: ^3.19.0
+- `@tiptap/extension-text-align`: ^3.19.0
+- `@tiptap/extension-text-style`: ^3.19.0
+- `@tiptap/extensions`: ^3.19.0
+- `@lottiefiles/react-lottie-player`: ^3.6.0
+- `react-webcam`: ^7.2.0
+
+<Note>
+  The library follows semantic versioning. Patch and minor version updates of optional dependencies should be compatible, but test thoroughly when upgrading major versions.
+</Note>

@@ -1,0 +1,79 @@
+---
+title: Button
+description: API reference for the Button component
+---
+
+## Button
+
+Button component with multiple visual variants and built-in loading/success states.
+
+### Import
+
+```tsx
+import { Button } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="design" type="'primary' | 'secondary' | 'text' | 'image' | 'call-to-action'" default="primary">
+  Visual variant: `primary` for main actions, `secondary` for less emphasis, `text` for minimal style, `image` for icon-only, `call-to-action` for prominent CTAs
+</ParamField>
+
+<ParamField path="size" type="'small' | 'normal'" default="normal">
+  Button size: `normal` (default) or `small` for compact layouts
+</ParamField>
+
+<ParamField path="icon" type="React.ReactElement">
+  Icon element to display alongside button text
+</ParamField>
+
+<ParamField path="iconPosition" type="'left' | 'right'">
+  Position of the icon relative to text
+</ParamField>
+
+<ParamField path="loading" type="boolean">
+  Shows animated loading spinner (Lottie animation)
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables button interaction
+</ParamField>
+
+<ParamField path="success" type="boolean">
+  Triggers success animation (Lottie checkmark)
+</ParamField>
+
+<ParamField path="animationDelay" type="number">
+  Delay in milliseconds before showing loading animation
+</ParamField>
+
+<ParamField path="animationTime" type="number">
+  Duration in milliseconds for success animation before callback
+</ParamField>
+
+<ParamField path="countdown" type="number">
+  Time in seconds to display countdown on button
+</ParamField>
+
+<ParamField path="onSuccess" type="(success: boolean) => void">
+  Callback fired when success animation completes
+</ParamField>
+
+<ParamField path="onCountdownEnd" type="() => void">
+  Callback fired when countdown reaches zero
+</ParamField>
+
+### Usage
+
+```tsx
+<Button design="primary" loading={isLoading}>
+  Submit
+</Button>
+```
+
+### Notes
+
+- Loading and success states use Lottie animations
+- Button supports all standard HTML button attributes
+- `design="image"` is typically used for icon-only buttons
+- Countdown feature displays remaining seconds on the button

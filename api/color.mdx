@@ -1,0 +1,211 @@
+---
+title: Color
+description: Legacy color constants organized by usage category (background, line, text, status)
+---
+
+## Import
+
+```tsx
+import { Color } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+// Background colors
+const primaryBg = Color.background.primary;
+const softBg = Color.background.soft;
+
+// Text colors
+const primaryText = Color.text.primary;
+const highText = Color.text.high;
+
+// Line/border colors
+const primaryLine = Color.line.primary;
+const softLine = Color.line.soft;
+
+// Status colors
+const hoverState = Color.status.primary.hover;
+const successColor = Color.status.color.success;
+```
+
+## Color Categories
+
+### Background
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| primary | #008FF5 | Primary blue |
+| primaryLow | #ECF4FB | Light primary blue |
+| secondary | #FFAA47 | Secondary orange |
+| secondaryLow | #FFF6E5 | Light secondary orange |
+| deepBlue | #00315C | Dark blue |
+| deepBlueLow | #F0F3F6 | Light deep blue |
+| orange | #FF773D | Accent orange |
+| redLow | #FFE5E5 | Light red |
+| deepGreen | #1A5B3C | Dark green |
+| greenLow | #E4F8EE | Light green |
+| aquamarine | #00ABC5 | Aquamarine blue |
+| aquamarineLow | #EAF8FA | Light aquamarine |
+| full | #333333 | Dark gray |
+| high | #4F4F4F | Medium dark gray |
+| mediumHigh | #828282 | Medium gray |
+| mediumLow | #BDBDBD | Light medium gray |
+| low | #E0E0E0 | Light gray |
+| soft | #F2F2F2 | Very light gray |
+| neutral | #FFFFFF | White |
+
+### Line (Borders)
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| primary | #008FF5 | Primary blue |
+| primarySoft | #C4DEF5 | Light primary blue |
+| secondary | #FFAA47 | Secondary orange |
+| secondarySoft | #FFD5A3 | Light secondary orange |
+| green | #08A85B | Green |
+| greenSoft | #B2EBD0 | Light green |
+| redSoft | #F5CFCF | Light red |
+| deepBlue | #00315C | Dark blue |
+| deepBlueSoft | #C0CFDC | Light deep blue |
+| full | #333333 | Dark gray |
+| low | #CCCCCC | Light gray |
+| soft | #E0E0E0 | Very light gray |
+| softTransparent | #0000000A | Transparent black (4% opacity) |
+| white | #FFFFFF | White |
+| whiteTransparent | #FFFFFF80 | Transparent white (50% opacity) |
+
+### Text
+
+| Property | Value | Description |
+|----------|-------|-------------|
+| primary | #008FF5 | Primary blue |
+| primarySoft | #93CCF5 | Light primary blue |
+| deepBlue | #00315C | Dark blue |
+| aquamarine | #00ABC5 | Aquamarine blue |
+| orange | #FF773D | Orange |
+| red | #E02D2D | Error red |
+| green | #08A85B | Success green |
+| deepGreen | #1C5C3D | Dark green |
+| primaryBlack | #001D3D | Very dark blue |
+| secondaryBlack | #701E09 | Very dark brown |
+| full | #000000C7 | Black (78% opacity) |
+| high | #0000007D | Black (49% opacity) |
+| medium | #00000040 | Black (25% opacity) |
+| low | #0000001F | Black (12% opacity) |
+| white | #FFFFFF | White |
+| whiteHigh | #FFFFFFA6 | White (65% opacity) |
+| whiteMedium | #FFFFFF66 | White (40% opacity) |
+| whiteLow | #FFFFFF47 | White (28% opacity) |
+
+### Status
+
+#### Primary States
+
+| Property | Value | Usage |
+|----------|-------|-------|
+| default | #008FF5 | Primary default |
+| hover | #005AA8 | Primary hover |
+| active | #00315C | Primary active |
+| pressed | #00315C | Primary pressed |
+| softDefault | #EBF3FA | Soft default |
+| softHover | #D3E5F5 | Soft hover |
+| softActive | #008FF5 | Soft active |
+| softPressed | #008FF5 | Soft pressed |
+
+#### Secondary States
+
+| Property | Value | Usage |
+|----------|-------|-------|
+| default | #FFAA47 | Secondary default |
+| hover | #EB9026 | Secondary hover |
+| pressed | #C76B00 | Secondary pressed |
+| active | #C76B00 | Secondary active |
+
+#### Neutral States
+
+| Property | Value | Usage |
+|----------|-------|-------|
+| default | #FFFFFF | Neutral default |
+| hover | #0000000D | Neutral hover |
+| pressed | #0000001F | Neutral pressed |
+| active | #0000001F | Neutral active |
+
+#### Semantic Colors
+
+| Property | Value | Usage |
+|----------|-------|-------|
+| success | #08A85B | Success state |
+| successDefault | #E4F8EE | Success background |
+| error | #E02D2D | Error state |
+| errorDefault | #FFE5E5 | Error background |
+| warning | #FFAA47 | Warning state |
+| warningDefault | #FFF1D6 | Warning background |
+
+## Examples
+
+### Button Styling
+
+```tsx
+import { Color } from '@adoptaunabuelo/react-components';
+
+const StyledButton = styled.button`
+  background-color: ${Color.background.primary};
+  color: ${Color.text.white};
+  border: 1px solid ${Color.line.primary};
+  
+  &:hover {
+    background-color: ${Color.status.primary.hover};
+  }
+  
+  &:active {
+    background-color: ${Color.status.primary.pressed};
+  }
+`;
+```
+
+### Card Component
+
+```tsx
+import { Color } from '@adoptaunabuelo/react-components';
+
+const Card = styled.div`
+  background-color: ${Color.background.neutral};
+  border: 1px solid ${Color.line.soft};
+  padding: 16px;
+  border-radius: 8px;
+`;
+
+const Title = styled.h3`
+  color: ${Color.text.full};
+  margin-bottom: 8px;
+`;
+
+const Description = styled.p`
+  color: ${Color.text.high};
+`;
+```
+
+### Alert Messages
+
+```tsx
+import { Color } from '@adoptaunabuelo/react-components';
+
+const SuccessAlert = styled.div`
+  background-color: ${Color.status.color.successDefault};
+  color: ${Color.text.green};
+  border-left: 4px solid ${Color.status.color.success};
+  padding: 12px;
+`;
+
+const ErrorAlert = styled.div`
+  background-color: ${Color.status.color.errorDefault};
+  color: ${Color.text.red};
+  border-left: 4px solid ${Color.status.color.error};
+  padding: 12px;
+`;
+```
+
+## Migration Note
+
+This is the legacy color system. For new projects, consider using [ColorV2](/api/color-v2) which provides an updated color palette with better semantic naming.

@@ -1,0 +1,273 @@
+---
+title: InputRange
+description: Range slider with heart icon thumb and optional milestone markers
+---
+
+## Import
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { Gift, Star } from 'lucide-react';
+
+<InputRange
+  min={0}
+  max={100}
+  unit="€"
+  value={currentValue}
+  presents={[
+    { value: 25, icon: Gift, color: "#ccc", colorSuccess: "#0088ff", onClick: () => alert("25 reached!") },
+    { value: 50, icon: Star, color: "#ccc", colorSuccess: "#0088ff" }
+  ]}
+  onChange={(e) => setValue(parseInt(e.target.value))}
+/>
+```
+
+## Props
+
+<ParamField path="min" type="number">
+  Minimum value. Default: 0.
+</ParamField>
+
+<ParamField path="max" type="number">
+  Maximum value. Default: 100.
+</ParamField>
+
+<ParamField path="value" type="number">
+  Controlled value.
+</ParamField>
+
+<ParamField path="defaultValue" type="number">
+  Uncontrolled default value.
+</ParamField>
+
+<ParamField path="unit" type="string">
+  Unit label shown at min/max (e.g., `"€"`, `"kg"`, `"%"`).
+</ParamField>
+
+<ParamField path="onChange" type="(e: ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when slider value changes.
+</ParamField>
+
+<ParamField path="lineColor" type="string">
+  Color for filled portion of slider track. Default: primary blue.
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Color for unfilled portion of slider track. Default: primary low (light blue).
+</ParamField>
+
+<ParamField path="thumbColor" type="string">
+  Color for heart icon thumb. Default: primary blue.
+</ParamField>
+
+<ParamField path="hideRange" type="boolean">
+  Hide floating value tooltip above thumb.
+</ParamField>
+
+<ParamField path="hideLabels" type="boolean">
+  Hide min/max labels below slider.
+</ParamField>
+
+<ParamField path="presents" type="Array<{ value: number; icon: ComponentType; color: string; colorSuccess: string; onClick?: () => void }>">
+  Milestone markers with Lottie animation when reached.
+  - `value`: Value at which to show marker
+  - `icon`: Lucide icon component (not string)
+  - `color`: Color when milestone not reached
+  - `colorSuccess`: Color when milestone reached (slider value ≥ milestone value)
+  - `onClick`: Optional callback when marker is clicked
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+<Note>
+  Accepts all standard HTML input[type="range"] attributes via `ComponentPropsWithoutRef<"input">`.
+</Note>
+
+## Features
+
+### Heart Icon Thumb
+- **Size**: 44x44px
+- **White border**: 2px
+- **Heart icon**: White SVG from Adopta un Abuelo CDN
+- **Drop shadow**: Subtle 2px shadow
+- **Active animation**: Scales to 1.1 when dragging
+
+### Floating Value Bubble
+- **Position**: Above thumb, follows slider movement
+- **Background**: Neutral low gray
+- **Font**: Poppins, 12px
+- **Arrow**: Points down to thumb
+- Can be hidden with `hideRange` prop
+
+### Milestone "Presents"
+- **Appear at specific values**: Position calculated from slider width
+- **Two states**: 
+  - Inactive: Uses `color` prop
+  - Active: Uses `colorSuccess` prop when value ≥ milestone value
+- **Lottie animation**: "pop.json" plays when milestone is reached
+- **Lift effect**: Active markers translate -8px upward
+- **Hover scale**: Grows to 1.2x on hover
+- **Dot indicator**: Small 10px circle below icon
+- **Wobble animation**: 2s rotation animation on initial render
+
+### Min/Max Labels
+- **Position**: Below slider track
+- **Font**: Poppins p2, neutral medium color
+- **Display**: Shows "[min] [unit]" and "[max] [unit]"
+- Can be hidden with `hideLabels` prop
+
+## Examples
+
+### Basic Slider
+
+```tsx
+const [value, setValue] = useState(50);
+
+<InputRange
+  min={0}
+  max={100}
+  value={value}
+  onChange={(e) => setValue(parseInt(e.target.value))}
+/>
+```
+
+### Donation Slider with Goals
+
+```tsx
+import { Coffee, Gift, Trophy } from 'lucide-react';
+
+const [amount, setAmount] = useState(0);
+
+<InputRange
+  min={0}
+  max={100}
+  unit="€"
+  value={amount}
+  presents={[
+    {
+      value: 10,
+      icon: Coffee,
+      color: "#E0E0E0",
+      colorSuccess: "#0088ff",
+      onClick: () => console.log('Coffee level reached!')
+    },
+    {
+      value: 50,
+      icon: Gift,
+      color: "#E0E0E0",
+      colorSuccess: "#00cc66"
+    },
+    {
+      value: 100,
+      icon: Trophy,
+      color: "#E0E0E0",
+      colorSuccess: "#ffaa00"
+    }
+  ]}
+  onChange={(e) => setAmount(parseInt(e.target.value))}
+/>
+```
+
+### Age Selector
+
+```tsx
+const [age, setAge] = useState(25);
+
+<InputRange
+  min={18}
+  max={100}
+  unit="años"
+  value={age}
+  hideLabels
+  onChange={(e) => setAge(parseInt(e.target.value))}
+/>
+```
+
+### Custom Colors
+
+```tsx
+<InputRange
+  min={0}
+  max={100}
+  value={value}
+  lineColor="#ff0000"
+  backgroundColor="#ffcccc"
+  thumbColor="#cc0000"
+  onChange={(e) => setValue(parseInt(e.target.value))}
+/>
+```
+
+### Progress Bar (Read-only)
+
+```tsx
+<InputRange
+  min={0}
+  max={100}
+  value={progress}
+  hideRange
+  disabled
+  style={{ pointerEvents: 'none' }}
+/>
+```
+
+### No Floating Bubble
+
+```tsx
+<InputRange
+  min={0}
+  max={100}
+  value={value}
+  hideRange
+  onChange={(e) => setValue(parseInt(e.target.value))}
+/>
+```
+
+## Styling Track
+
+The slider track uses a CSS gradient to show filled/unfilled portions:
+
+```css
+background: linear-gradient(
+  to right,
+  [lineColor],
+  [lineColor] [fillPercentage]px,
+  [backgroundColor] [fillPercentage]px,
+  [backgroundColor] 100%
+)
+```
+
+## Present Position Calculation
+
+```tsx
+// For a present at value 50 with min=0, max=100:
+const position = ((50 - 0) / (100 - 0)) * sliderWidth;
+// Present is positioned at 50% of slider width
+```
+
+## Browser Compatibility
+
+- **Chrome/Edge**: Full support
+- **Firefox**: Uses `-moz-range-thumb`
+- **Safari**: Uses `-webkit-slider-thumb`
+- **Custom styling**: Works across modern browsers
+
+## Accessibility
+
+- Semantic `<input type="range">`
+- Keyboard navigation: Arrow keys to adjust value
+- Screen reader support: Announces current value
+- ARIA attributes inherited from native range input
+
+## Performance Notes
+
+- **Lottie animations**: Only play when milestone is reached
+- **Canvas rendering**: Used for smooth gradient updates
+- **Width calculation**: Uses `useRef` and `useEffect` to measure slider width
+- **Debouncing**: Consider debouncing `onChange` for expensive operations

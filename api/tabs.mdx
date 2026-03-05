@@ -1,0 +1,161 @@
+---
+title: Tabs
+description: Tab navigation component with two visual designs - underline indicator or rounded background
+---
+
+## Import
+
+```tsx
+import { Tabs } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<Tabs
+  design="secondary"
+  options={[
+    { id: "1", title: "Overview" },
+    { id: "2", title: "Details" }
+  ]}
+  selectedOption={currentTab}
+  onChange={(tab) => setCurrentTab(tab)}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of tab options
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'">
+  Visual design: `primary` (underline) or `secondary` (rounded background)
+</ParamField>
+
+<ParamField path="selectedOption" type="OptionProps">
+  Currently selected tab (controlled component)
+</ParamField>
+
+<ParamField path="onChange" type="(option: OptionProps) => void">
+  Callback fired when tab selection changes
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the tabs container
+</ParamField>
+
+<ParamField path="cellStyle" type="React.CSSProperties">
+  Custom styles for individual tab cells
+</ParamField>
+
+<ParamField path="textStyle" type="React.CSSProperties">
+  Custom styles for tab text labels
+</ParamField>
+
+<ParamField path="cellColor" type="string">
+  Background color for selected tab (secondary design)
+</ParamField>
+
+<ParamField path="textColor" type="string">
+  Text color for selected tab
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Background color for the entire tabs container
+</ParamField>
+
+## OptionProps
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the tab
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Display text for the tab
+</ParamField>
+
+## Features
+
+### Primary Design
+- Height: 36px
+- Underline indicator (2px solid) on selected tab
+- 16px gap between tabs
+- Medium weight font
+
+### Secondary Design
+- Rounded pill shape (32px border radius)
+- Background color change on selection
+- 7px vertical, 16px horizontal padding
+- Smooth hover effects (0.15s ease-in transition)
+- 4px gap between tabs
+
+## Examples
+
+### Primary Design (Underline)
+
+```tsx
+const [activeTab, setActiveTab] = useState({ id: '1', title: 'Home' });
+
+<Tabs
+  design="primary"
+  options={[
+    { id: '1', title: 'Home' },
+    { id: '2', title: 'Profile' },
+    { id: '3', title: 'Settings' }
+  ]}
+  selectedOption={activeTab}
+  onChange={(tab) => setActiveTab(tab)}
+/>
+```
+
+### Secondary Design (Rounded Background)
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Tabs
+  design="secondary"
+  options={[
+    { id: 'overview', title: 'Overview' },
+    { id: 'details', title: 'Details' },
+    { id: 'activity', title: 'Activity' }
+  ]}
+  selectedOption={currentTab}
+  onChange={setCurrentTab}
+  cellColor={ColorV2.surface.primarySoft}
+  textColor={ColorV2.text.primary}
+/>
+```
+
+### Custom Colors
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Tabs
+  design="primary"
+  options={tabs}
+  selectedOption={selected}
+  onChange={setSelected}
+  cellColor={ColorV2.surface.green}
+  textColor={ColorV2.text.green}
+/>
+```
+
+### With Custom Styling
+
+```tsx
+<Tabs
+  design="secondary"
+  options={[
+    { id: '1', title: 'Tab 1' },
+    { id: '2', title: 'Tab 2' }
+  ]}
+  selectedOption={active}
+  onChange={setActive}
+  style={{ padding: '8px', backgroundColor: '#F9F6F3' }}
+  cellStyle={{ minWidth: '100px' }}
+  textStyle={{ fontWeight: 600 }}
+/>
+```

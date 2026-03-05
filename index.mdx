@@ -1,97 +1,142 @@
 ---
-title: "Introduction"
-description: "Welcome to the new home for your documentation"
+title: "React Components Library"
+description: "A simple, customizable, and accessible library of React components built with TypeScript and styled-components"
 ---
 
-## Setting up
+<div style={{
+  background: 'linear-gradient(135deg, #020627 0%, #11161e 100%)',
+  borderRadius: '12px',
+  padding: '48px 32px',
+  marginBottom: '48px',
+  border: '1px solid rgba(132, 140, 142, 0.2)'
+}}>
+  <h1 style={{
+    fontSize: '48px',
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: '16px',
+    textAlign: 'center'
+  }}>
+    Adopta Un Abuelo React Components
+  </h1>
+  <p style={{
+    fontSize: '20px',
+    color: '#cfd0d2',
+    textAlign: 'center',
+    marginBottom: '32px'
+  }}>
+    A production-ready component library with 40+ customizable React components
+  </p>
+  <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+    <a href="/installation" style={{
+      background: '#529c3a',
+      color: '#ffffff',
+      padding: '12px 24px',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      display: 'inline-block'
+    }}>
+      Get Started
+    </a>
+    <a href="https://github.com/Adopta-Un-Abuelo/react-components" style={{
+      background: 'transparent',
+      color: '#ffffff',
+      padding: '12px 24px',
+      borderRadius: '6px',
+      textDecoration: 'none',
+      fontWeight: '600',
+      border: '1px solid #848c8e',
+      display: 'inline-block'
+    }}>
+      View on GitHub
+    </a>
+  </div>
+</div>
 
-Get your documentation site up and running in minutes.
+## Why Choose This Library?
 
-<Card
-  title="Start here"
-  icon="rocket"
-  href="/quickstart"
-  horizontal
->
-  Follow our three step quickstart guide.
-</Card>
+Build beautiful, accessible user interfaces with components that just work.
 
-## Make it yours
-
-Design a docs site that looks great and empowers your users.
-
-<Columns cols={2}>
-  <Card
-    title="Edit locally"
-    icon="pen-to-square"
-    href="/development"
-  >
-    Edit your docs locally and preview them in real time.
+<CardGroup cols={2}>
+  <Card title="TypeScript First" icon="code">
+    Full TypeScript support with comprehensive type definitions for excellent IDE integration and type safety
   </Card>
-  <Card
-    title="Customize your site"
-    icon="palette"
-    href="/essentials/settings"
-  >
-    Customize the design and colors of your site to match your brand.
+  <Card title="Styled Components" icon="palette">
+    Built on styled-components with a flexible theming system for easy customization
   </Card>
-    <Card
-    title="Set up navigation"
-    icon="map"
-    href="/essentials/navigation"
-  >
-    Organize your docs to help users find what they need and succeed with your product.
+  <Card title="Variant System" icon="layer-group">
+    Multiple design variants per component (primary, secondary, text) for maximum flexibility
   </Card>
-  <Card
-    title="API documentation"
-    icon="terminal"
-    href="/api-reference/introduction"
-  >
-    Auto-generate API documentation from OpenAPI specifications.
+  <Card title="Accessible by Default" icon="universal-access">
+    Components built with accessibility in mind, following best practices and ARIA guidelines
   </Card>
-</Columns>
+</CardGroup>
 
-## Create beautiful pages
+## Quick Start
 
-Everything you need to create world-class documentation.
+Get up and running in under 2 minutes.
 
-<Columns cols={2}>
-  <Card
-    title="Write with MDX"
-    icon="pen-fancy"
-    href="/essentials/markdown"
-  >
-    Use MDX to style your docs pages.
+<CardGroup cols={3}>
+  <Card title="Installation" icon="download" href="/installation">
+    Install the package and peer dependencies
   </Card>
-  <Card
-    title="Code samples"
-    icon="code"
-    href="/essentials/code"
-  >
-    Add sample code to demonstrate how to use your product.
+  <Card title="Quickstart Guide" icon="rocket" href="/quickstart">
+    Build your first component in minutes
   </Card>
-  <Card
-    title="Images"
-    icon="image"
-    href="/essentials/images"
-  >
-    Display images and other media.
+  <Card title="API Reference" icon="book" href="/api/button">
+    Explore all component props and APIs
   </Card>
-  <Card
-    title="Reusable snippets"
-    icon="recycle"
-    href="/essentials/reusable-snippets"
-  >
-    Write once and reuse across your docs.
-  </Card>
-</Columns>
+</CardGroup>
 
-## Need inspiration?
+## Component Categories
 
-<Card
-  title="See complete examples"
-  icon="stars"
-  href="https://mintlify.com/customers"
->
-  Browse our showcase of exceptional documentation sites.
-</Card>
+Browse components by category to find what you need.
+
+<CardGroup cols={2}>
+  <Card title="Form Components" icon="input-text" href="/components/button">
+    Buttons, inputs, selects, checkboxes, switches, and more form controls
+  </Card>
+  <Card title="Display Components" icon="eye" href="/components/text">
+    Typography, avatars, labels, progress bars, and visual feedback
+  </Card>
+  <Card title="Navigation" icon="compass" href="/components/breadcrumb">
+    Breadcrumbs, menus, tabs, and pagination for site navigation
+  </Card>
+  <Card title="Interactive" icon="hand-pointer" href="/components/modal">
+    Modals, dropdowns, filters, and other interactive UI elements
+  </Card>
+</CardGroup>
+
+## Key Features
+
+<CardGroup cols={2}>
+  <Card title="40+ Components" icon="puzzle-piece">
+    Comprehensive set of production-ready components covering all common UI patterns
+  </Card>
+  <Card title="Lottie Animations" icon="sparkles">
+    Built-in loading and success animations for enhanced user feedback
+  </Card>
+  <Card title="Optional Integrations" icon="plug">
+    Google Maps, Stripe, and Tiptap rich text editor integrations available
+  </Card>
+  <Card title="Storybook Docs" icon="book-open">
+    Interactive component documentation with live examples and tests
+  </Card>
+</CardGroup>
+
+## Advanced Features
+
+Extend functionality with optional integrations.
+
+<CardGroup cols={3}>
+  <Card title="Google Maps" icon="map-location-dot" href="/advanced/google-maps-integration">
+    Location input with autocomplete
+  </Card>
+  <Card title="Stripe Payments" icon="credit-card" href="/advanced/stripe-integration">
+    Payment and payout components
+  </Card>
+  <Card title="Rich Text Editor" icon="pen-fancy" href="/advanced/rich-text-editor">
+    Tiptap-powered text editing
+  </Card>
+</CardGroup>

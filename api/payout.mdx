@@ -1,0 +1,452 @@
+---
+title: Payout
+description: Stripe payment method setup component supporting card and SEPA direct debit
+---
+
+## Import
+
+```tsx
+import { Payout } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { useRef } from 'react';
+
+const payoutRef = useRef<PayoutRef>(null);
+
+<Payout
+  ref={payoutRef}
+  stripeKey={process.env.STRIPE_PUBLISHABLE_KEY}
+  paymentOption="card"
+  design="secondary"
+  onLoading={(loading) => setIsLoading(loading)}
+  onSetupConfirmed={() => handleSuccess()}
+/>
+
+// Get payment method
+const handleSubmit = async () => {
+  const method = await payoutRef.current?.getPaymentMethod();
+  if (method) {
+    await savePaymentMethod(method.id);
+  }
+};
+```
+
+## Props
+
+<ParamField path="stripeKey" type="string" required>
+  Stripe publishable API key (starts with `pk_test_` or `pk_live_`).
+</ParamField>
+
+<ParamField path="paymentOption" type="'sepa_debit' | 'card'" required>
+  Payment method type:
+  - `card`: Credit/debit card
+  - `sepa_debit`: SEPA Direct Debit (requires email)
+</ParamField>
+
+<ParamField path="stripeConfirmUrl" type="string">
+  3D Secure confirmation URL from Stripe setup intent. Opens in modal for authentication flow.
+</ParamField>
+
+<ParamField path="onSetupConfirmed" type="() => void">
+  Callback fired when 3D Secure authentication completes successfully.
+</ParamField>
+
+<ParamField path="onLoading" type="(loading: boolean) => void">
+  Callback fired when loading state changes (during payment method creation).
+</ParamField>
+
+<ParamField path="userData" type="{ email?: string }">
+  Pre-filled user data. Email is required for SEPA Direct Debit.
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'">
+  Visual design variant for input fields.
+</ParamField>
+
+<ParamField path="error" type="boolean">
+  Shows error state on input fields.
+</ParamField>
+
+<ParamField path="placeholderName" type="string">
+  Custom placeholder for name input field.
+</ParamField>
+
+<ParamField path="placeholderEmail" type="string">
+  Custom placeholder for email input field.
+</ParamField>
+
+<ParamField path="cardStyle" type="CSSProperties">
+  Custom styles for the card input form.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties for the container.
+</ParamField>
+
+## Ref Methods
+
+<ParamField path="getPaymentMethod" type="() => Promise<PaymentMethod | undefined>">
+  Collects payment method from Stripe and returns payment method object. Call this to get the payment method ID to save to your backend.
+</ParamField>
+
+## Setup Flow
+
+1. **Initialize component** with Stripe key
+2. **User enters payment details** (card or SEPA)
+3. **Call `getPaymentMethod()`** via ref
+4. **Component creates PaymentMethod** via Stripe API
+5. **If 3DS required**, show confirmation modal
+6. **User completes authentication** in modal
+7. **`onSetupConfirmed` callback fires**
+8. **Save payment method ID** to your backend
+
+## Payment Method Types
+
+### Card
+- **Fields**: Card number, expiry, CVC, cardholder name
+- **Stripe Element**: CardElement
+- **3D Secure**: May require authentication
+- **Validation**: Real-time Stripe validation
+
+### SEPA Direct Debit
+- **Fields**: IBAN, account holder name, email
+- **Stripe Element**: IbanElement
+- **Email required**: For mandate confirmation
+- **No 3DS**: Direct debit doesn't require authentication
+- **Validation**: IBAN format validation
+
+## Examples
+
+### Card Payment Setup
+
+```tsx
+import { useRef, useState } from 'react';
+import { Payout, PayoutRef } from '@adoptaunabuelo/react-components';
+
+const CardSetup = () => {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSave = async () => {
+    try {
+      const paymentMethod = await payoutRef.current?.getPaymentMethod();
+      
+      if (!paymentMethod) {
+        setError('Please enter valid card details');
+        return;
+      }
+
+      // Save to your backend
+      await api.savePaymentMethod({
+        customerId: user.id,
+        paymentMethodId: paymentMethod.id
+      });
+
+      console.log('Card saved successfully');
+    } catch (err) {
+      setError('Failed to save card');
+    }
+  };
+
+  return (
+    <>
+      <Payout
+        ref={payoutRef}
+        stripeKey={process.env.REACT_APP_STRIPE_KEY!}
+        paymentOption="card"
+        design="secondary"
+        onLoading={setIsLoading}
+      />
+      
+      <Button
+        onClick={handleSave}
+        loading={isLoading}
+        disabled={isLoading}
+      >
+        Save Card
+      </Button>
+      
+      {error && <Text style={{ color: 'red' }}>{error}</Text>}
+    </>
+  );
+};
+```
+
+### SEPA Direct Debit Setup
+
+```tsx
+const SepaSetup = () => {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSave = async () => {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    if (paymentMethod) {
+      await api.savePaymentMethod({
+        customerId: user.id,
+        paymentMethodId: paymentMethod.id,
+        type: 'sepa_debit'
+      });
+    }
+  };
+
+  return (
+    <>
+      <Payout
+        ref={payoutRef}
+        stripeKey={process.env.REACT_APP_STRIPE_KEY!}
+        paymentOption="sepa_debit"
+        userData={{ email: user.email }}
+        design="secondary"
+        onLoading={setIsLoading}
+        placeholderEmail="tu@email.com"
+        placeholderName="Nombre del titular"
+      />
+      
+      <Button onClick={handleSave} loading={isLoading}>
+        Save Bank Account
+      </Button>
+    </>
+  );
+};
+```
+
+### With 3D Secure Flow
+
+```tsx
+const PaymentSetupWith3DS = () => {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [confirmUrl, setConfirmUrl] = useState<string | undefined>();
+  const [setupComplete, setSetupComplete] = useState(false);
+
+  const handleSave = async () => {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    if (paymentMethod) {
+      // Create SetupIntent on backend
+      const { confirmUrl } = await api.createSetupIntent({
+        paymentMethodId: paymentMethod.id
+      });
+      
+      if (confirmUrl) {
+        // Show 3DS modal
+        setConfirmUrl(confirmUrl);
+      } else {
+        // No 3DS required
+        setSetupComplete(true);
+      }
+    }
+  };
+
+  return (
+    <Payout
+      ref={payoutRef}
+      stripeKey={process.env.REACT_APP_STRIPE_KEY!}
+      paymentOption="card"
+      stripeConfirmUrl={confirmUrl}
+      onSetupConfirmed={() => {
+        setSetupComplete(true);
+        setConfirmUrl(undefined);
+      }}
+    />
+  );
+};
+```
+
+### Subscription Setup
+
+```tsx
+const SubscriptionSetup = () => {
+  const payoutRef = useRef<PayoutRef>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    try {
+      const paymentMethod = await payoutRef.current?.getPaymentMethod();
+      
+      if (!paymentMethod) return;
+
+      // Create subscription with payment method
+      const subscription = await api.createSubscription({
+        customerId: user.id,
+        priceId: 'price_xxx',
+        paymentMethodId: paymentMethod.id
+      });
+
+      if (subscription.status === 'active') {
+        console.log('Subscription active!');
+      }
+    } catch (err) {
+      console.error('Subscription failed:', err);
+    }
+  };
+
+  return (
+    <div>
+      <Text type="h3">Subscribe to Pro Plan</Text>
+      <Text type="p">$19/month</Text>
+      
+      <Payout
+        ref={payoutRef}
+        stripeKey={process.env.REACT_APP_STRIPE_KEY!}
+        paymentOption="card"
+        design="secondary"
+        onLoading={setIsLoading}
+      />
+      
+      <Button
+        onClick={handleSubscribe}
+        loading={isLoading}
+      >
+        Subscribe Now
+      </Button>
+    </div>
+  );
+};
+```
+
+## 3D Secure Authentication
+
+When `stripeConfirmUrl` is provided:
+
+1. **Modal opens automatically** with iframe
+2. **User completes authentication** in bank's interface
+3. **Modal listens for completion** via `postMessage`
+4. **Modal closes automatically** on success
+5. **`onSetupConfirmed` callback fires**
+
+The modal:
+- **Size**: 600x400px
+- **Type**: `type="web"` (iframe modal)
+- **No close button**: `hideClose={true}`
+- **Handles message**: Listens for `"3DS-authentication-complete"`
+
+## Stripe Elements Styling
+
+The component uses Poppins font for Stripe elements:
+
+```tsx
+<Elements
+  stripe={stripePromise}
+  options={{
+    fonts: [
+      {
+        cssSrc: "https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      }
+    ]
+  }}
+>
+```
+
+## PaymentMethod Object
+
+The `getPaymentMethod()` ref method returns a Stripe PaymentMethod:
+
+```tsx
+interface PaymentMethod {
+  id: string;              // "pm_xxx"
+  type: string;            // "card" or "sepa_debit"
+  card?: {
+    brand: string;         // "visa", "mastercard", etc.
+    last4: string;         // Last 4 digits
+    exp_month: number;
+    exp_year: number;
+  };
+  sepa_debit?: {
+    bank_code: string;
+    branch_code: string;
+    country: string;
+    last4: string;
+  };
+  billing_details: {
+    name: string | null;
+    email: string | null;
+  };
+}
+```
+
+## Error Handling
+
+```tsx
+const [error, setError] = useState('');
+
+const handleSave = async () => {
+  try {
+    const paymentMethod = await payoutRef.current?.getPaymentMethod();
+    
+    if (!paymentMethod) {
+      throw new Error('Invalid payment details');
+    }
+    
+    await api.savePaymentMethod(paymentMethod.id);
+  } catch (err) {
+    if (err instanceof Error) {
+      setError(err.message);
+    }
+  }
+};
+
+<Payout
+  ref={payoutRef}
+  stripeKey={stripeKey}
+  paymentOption="card"
+  error={!!error}
+/>
+{error && <ErrorMessage>{error}</ErrorMessage>}
+```
+
+## Backend Integration
+
+### Save PaymentMethod
+```tsx
+// Frontend
+const paymentMethod = await payoutRef.current?.getPaymentMethod();
+await fetch('/api/payment-methods', {
+  method: 'POST',
+  body: JSON.stringify({ paymentMethodId: paymentMethod.id })
+});
+
+// Backend (Node.js)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+app.post('/api/payment-methods', async (req, res) => {
+  const { paymentMethodId } = req.body;
+  
+  // Attach to customer
+  await stripe.paymentMethods.attach(paymentMethodId, {
+    customer: customerId
+  });
+  
+  // Set as default
+  await stripe.customers.update(customerId, {
+    invoice_settings: {
+      default_payment_method: paymentMethodId
+    }
+  });
+  
+  res.json({ success: true });
+});
+```
+
+## Dependencies
+
+- `@stripe/react-stripe-js`: React components for Stripe
+- `@stripe/stripe-js`: Stripe.js loader
+- Stripe account with publishable key
+
+## Security Notes
+
+- **Never log** payment method details
+- **Use HTTPS** in production
+- **Validate on backend** - don't trust client-side validation
+- **PCI compliance**: Stripe handles sensitive data, not your server
+- **Publishable key only**: Never expose secret key to frontend
+
+<Warning>
+  Always validate payment methods on your backend before charging. Client-side validation can be bypassed.
+</Warning>

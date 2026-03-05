@@ -1,0 +1,103 @@
+---
+title: ProgressBar
+description: Animated progress bar supporting single or multiple progress indicators with optional percentage display
+---
+
+## Import
+
+```tsx
+import { ProgressBar } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<ProgressBar
+  progress={75}
+  showPercentage
+  animationTime={1.5}
+/>
+```
+
+## Props
+
+<ParamField path="progress" type="number | Array<{ value: number; color?: string }>" required>
+  Current progress value or array of multiple progress values with optional colors
+</ParamField>
+
+<ParamField path="minValue" type="number">
+  Minimum value for progress calculation (default: 0)
+</ParamField>
+
+<ParamField path="maxValue" type="number">
+  Maximum value for progress calculation (default: 100)
+</ParamField>
+
+<ParamField path="color" type="string">
+  Bar color (overrides default primary color)
+</ParamField>
+
+<ParamField path="animationTime" type="number">
+  Animation duration in seconds
+</ParamField>
+
+<ParamField path="animationDelay" type="number">
+  Delay in seconds before animation starts
+</ParamField>
+
+<ParamField path="showPercentage" type="boolean">
+  Display percentage badge above progress bar
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+## Features
+
+- Smoothly transitions to new values with configurable animation timing
+- Supports single or multiple progress indicators
+- Optional percentage display that follows the progress position
+- Customizable colors per progress value
+- Default height of 6px (customizable via style prop)
+
+## Examples
+
+### Basic Progress Bar
+
+```tsx
+<ProgressBar progress={65} />
+```
+
+### With Percentage Display
+
+```tsx
+<ProgressBar
+  progress={80}
+  showPercentage
+  color="#08A85B"
+/>
+```
+
+### Multiple Progress Values
+
+```tsx
+<ProgressBar
+  progress={[
+    { value: 30, color: '#008FF5' },
+    { value: 50, color: '#FFAA47' }
+  ]}
+  showPercentage
+/>
+```
+
+### With Animation
+
+```tsx
+<ProgressBar
+  progress={progress}
+  animationTime={2}
+  animationDelay={0.5}
+  showPercentage
+/>
+```

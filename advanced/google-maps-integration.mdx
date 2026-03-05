@@ -1,0 +1,300 @@
+---
+title: 'Google Maps Integration'
+description: 'Setup guide for InputLocation component with Google Maps Places API'
+icon: 'map-location-dot'
+---
+
+## Overview
+
+The `InputLocation` component provides location autocomplete functionality powered by the Google Maps Places API. It requires both the API script and the `@react-google-maps/api` package.
+
+<Warning>
+  Google Maps API key is **required** for InputLocation to function. The component will remain disabled with "Cargando..." (Loading) placeholder until the API is loaded.
+</Warning>
+
+## Prerequisites
+
+### 1. Install Required Package
+
+<CodeGroup>
+```bash npm
+npm install @react-google-maps/api
+```
+
+```bash yarn
+yarn add @react-google-maps/api
+```
+
+```bash pnpm
+pnpm add @react-google-maps/api
+```
+</CodeGroup>
+
+### 2. Get Google Maps API Key
+
+<Steps>
+  <Step title="Create Google Cloud Project">
+    Navigate to the [Google Cloud Console](https://console.cloud.google.com/) and create a new project or select an existing one.
+  </Step>
+  
+  <Step title="Enable Places API">
+    Go to **APIs & Services > Library** and enable:
+    - **Places API**
+    - **Maps JavaScript API** (required for Places API to work)
+  </Step>
+  
+  <Step title="Create API Key">
+    Go to **APIs & Services > Credentials** and click **Create Credentials > API Key**.
+    
+    <Warning>
+      Restrict your API key by HTTP referrer (for web) or application (for mobile) to prevent unauthorized use and unexpected charges.
+    </Warning>
+  </Step>
+  
+  <Step title="Configure API Key Restrictions">
+    Edit the API key and add restrictions:
+    - **Application restrictions:** HTTP referrers (recommended for web apps)
+    - **API restrictions:** Restrict to Places API and Maps JavaScript API
+  </Step>
+</Steps>
+
+## Setup in Your Application
+
+### Option 1: Using Script Tag (Recommended)
+
+Add the Google Maps API script to your application's HTML `<head>` section:
+
+```html index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your App</title>
+    
+    <!-- Google Maps Places API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&language=es"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
+```
+
+<Warning>
+  Replace `YOUR_API_KEY` with your actual Google Maps API key.
+</Warning>
+
+**Script Parameters:**
+- `key`: Your Google Maps API key
+- `libraries=places`: Loads the Places library
+- `language=es`: Sets default language to Spanish (component is Spanish-localized)
+
+### Option 2: Using useJsApiLoader Hook
+
+For dynamic loading with React:
+
+```tsx App.tsx
+import { useJsApiLoader } from '@react-google-maps/api';
+import { InputLocation } from '@adoptaunabuelo/react-components';
+
+const libraries: ("places")[] = ['places'];
+
+function App() {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string,
+    libraries,
+    language: 'es'
+  });
+
+  return (
+    <InputLocation
+      isLoaded={isLoaded}
+      placeholder="Introduce tu dirección"
+      onLocationChange={(location) => {
+        console.log('Selected location:', location);
+      }}
+    />
+  );
+}
+```
+
+## Environment Variables
+
+Store your API key securely using environment variables:
+
+<CodeGroup>
+```env .env.local (Next.js)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+```
+
+```env .env (Create React App)
+REACT_APP_GOOGLE_MAPS_API_KEY=your_api_key_here
+```
+
+```env .env (Vite)
+VITE_GOOGLE_MAPS_API_KEY=your_api_key_here
+```
+</CodeGroup>
+
+<Warning>
+  Never commit your `.env` files to version control. Add them to `.gitignore`.
+</Warning>
+
+## Usage Example
+
+```tsx LocationForm.tsx
+import { useState } from 'react';
+import { useJsApiLoader } from '@react-google-maps/api';
+import { InputLocation, LocationProps } from '@adoptaunabuelo/react-components';
+
+const libraries: ("places")[] = ['places'];
+
+export default function LocationForm() {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries,
+  });
+
+  const [location, setLocation] = useState<LocationProps | null>(null);
+
+  return (
+    <div>
+      <InputLocation
+        isLoaded={isLoaded}
+        placeholder="Buscar dirección"
+        design="primary"
+        label="Dirección"
+        searchTypes={['address']}
+        searchFields={['geometry', 'address_components']}
+        onLocationChange={(result) => {
+          setLocation(result);
+          console.log('Full address:', result.address);
+          console.log('Coordinates:', result.location);
+          console.log('Postal code:', result.zipCode);
+        }}
+      />
+
+      {location && (
+        <div>
+          <p>Address: {location.address}</p>
+          <p>City: {location.city}</p>
+          <p>Postal Code: {location.zipCode}</p>
+          <p>Coordinates: {location.location?.lat}, {location.location?.lng}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Component Props
+
+### Required Props
+
+<ResponseField name="isLoaded" type="boolean" required>
+  Must be `true` when Google Maps API is fully loaded. The component is disabled until this is `true`.
+</ResponseField>
+
+### Optional Props
+
+<ResponseField name="searchTypes" type="string[]" default='["address"]'>
+  Google Places API search types. Options include `"address"`, `"geocode"`, `"establishment"`, `"(regions)"`, `"(cities)"`.
+</ResponseField>
+
+<ResponseField name="searchFields" type="string[]" default='["geometry", "address_components"]'>
+  Place details fields to fetch. Options include `"geometry"`, `"address_components"`, `"formatted_address"`, `"name"`, etc.
+</ResponseField>
+
+<ResponseField name="isForm" type="boolean" default={false}>
+  When `true`, only shows street name and number in the input after selection (useful for form inputs). When `false`, shows the full address.
+</ResponseField>
+
+<ResponseField name="onLocationChange" type="(location: LocationProps) => void">
+  Callback fired when user selects a location from autocomplete suggestions.
+</ResponseField>
+
+## Location Data Structure
+
+The `onLocationChange` callback receives a `LocationProps` object:
+
+```typescript
+interface LocationProps {
+  address?: string;          // Full formatted address
+  sortAddress?: string;      // Short format: "City, Province, Country"
+  route?: string;            // Street name
+  routeNumber?: string;      // Street number
+  city?: string;             // City name
+  province?: string;         // Province/state
+  zipCode?: string;          // Postal code
+  country?: string;          // Country full name
+  shortCountry?: string;     // ISO country code (e.g., "ES")
+  location?: {               // Coordinates
+    lat: number;
+    lng: number;
+  };
+}
+```
+
+## Component Behavior
+
+- **Debounced Search:** Autocomplete requests are debounced by 500ms to reduce API calls
+- **Spanish Localization:** Search and error messages are in Spanish
+- **Validation:** Requires complete address with street number and postal code
+- **Error Handling:** Shows validation errors in Spanish below the input
+- **Loading State:** Displays "Cargando..." placeholder while API loads
+
+## Troubleshooting
+
+### Component stays disabled with "Cargando..." placeholder
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Verify `isLoaded` prop is `true`
+    - Check browser console for Google Maps API errors
+    - Ensure API key is valid and not restricted
+    - Verify Places API is enabled in Google Cloud Console
+  </Accordion>
+</AccordionGroup>
+
+### No autocomplete suggestions appear
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    - Check API key billing is enabled (Google requires billing for Places API)
+    - Verify API key restrictions allow your domain
+    - Check network tab for failed API requests
+    - Ensure `libraries=places` is included in script URL
+  </Accordion>
+</AccordionGroup>
+
+### Error: "Necesitamos una dirección más precisa..."
+
+<AccordionGroup>
+  <Accordion title="Solution">
+    This is expected behavior when the selected location lacks a street number or postal code. The user must select a more specific address.
+  </Accordion>
+</AccordionGroup>
+
+## API Costs
+
+<Note>
+  Google Maps Platform charges per API request. Places Autocomplete costs **$2.83-17.00 per 1000 requests** depending on usage. Monitor your usage in the Google Cloud Console.
+  
+  **Cost-saving tips:**
+  - Use session tokens (automatically handled by `@react-google-maps/api`)
+  - The component's 500ms debounce reduces unnecessary requests
+  - Set up billing alerts in Google Cloud Console
+</Note>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="InputLocation Component" icon="location-dot" href="/components/input#location-variant">
+    View full component documentation and examples
+  </Card>
+  
+  <Card title="Optional Dependencies" icon="box" href="/advanced/optional-dependencies">
+    Learn about other optional peer dependencies
+  </Card>
+</CardGroup>

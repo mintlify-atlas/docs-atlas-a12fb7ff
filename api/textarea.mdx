@@ -1,0 +1,199 @@
+---
+title: TextArea
+description: Multi-line text input component with two modes - default plain textarea and edit mode with rich text editor using Tiptap
+---
+
+## Import
+
+```tsx
+import { TextArea } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Default Mode
+
+```tsx
+<TextArea
+  type="default"
+  placeholder="Enter your message..."
+  rows={5}
+  maxLength={500}
+/>
+```
+
+### Edit Mode (Rich Text)
+
+```tsx
+<TextArea
+  type="edit"
+  value={richTextContent}
+  onChange={(html) => setContent(html)}
+  placeholder="Type something..."
+/>
+```
+
+## Props (Default Type)
+
+<ParamField path="type" type="'default'" required>
+  Renders a plain textarea
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text
+</ParamField>
+
+<ParamField path="defaultValue" type="string">
+  Initial value for uncontrolled component
+</ParamField>
+
+<ParamField path="maxLength" type="number">
+  Maximum character limit (displays character counter when set)
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'">
+  Visual design: `primary` (gray background, 6px radius) or `secondary` (white with border, 12px radius)
+</ParamField>
+
+<ParamField path="onChange" type="(event: React.ChangeEvent<HTMLTextAreaElement>) => void">
+  Callback fired when text changes
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the textarea
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name attribute for form submission
+</ParamField>
+
+## Props (Edit Type)
+
+<ParamField path="type" type="'edit'" required>
+  Renders a rich text editor with Tiptap
+</ParamField>
+
+<ParamField path="value" type="string">
+  HTML content for controlled component
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text when empty
+</ParamField>
+
+<ParamField path="onChange" type="(html: string) => void">
+  Callback fired when content changes, receives HTML string
+</ParamField>
+
+<ParamField path="ToolbarButton" type="React.ReactNode">
+  Custom button to display in toolbar (positioned absolute top-right)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the editor container
+</ParamField>
+
+## Features
+
+### Default Type
+- Height: 100px (customizable via style)
+- Font: Poppins 15px
+- No resize handle
+- Custom scrollbar styling
+- Optional character counter
+- Enforces maxLength if provided
+- Focus state with border color change
+
+### Edit Type (Rich Text Editor)
+- Powered by Tiptap editor
+- Formatting toolbar with:
+  - Text type selector (Heading 1, Heading 2, Paragraph)
+  - Bold, Italic, Underline
+  - Text alignment (Left, Center, Right)
+- Toolbar height: 63px
+- Scrollable content area
+- Returns HTML string via onChange
+- Rounded container (12px border radius)
+- White background with soft border
+
+## Examples
+
+### Basic Textarea
+
+```tsx
+<TextArea
+  type="default"
+  placeholder="Write your thoughts..."
+  onChange={(e) => console.log(e.target.value)}
+/>
+```
+
+### With Character Limit
+
+```tsx
+const [message, setMessage] = useState('');
+
+<TextArea
+  type="default"
+  placeholder="Enter message (max 200 characters)"
+  maxLength={200}
+  onChange={(e) => setMessage(e.target.value)}
+/>
+```
+
+### Secondary Design
+
+```tsx
+<TextArea
+  type="default"
+  design="secondary"
+  placeholder="Comments..."
+  style={{ height: '150px' }}
+/>
+```
+
+### Rich Text Editor
+
+```tsx
+const [content, setContent] = useState('<p>Initial content</p>');
+
+<TextArea
+  type="edit"
+  value={content}
+  onChange={(html) => setContent(html)}
+  placeholder="Start typing..."
+/>
+```
+
+### Rich Text with Custom Toolbar Button
+
+```tsx
+import { Send } from 'lucide-react';
+
+<TextArea
+  type="edit"
+  value={emailBody}
+  onChange={setEmailBody}
+  placeholder="Compose email..."
+  ToolbarButton={
+    <button onClick={handleSend}>
+      <Send size={20} />
+    </button>
+  }
+/>
+```
+
+### Form Integration
+
+```tsx
+<form onSubmit={handleSubmit}>
+  <TextArea
+    type="default"
+    name="feedback"
+    placeholder="Your feedback"
+    maxLength={1000}
+    design="secondary"
+  />
+  <button type="submit">Submit</button>
+</form>
+```

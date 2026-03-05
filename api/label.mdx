@@ -1,0 +1,265 @@
+---
+title: Label
+description: Label/badge component with status-aware coloring and two visual types
+---
+
+## Import
+
+```tsx
+import { Label } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<Label type="label" text="active" />
+<Label type="chip" size="big" text="Pending" />
+<Label text="done" icon={<CheckIcon />} />
+```
+
+## Props
+
+<ParamField path="text" type="string" required>
+  Text to display. For predefined status values, color is automatically applied. See Status Values section below.
+</ParamField>
+
+<ParamField path="type" type="'label' | 'chip'">
+  Visual variant:
+  - `label`: Badge/pill style (default)
+  - `chip`: Rounded button style
+</ParamField>
+
+<ParamField path="size" type="'big' | 'small' | 'selector'">
+  Size variant for chips:
+  - `big`: Full text display
+  - `small`: Initials only (first 2 characters)
+  - `selector`: Bordered style
+</ParamField>
+
+<ParamField path="icon" type="ReactElement">
+  Optional icon displayed before the text.
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Custom background color (overrides automatic status colors).
+</ParamField>
+
+<ParamField path="color" type="string">
+  Custom text color (overrides automatic status colors).
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the label/chip with reduced opacity.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS properties.
+</ParamField>
+
+<Note>
+  Accepts all standard HTML div attributes via `ComponentPropsWithoutRef<"div">`.
+</Note>
+
+## Status Values
+
+The component automatically applies colors for these predefined text values:
+
+### Blue (In Progress)
+- `"inRegister"` → "En registro"
+- `"registered"` → "Registrado"
+- `"waiting"` → "Pendiente de match"
+- `"training"` → "Formación en proceso"
+
+### Green (Success)
+- `"match"` → "Match"
+- `"done"` → "Resuelto"
+- `"active"` → "Activa"
+- `"paid"` → "Pagado"
+- `"Resuelto"` → "Resuelto"
+
+### Red (Error/Cancelled)
+- `"shutdown"` → "Baja"
+- `"banned"` → "Bloqueado"
+- `"exVolunteer"` → "Ex-voluntario"
+- `"canceled"` → "Cancelado"
+- `"failed"` → "Fallido"
+- `"cancel"` → "Cancelada"
+- `"No resuelto"` → "No resuelto"
+
+### Gray (Paused/Neutral)
+- `"paused"` → "Pausa"
+- `"pending_remittance"` → "Pendiente remesa"
+- `"pending"` → "Pendiente"
+- `"Pendiente"` → "Pendiente"
+
+### Orange (In Progress)
+- `"inProgress"` → "En proceso"
+- `"En proceso"` → "En proceso"
+
+## Examples
+
+### Status Labels
+
+```tsx
+<Label text="active" />
+<Label text="pending" />
+<Label text="canceled" />
+<Label text="done" />
+```
+
+### With Icons
+
+```tsx
+import { CheckCircle, XCircle, Clock } from 'lucide-react';
+
+<Label text="active" icon={<CheckCircle size={14} />} />
+<Label text="failed" icon={<XCircle size={14} />} />
+<Label text="pending" icon={<Clock size={14} />} />
+```
+
+### Custom Colors
+
+```tsx
+<Label
+  text="Custom Status"
+  backgroundColor="#e3f2fd"
+  color="#1976d2"
+/>
+```
+
+### Chips - Big Size
+
+```tsx
+<Label type="chip" size="big" text="Premium" />
+<Label type="chip" size="big" text="Pro" disabled />
+```
+
+### Chips - Small Size (Initials)
+
+```tsx
+// Shows "Pr" for "Premium"
+<Label type="chip" size="small" text="Premium" />
+// Shows "Ba" for "Basic"
+<Label type="chip" size="small" text="Basic" />
+```
+
+### Chips - Selector Style
+
+```tsx
+<Label type="chip" size="selector" text="Filter Option" />
+<Label type="chip" size="selector" text="Category" disabled />
+```
+
+### Order Status System
+
+```tsx
+const OrderStatus = ({ status }: { status: string }) => {
+  const statusConfig = {
+    pending: { icon: <Clock />, text: "pending" },
+    paid: { icon: <CheckCircle />, text: "paid" },
+    canceled: { icon: <XCircle />, text: "canceled" }
+  };
+  
+  const config = statusConfig[status] || statusConfig.pending;
+  
+  return <Label text={config.text} icon={config.icon} />;
+};
+```
+
+### User Role Chips
+
+```tsx
+const UserRoles = ({ roles }: { roles: string[] }) => {
+  return (
+    <div style={{ display: 'flex', gap: 8 }}>
+      {roles.map((role) => (
+        <Label
+          key={role}
+          type="chip"
+          size="big"
+          text={role}
+        />
+      ))}
+    </div>
+  );
+};
+
+<UserRoles roles={["Admin", "Editor", "Viewer"]} />
+```
+
+## Styling Details
+
+### Label Type
+- **Height**: 28px
+- **Border radius**: 3px
+- **Padding**: 0-8px
+- **Font size**: 14px
+- **Font weight**: 500
+
+### Chip Type - Big
+- **Height**: 32px
+- **Border radius**: 555px (fully rounded)
+- **Padding**: 0-12px
+- **Background**: Primary low or soft gray when disabled
+
+### Chip Type - Small
+- **Size**: 32x30px (circular)
+- **Border radius**: 50%
+- **Text**: First 2 characters, uppercase
+
+### Chip Type - Selector
+- **Height**: 32px
+- **Border**: 1px solid
+- **Border radius**: 555px
+- **Opacity**: 0.6 when disabled
+
+## Color Schemes
+
+### Blue (Progress)
+```tsx
+color: #2D7FD9
+backgroundColor: #E5F1FC
+```
+
+### Green (Success)
+```tsx
+color: #59C183 or #448B6D
+backgroundColor: #E7F6ED or #E4F8EE
+```
+
+### Red (Error)
+```tsx
+color: #FF5A5A or Color.text.red
+backgroundColor: #FCEDF1 or Color.background.redLow
+```
+
+### Gray (Neutral)
+```tsx
+color: #828282 or #0000008F
+backgroundColor: #F2F2F2
+```
+
+### Orange (Warning)
+```tsx
+color: #FF8854
+backgroundColor: #FFF6E5
+```
+
+## Spanish Translations
+
+The component automatically translates status keys to Spanish:
+- English key → Spanish display text
+- Useful for internationalized apps with Spanish UI
+- All predefined statuses have Spanish labels
+
+## Use Cases
+
+- Order status badges
+- User role indicators  
+- Task completion states
+- Payment status
+- Volunteer/member status
+- Document states
+- Notification types
+- Filter chips
+- Category tags

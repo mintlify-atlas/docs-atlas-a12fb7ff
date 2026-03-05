@@ -1,0 +1,413 @@
+---
+title: InputDateRange
+description: Date range picker powered by react-dates (Airbnb)
+---
+
+Date range picker powered by react-dates (Airbnb) with moment.js for date handling. Includes calendar UI with start and end date selection, clear dates button, and custom date validation.
+
+## Import
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import moment from 'moment';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function App() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
+  return (
+    <InputDateRange
+      startDate={startDate}
+      endDate={endDate}
+      onChange={({ startDate, endDate }) => {
+        setStartDate(startDate);
+        setEndDate(endDate);
+        console.log('Range:', startDate, endDate);
+      }}
+    />
+  );
+}
+```
+
+```tsx With Default Dates
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function App() {
+  const [startDate, setStartDate] = useState(moment());
+  const [endDate, setEndDate] = useState(moment().add(7, 'days'));
+  
+  return (
+    <InputDateRange
+      startDate={startDate}
+      endDate={endDate}
+      onChange={({ startDate, endDate }) => {
+        setStartDate(startDate);
+        setEndDate(endDate);
+      }}
+    />
+  );
+}
+```
+
+```tsx Block Past Dates
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function App() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
+  return (
+    <InputDateRange
+      startDate={startDate}
+      endDate={endDate}
+      onChange={({ startDate, endDate }) => {
+        setStartDate(startDate);
+        setEndDate(endDate);
+      }}
+      isOutsideRange={(date) => date.isBefore(moment(), 'day')}
+    />
+  );
+}
+```
+
+```tsx Custom Date Restrictions
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function App() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
+  // Only allow dates within next 30 days
+  const isOutsideRange = (date) => {
+    const today = moment();
+    const maxDate = moment().add(30, 'days');
+    return date.isBefore(today, 'day') || date.isAfter(maxDate, 'day');
+  };
+  
+  return (
+    <InputDateRange
+      startDate={startDate}
+      endDate={endDate}
+      isOutsideRange={isOutsideRange}
+      onChange={({ startDate, endDate }) => {
+        setStartDate(startDate);
+        setEndDate(endDate);
+      }}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="startDate" type="moment.Moment | null" required>
+  Start date of the range. Pass `null` for no selection.
+</ParamField>
+
+<ParamField path="endDate" type="moment.Moment | null" required>
+  End date of the range. Pass `null` for no selection.
+</ParamField>
+
+<ParamField path="onChange" type="(data: { startDate: moment.Moment | null; endDate: moment.Moment | null }) => void" required>
+  Callback fired when either date changes. Receives an object with both `startDate` and `endDate`.
+</ParamField>
+
+<ParamField path="isOutsideRange" type="(date: moment.Moment) => boolean">
+  Optional function to disable specific dates. Return `true` to disable a date, `false` to enable it.
+  
+  Common use cases:
+  - Block past dates: `(date) => date.isBefore(moment())`
+  - Block future dates: `(date) => date.isAfter(moment())`
+  - Block weekends: `(date) => date.day() === 0 || date.day() === 6`
+  - Custom date ranges
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS for the input container.
+</ParamField>
+
+<ParamField path="focus" type="boolean">
+  Internal focus state (not typically used externally).
+</ParamField>
+
+## Features
+
+### Calendar UI
+
+- **Two month view**: Shows current and next month side-by-side
+- **Keyboard navigation**: Use arrow keys to navigate dates
+- **Visual range highlight**: Selected range is highlighted
+- **Clear button**: Built-in "Clear Dates" button
+- **Today highlight**: Current date is highlighted
+
+### Input Fields
+
+- **Start date input**: "Fecha inicio" placeholder
+- **End date input**: "Fecha final" placeholder
+- **Manual entry**: Users can type dates directly
+- **Auto-formatting**: Dates are formatted automatically
+
+### Styling
+
+- **Container**: 56px height, 12px border radius
+- **Focus state**: 2px medium gray border
+- **No border**: Calendar popup has no border
+- **Padding**: 0px 6px
+
+## Examples
+
+### Booking Date Range
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function BookingForm() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [error, setError] = useState('');
+  
+  const handleSubmit = () => {
+    if (!startDate || !endDate) {
+      setError('Por favor selecciona las fechas');
+      return;
+    }
+    
+    const days = endDate.diff(startDate, 'days');
+    console.log('Booking for', days, 'days');
+  };
+  
+  // Block past dates and weekends
+  const isOutsideRange = (date) => {
+    const isPast = date.isBefore(moment(), 'day');
+    const isWeekend = date.day() === 0 || date.day() === 6;
+    return isPast || isWeekend;
+  };
+  
+  return (
+    <div>
+      <InputDateRange
+        startDate={startDate}
+        endDate={endDate}
+        isOutsideRange={isOutsideRange}
+        onChange={({ startDate, endDate }) => {
+          setStartDate(startDate);
+          setEndDate(endDate);
+          setError('');
+        }}
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <button onClick={handleSubmit}>Book Now</button>
+    </div>
+  );
+}
+```
+
+### Analytics Date Picker
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState, useEffect } from 'react';
+import moment from 'moment';
+
+function AnalyticsDashboard() {
+  const [startDate, setStartDate] = useState(moment().subtract(7, 'days'));
+  const [endDate, setEndDate] = useState(moment());
+  const [data, setData] = useState([]);
+  
+  useEffect(() => {
+    if (startDate && endDate) {
+      fetchAnalytics(startDate, endDate).then(setData);
+    }
+  }, [startDate, endDate]);
+  
+  // Don't allow future dates
+  const isOutsideRange = (date) => date.isAfter(moment(), 'day');
+  
+  return (
+    <div>
+      <h2>Analytics Dashboard</h2>
+      
+      <InputDateRange
+        startDate={startDate}
+        endDate={endDate}
+        isOutsideRange={isOutsideRange}
+        onChange={({ startDate, endDate }) => {
+          setStartDate(startDate);
+          setEndDate(endDate);
+        }}
+      />
+      
+      <div>
+        {data.map((item) => (
+          <div key={item.id}>{item.value}</div>
+        ))}
+      </div>
+    </div>
+  );
+}
+```
+
+### Vacation Planner
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import moment from 'moment';
+
+function VacationPlanner() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [totalDays, setTotalDays] = useState(0);
+  
+  const handleDateChange = ({ startDate, endDate }) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    
+    if (startDate && endDate) {
+      const days = endDate.diff(startDate, 'days') + 1;
+      setTotalDays(days);
+    } else {
+      setTotalDays(0);
+    }
+  };
+  
+  // Block past dates and limit to 30 days
+  const isOutsideRange = (date) => {
+    if (date.isBefore(moment(), 'day')) return true;
+    if (startDate && date.diff(startDate, 'days') > 30) return true;
+    return false;
+  };
+  
+  return (
+    <div>
+      <h2>Plan Your Vacation</h2>
+      
+      <InputDateRange
+        startDate={startDate}
+        endDate={endDate}
+        isOutsideRange={isOutsideRange}
+        onChange={handleDateChange}
+      />
+      
+      {totalDays > 0 && (
+        <p>{totalDays} días seleccionados</p>
+      )}
+    </div>
+  );
+}
+```
+
+### Custom Styling
+
+```tsx
+import { InputDateRange } from '@adoptaunabuelo/react-components';
+import moment from 'moment';
+
+function StyledDateRange() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  
+  return (
+    <InputDateRange
+      startDate={startDate}
+      endDate={endDate}
+      style={{
+        maxWidth: '500px',
+        borderRadius: '8px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+      }}
+      onChange={({ startDate, endDate }) => {
+        setStartDate(startDate);
+        setEndDate(endDate);
+      }}
+    />
+  );
+}
+```
+
+## Date Formatting
+
+The component uses moment.js for all date operations. You can format dates as needed:
+
+```tsx
+const formattedStart = startDate?.format('DD/MM/YYYY');
+const formattedEnd = endDate?.format('YYYY-MM-DD');
+const isoStart = startDate?.toISOString();
+```
+
+## Common isOutsideRange Patterns
+
+### Block Past Dates
+
+```tsx
+isOutsideRange={(date) => date.isBefore(moment(), 'day')}
+```
+
+### Block Future Dates
+
+```tsx
+isOutsideRange={(date) => date.isAfter(moment(), 'day')}
+```
+
+### Block Weekends
+
+```tsx
+isOutsideRange={(date) => date.day() === 0 || date.day() === 6}
+```
+
+### Limit to Next 90 Days
+
+```tsx
+isOutsideRange={(date) => {
+  const maxDate = moment().add(90, 'days');
+  return date.isAfter(maxDate, 'day') || date.isBefore(moment(), 'day');
+}}
+```
+
+### Block Specific Dates
+
+```tsx
+const blockedDates = ['2024-12-25', '2024-01-01'];
+
+isOutsideRange={(date) => {
+  return blockedDates.includes(date.format('YYYY-MM-DD'));
+}}
+```
+
+## Localization
+
+The component supports moment.js locales:
+
+```tsx
+import moment from 'moment';
+import 'moment/locale/es';
+
+moment.locale('es');
+```
+
+## Dependencies
+
+- **react-dates**: Airbnb's date picker library
+- **moment**: Date manipulation library
+- CSS imported automatically:
+  - `react-dates/initialize`
+  - `react-dates/lib/css/_datepicker.css`
+  - Custom overrides in `react_dates_overrides.css`

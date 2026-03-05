@@ -1,0 +1,52 @@
+---
+title: Countdown
+description: API reference for the Countdown component
+---
+
+## Countdown
+
+Countdown timer displaying human-readable time remaining or elapsed. Auto-warns with red background when less than 2 hours remain.
+
+### Import
+
+```tsx
+import { Countdown } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="toDate" type="Date" required>
+  Target date to count down to (or count up from if past)
+</ParamField>
+
+<ParamField path="color" type="string">
+  Background color (overridden by warning red when less than 2 hours remain)
+</ParamField>
+
+<ParamField path="textColor" type="string">
+  Text and icon color (overridden by white when warning)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+### Usage
+
+```tsx
+<Countdown
+  toDate={new Date("2024-12-31")}
+  color={ColorV2.surface.primary}
+  textColor={ColorV2.text.white}
+/>
+// Shows: "3 días restantes" or "2 horas de retraso"
+```
+
+### Notes
+
+- Uses moment.js with Spanish locale for human-readable formatting
+- Shows "restantes" (remaining) when target is in future
+- Shows "de retraso" (overdue) when target is in past
+- Automatically switches to warning red background when less than 2 hours remain
+- Warning state also changes text/icon to white
+- Includes clock icon from lucide-react

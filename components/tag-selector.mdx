@@ -1,0 +1,359 @@
+---
+title: TagSelector
+description: Flexible tag selector for single or multiple selection with optional subtitles
+---
+
+## Overview
+
+TagSelector displays options as clickable tags in a flex-wrap layout. It supports both single and multiple selection modes, optional subtitles, and visual-only mode for display purposes.
+
+## Basic Usage
+
+```tsx
+import { TagSelector } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [selected, setSelected] = useState([]);
+
+  const options = [
+    { id: '1', title: 'React' },
+    { id: '2', title: 'TypeScript' },
+    { id: '3', title: 'Node.js' },
+    { id: '4', title: 'GraphQL' }
+  ];
+
+  return (
+    <TagSelector
+      type="multiple"
+      options={options}
+      optionsSelected={selected}
+      onChange={setSelected}
+    />
+  );
+}
+```
+
+## Selection Modes
+
+### Multiple Selection
+
+Allow users to select multiple tags simultaneously.
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={[
+    { id: 'js', title: 'JavaScript' },
+    { id: 'py', title: 'Python' },
+    { id: 'java', title: 'Java' },
+    { id: 'go', title: 'Go' },
+    { id: 'rust', title: 'Rust' }
+  ]}
+  optionsSelected={languages}
+  onChange={(tags) => setLanguages(tags)}
+/>
+```
+
+### Single Selection
+
+Only one tag can be selected at a time (with toggle behavior).
+
+```tsx
+<TagSelector
+  type="single"
+  options={[
+    { id: 'beginner', title: 'Beginner' },
+    { id: 'intermediate', title: 'Intermediate' },
+    { id: 'advanced', title: 'Advanced' }
+  ]}
+  optionsSelected={level}
+  onChange={(tags) => setLevel(tags)}
+/>
+```
+
+## With Subtitles
+
+Add descriptive subtitles below tag titles.
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={[
+    {
+      id: 'starter',
+      title: 'Starter',
+      subtitle: 'Free forever'
+    },
+    {
+      id: 'pro',
+      title: 'Pro',
+      subtitle: '$29/month'
+    },
+    {
+      id: 'enterprise',
+      title: 'Enterprise',
+      subtitle: 'Custom pricing'
+    }
+  ]}
+  optionsSelected={selectedPlan}
+  onChange={setSelectedPlan}
+/>
+```
+
+## Visual Only Mode
+
+Display tags without interaction for showing current selections.
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={selectedSkills}
+  optionsSelected={selectedSkills}
+  onlyVisual={true}
+  design="design2"
+/>
+```
+
+## Design Variants
+
+```tsx
+// Design 1: Default styling
+<TagSelector
+  design="design1"
+  type="multiple"
+  options={options}
+  optionsSelected={selected}
+  onChange={setSelected}
+/>
+
+// Design 2: Alternative styling
+<TagSelector
+  design="design2"
+  type="multiple"
+  options={options}
+  optionsSelected={selected}
+  onChange={setSelected}
+/>
+```
+
+## Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of tag options:
+  ```tsx
+  {
+    id: string;        // Unique identifier
+    title: string;     // Main text displayed on tag
+    subtitle?: string; // Optional secondary text below title
+    style?: CSSProperties; // Custom styles for this tag
+  }
+  ```
+</ParamField>
+
+<ParamField path="type" type="'single' | 'multiple'" default="single">
+  Selection mode:
+  - `single`: Only one tag can be selected (with deselect on re-click)
+  - `multiple`: Multiple tags can be selected
+</ParamField>
+
+<ParamField path="optionsSelected" type="Array<OptionProps>">
+  Pre-selected options (controlled component pattern).
+</ParamField>
+
+<ParamField path="onChange" type="(selection: Array<OptionProps>) => void">
+  Callback fired when selection changes. Receives array of selected options.
+</ParamField>
+
+<ParamField path="onlyVisual" type="boolean" default="false">
+  When `true`, disables click interactions. Useful for displaying selected tags without allowing changes.
+</ParamField>
+
+<ParamField path="design" type="'design1' | 'design2'">
+  Visual design variant for tag styling.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the container.
+</ParamField>
+
+## Advanced Examples
+
+### Filter Tags with Counts
+
+```tsx
+const categories = [
+  { id: 'tech', title: 'Technology', subtitle: '124 posts' },
+  { id: 'health', title: 'Healthcare', subtitle: '89 posts' },
+  { id: 'finance', title: 'Finance', subtitle: '56 posts' },
+  { id: 'edu', title: 'Education', subtitle: '143 posts' }
+];
+
+<TagSelector
+  type="multiple"
+  options={categories}
+  optionsSelected={selectedCategories}
+  onChange={(tags) => {
+    setSelectedCategories(tags);
+    filterPosts(tags.map(t => t.id));
+  }}
+/>
+```
+
+### Dynamic Tag Creation
+
+```tsx
+const [tags, setTags] = useState([]);
+const [selected, setSelected] = useState([]);
+
+const addTag = (title: string) => {
+  const newTag = {
+    id: Date.now().toString(),
+    title
+  };
+  setTags([...tags, newTag]);
+};
+
+<>
+  <Input
+    placeholder="Add new tag"
+    onKeyPress={(e) => {
+      if (e.key === 'Enter') {
+        addTag(e.target.value);
+        e.target.value = '';
+      }
+    }}
+  />
+  <TagSelector
+    type="multiple"
+    options={tags}
+    optionsSelected={selected}
+    onChange={setSelected}
+  />
+</>
+```
+
+### Display Selected Tags
+
+```tsx
+function SkillsSelector() {
+  const [allSkills] = useState([
+    { id: '1', title: 'React' },
+    { id: '2', title: 'TypeScript' },
+    { id: '3', title: 'Node.js' },
+    { id: '4', title: 'Python' }
+  ]);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+
+  return (
+    <div>
+      <h3>Select your skills:</h3>
+      <TagSelector
+        type="multiple"
+        options={allSkills}
+        optionsSelected={selectedSkills}
+        onChange={setSelectedSkills}
+      />
+      
+      {selectedSkills.length > 0 && (
+        <>
+          <h3>Selected skills:</h3>
+          <TagSelector
+            type="multiple"
+            options={selectedSkills}
+            optionsSelected={selectedSkills}
+            onlyVisual={true}
+            design="design2"
+          />
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+### Single Selection with Deselect
+
+```tsx
+const [priority, setPriority] = useState([]);
+
+<>
+  <Text>Priority Level:</Text>
+  <TagSelector
+    type="single"
+    options={[
+      { id: 'low', title: 'Low' },
+      { id: 'medium', title: 'Medium' },
+      { id: 'high', title: 'High' }
+    ]}
+    optionsSelected={priority}
+    onChange={(tags) => {
+      // In single mode, clicking the same tag deselects it
+      setPriority(tags);
+      if (tags.length === 0) {
+        console.log('Priority cleared');
+      }
+    }}
+  />
+</>
+```
+
+### Controlled with External State
+
+```tsx
+const [selected, setSelected] = useState([]);
+
+const clearSelection = () => setSelected([]);
+
+const selectAll = () => setSelected([...options]);
+
+<>
+  <div style={{ marginBottom: 16 }}>
+    <Button onClick={clearSelection}>Clear All</Button>
+    <Button onClick={selectAll}>Select All</Button>
+  </div>
+  
+  <TagSelector
+    type="multiple"
+    options={options}
+    optionsSelected={selected}
+    onChange={setSelected}
+  />
+  
+  <Text>{selected.length} tags selected</Text>
+</>
+```
+
+## Behavior Notes
+
+### Single Selection
+- Clicking a tag selects it
+- Clicking the same tag again deselects it
+- Clicking a different tag deselects the current and selects the new one
+- Result array can be empty or contain exactly one item
+
+### Multiple Selection
+- Clicking toggles each tag independently
+- No limit on number of selections
+- Order of selection is maintained in the array
+
+### Visual Only Mode
+- All click interactions disabled
+- Tags still show selected/unselected state
+- Useful for read-only displays
+
+## Styling Notes
+
+- Container uses `display: flex` with `flex-wrap`
+- Tags flow naturally and wrap to new lines
+- Each tag has independent styling support
+- Selected state handled by internal Tag/TagSubtitle components
+- Consistent spacing between tags
+
+## Accessibility
+
+- Container has `role="container"` attribute
+- Each tag has unique `role` based on its ID
+- Visual selection states are clear
+- Keyboard navigation supported through clickable elements
+- Consider adding aria-labels for screen readers

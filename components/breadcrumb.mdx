@@ -1,0 +1,106 @@
+---
+title: BreadCrumb
+description: Step indicator component displaying circular dots to show progress through a multi-step flow
+---
+
+## Overview
+
+The `BreadCrumb` component displays a horizontal series of circular indicators (dots) to show progress through a multi-step flow. The current active step is highlighted with the primary color while inactive steps are displayed in a low-contrast color.
+
+## Basic Usage
+
+```tsx
+import { BreadCrumb } from '@adoptaunabuelo/react-components';
+
+function MyComponent() {
+  return (
+    <BreadCrumb steps={4} selectedStep={1} />
+  );
+}
+```
+
+## Examples
+
+### Simple Progress Indicator
+
+```tsx
+<BreadCrumb steps={3} selectedStep={0} />
+```
+
+### Multi-Step Form
+
+```tsx
+function RegistrationForm() {
+  const [currentStep, setCurrentStep] = useState(0);
+  
+  return (
+    <div>
+      <BreadCrumb steps={5} selectedStep={currentStep} />
+      {/* Form content */}
+      <button onClick={() => setCurrentStep(currentStep + 1)}>
+        Next Step
+      </button>
+    </div>
+  );
+}
+```
+
+### With Custom Styling
+
+```tsx
+<BreadCrumb 
+  steps={4} 
+  selectedStep={2}
+  style={{ padding: '20px 0' }}
+/>
+```
+
+## Props
+
+<ParamField path="steps" type="number" required>
+  Total number of steps to display. Each step is represented by a circular dot indicator.
+</ParamField>
+
+<ParamField path="selectedStep" type="number" default="0">
+  Current active step index (0-based). This step will be highlighted with the primary background color.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles to apply to the container element.
+</ParamField>
+
+<ParamField path="className" type="string">
+  Custom CSS class name for the container.
+</ParamField>
+
+## Styling
+
+The component uses the following design tokens:
+
+- **Active step**: `Color.background.primary`
+- **Inactive step**: `Color.text.low`
+- **Dot size**: 8px × 8px
+- **Dot spacing**: 16px between dots
+- **Border radius**: 5px (circular)
+
+## Accessibility
+
+The component includes a `role="bread-crumb"` attribute on the container element for proper semantic HTML structure.
+
+## TypeScript
+
+```tsx
+import { ComponentPropsWithoutRef } from 'react';
+
+interface BreadCrumbProps extends ComponentPropsWithoutRef<'div'> {
+  selectedStep?: number;
+  steps: number;
+}
+```
+
+## Best Practices
+
+- Use `selectedStep` as a 0-based index (first step is 0, not 1)
+- Keep the number of steps reasonable (3-7 steps recommended) for better UX
+- Update `selectedStep` when the user progresses through your flow
+- Consider combining with validation logic to prevent skipping steps

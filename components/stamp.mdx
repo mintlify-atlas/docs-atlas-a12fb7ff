@@ -1,0 +1,291 @@
+---
+title: Stamp
+description: Decorative postage stamp component with perforated edges, perfect for badges and achievements
+---
+
+## Overview
+
+The `Stamp` component creates a visually distinctive postage stamp design with perforated edges. It displays an emoji or icon in the center and a text label below, automatically adapting size for mobile devices.
+
+## Import
+
+```tsx
+import { Stamp } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Stamp
+
+```tsx
+<Stamp 
+  icon="🎉"
+  title="Celebration"
+  backgroundColor="#E8F5E9"
+/>
+```
+
+### Achievement Badges
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Stamp 
+  icon="🏆"
+  title="Winner"
+  backgroundColor={ColorV2.surface.goldSoft}
+/>
+
+<Stamp 
+  icon="⭐"
+  title="Top Rated"
+  backgroundColor={ColorV2.surface.yellowSoft}
+/>
+
+<Stamp 
+  icon="💎"
+  title="Premium"
+  backgroundColor={ColorV2.surface.purpleSoft}
+/>
+```
+
+### Status Stamps
+
+```tsx
+<Stamp 
+  icon="✅"
+  title="Verified"
+  backgroundColor={ColorV2.surface.greenSoft}
+/>
+
+<Stamp 
+  icon="🔒"
+  title="Secure"
+  backgroundColor={ColorV2.surface.blueSoft}
+/>
+```
+
+### Custom Styling
+
+```tsx
+<Stamp 
+  icon="🚀"
+  title="Launch Ready"
+  backgroundColor="#E3F2FD"
+  style={{
+    margin: 16,
+    transform: 'rotate(-5deg)'
+  }}
+/>
+```
+
+### Stamp Collection
+
+```tsx
+<div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+  <Stamp icon="📚" title="Bookworm" backgroundColor="#FFF3E0" />
+  <Stamp icon="🎨" title="Creative" backgroundColor="#F3E5F5" />
+  <Stamp icon="🌟" title="Star" backgroundColor="#FFFDE7" />
+  <Stamp icon="🎯" title="Goal" backgroundColor="#E0F2F1" />
+</div>
+```
+
+## Props
+
+<ParamField path="icon" type="string" required>
+  Emoji or single character to display in the center.
+  
+  Rendered with Text type "d1" for large display. Works best with:
+  - Emojis: 🎉 🏆 ⭐ 💎 ✅
+  - Single characters: A, 1, ✓
+  - Unicode symbols: ★, ♥, ⚡
+  
+  ```tsx
+  icon="🎉" // Emoji
+  icon="A"  // Letter
+  icon="1"  // Number
+  ```
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Text label displayed below the icon.
+  
+  Automatically truncates with ellipsis if too long:
+  - Font: DM Mono, 13px
+  - Max width: Container width minus padding
+  - Display: Single line, no wrapping
+  
+  ```tsx
+  title="Achievement Unlocked"
+  // Displays: "Achievement Unlo..."
+  ```
+</ParamField>
+
+<ParamField path="backgroundColor" type="string" required>
+  Background color for the icon area.
+  
+  Creates the colored square behind the icon. Use soft/light colors for best visual effect.
+  
+  ```tsx
+  backgroundColor={ColorV2.surface.greenSoft}
+  backgroundColor="#E8F5E9"
+  ```
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom inline styles for the stamp container.
+  
+  Common use cases:
+  - Rotation: `transform: 'rotate(-5deg)'`
+  - Margin: `margin: 16`
+  - Positioning: `position: 'absolute'`
+  - Cursor: `cursor: 'pointer'` for clickable stamps
+</ParamField>
+
+## Design Specifications
+
+### Desktop (> 450px)
+- **Container**: 108px × 132px
+- **Icon area**: 96px × 96px
+- **Border**: White, 2px
+- **Perforations**: Circular cutouts around all edges
+- **Title**: 13px, DM Mono font, centered
+- **Shadow**: Drop shadow for depth effect
+
+### Mobile (≤ 450px)
+- **Container**: 96px × 120px
+- **Icon area**: 84px × 84px
+- **Border**: White, 2px
+- **Perforations**: Same pattern, scaled down
+- **Title**: 13px, DM Mono font, centered
+- **Shadow**: Same drop shadow
+
+### Visual Structure
+```
+┌─────────────────┐
+│ ◐ ◐ ◐ ◐ ◐ ◐ ◐ ◐ │ ← Perforations
+│ ◐ ┌─────────┐ ◐ │
+│ ◐ │         │ ◐ │
+│ ◐ │   🎉   │ ◐ │ ← Icon area
+│ ◐ │         │ ◐ │   (colored background)
+│ ◐ └─────────┘ ◐ │
+│ ◐   Title    ◐ │ ← Text label
+│ ◐ ◐ ◐ ◐ ◐ ◐ ◐ ◐ │
+└─────────────────┘
+```
+
+## Features
+
+- **Authentic stamp design**: Perforated edges using SVG patterns
+- **Responsive sizing**: Automatically scales down on mobile devices
+- **Icon-first**: Large, prominent emoji or character display
+- **Text truncation**: Long titles automatically ellipsize
+- **Custom colors**: Full background color control
+- **Drop shadow**: Subtle depth effect
+- **Monospace title**: DM Mono font for stamp-like appearance
+
+## SVG Perforation Pattern
+
+The component uses inline SVG to create the perforated edge effect:
+- Generated dynamically based on screen size
+- Circular cutouts on all four sides
+- 12px spacing between perforations
+- White fill color for stamp base
+- Filter effect for realistic shadow
+
+## Best Practices
+
+- **Choose appropriate emojis**: Large, clear icons work best
+- **Use soft background colors**: Light tints provide nice contrast without overwhelming
+- **Keep titles short**: Aim for 1-2 words to avoid truncation
+- **Group meaningfully**: Display multiple stamps for collections or achievements
+- **Add rotation**: Slight rotation (`rotate(-5deg)`) adds authenticity
+- **Make clickable**: Add click handlers for interactive stamp collections
+- **Consider context**: Stamps work well for achievements, awards, status, certifications
+
+## Use Cases
+
+- **Achievement systems**: Unlock badges, milestones
+- **User profiles**: Display earned awards or certifications
+- **Status indicators**: Premium, verified, certified badges
+- **Gamification**: Collect-them-all stamp books
+- **Rewards programs**: Loyalty stamps, punch cards
+- **Educational platforms**: Course completion, skill badges
+- **Social proof**: Ratings, endorsements, testimonials
+- **Event participation**: Attended, speaker, sponsor badges
+
+## Styling Ideas
+
+### Rotated Stamps
+```tsx
+<div style={{ display: 'flex', gap: 20 }}>
+  <Stamp 
+    icon="🏆" 
+    title="Gold" 
+    backgroundColor="#FFF9C4"
+    style={{ transform: 'rotate(-8deg)' }}
+  />
+  <Stamp 
+    icon="🥈" 
+    title="Silver" 
+    backgroundColor="#ECEFF1"
+    style={{ transform: 'rotate(5deg)' }}
+  />
+  <Stamp 
+    icon="🥉" 
+    title="Bronze" 
+    backgroundColor="#FFE0B2"
+    style={{ transform: 'rotate(-3deg)' }}
+  />
+</div>
+```
+
+### Overlapping Stamps
+```tsx
+<div style={{ position: 'relative', height: 160, width: 300 }}>
+  <Stamp 
+    icon="✈️" 
+    title="Travel" 
+    backgroundColor="#E0F2F1"
+    style={{ position: 'absolute', left: 0, top: 0, zIndex: 1 }}
+  />
+  <Stamp 
+    icon="🌎" 
+    title="Explorer" 
+    backgroundColor="#E8EAF6"
+    style={{ position: 'absolute', left: 80, top: 20, zIndex: 2 }}
+  />
+</div>
+```
+
+## Accessibility
+
+- Uses `role="stamp"` for semantic identification
+- Icon renders as visible text (emojis are accessible)
+- Title provides text alternative
+- Consider adding aria-label for screen readers:
+
+```tsx
+<div aria-label="Achievement: Winner stamp with trophy icon">
+  <Stamp icon="🏆" title="Winner" backgroundColor="#FFF9C4" />
+</div>
+```
+
+## Browser Support
+
+- Modern browsers with SVG support
+- Responsive design uses `window.innerWidth`
+- Flexbox layout for alignment
+- Text ellipsis for overflow handling
+
+## Dependencies
+
+- styled-components - Styling and responsive design
+- Text component - Title rendering
+- Inline SVG - Perforation pattern
+
+## Related Components
+
+- [Label](/components/label) - Alternative badge/tag component
+- [Avatar](/components/avatar) - Circular user indicators
+- [Text](/components/text) - Used internally for title and icon

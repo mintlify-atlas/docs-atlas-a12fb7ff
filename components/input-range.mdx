@@ -1,0 +1,477 @@
+---
+title: InputRange
+description: Range slider with heart icon thumb and optional milestone markers
+---
+
+Range slider with heart icon thumb and optional milestone markers ("presents"). Milestones animate with Lottie pop effect when the slider value reaches them.
+
+## Import
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [value, setValue] = useState(50);
+  
+  return (
+    <InputRange
+      min={0}
+      max={100}
+      value={value}
+      onChange={(e) => setValue(parseInt(e.target.value))}
+    />
+  );
+}
+```
+
+```tsx With Unit Label
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [amount, setAmount] = useState(50);
+  
+  return (
+    <InputRange
+      min={10}
+      max={200}
+      unit="€"
+      value={amount}
+      onChange={(e) => setAmount(parseInt(e.target.value))}
+    />
+  );
+}
+```
+
+```tsx With Milestones
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import { Gift, Star, Trophy } from 'lucide-react';
+
+function App() {
+  const [value, setValue] = useState(0);
+  
+  return (
+    <InputRange
+      min={0}
+      max={100}
+      unit="points"
+      value={value}
+      presents={[
+        {
+          value: 25,
+          icon: Gift,
+          color: '#E0E0E0',
+          colorSuccess: '#0088ff',
+          onClick: () => alert('25 points reached!'),
+        },
+        {
+          value: 50,
+          icon: Star,
+          color: '#E0E0E0',
+          colorSuccess: '#FFD700',
+        },
+        {
+          value: 100,
+          icon: Trophy,
+          color: '#E0E0E0',
+          colorSuccess: '#FF4500',
+        },
+      ]}
+      onChange={(e) => setValue(parseInt(e.target.value))}
+    />
+  );
+}
+```
+
+```tsx Custom Colors
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [value, setValue] = useState(30);
+  
+  return (
+    <InputRange
+      min={0}
+      max={100}
+      value={value}
+      lineColor="#FF6B6B"
+      backgroundColor="#FFE5E5"
+      thumbColor="#FF4444"
+      onChange={(e) => setValue(parseInt(e.target.value))}
+    />
+  );
+}
+```
+
+```tsx Hide Labels
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [value, setValue] = useState(50);
+  
+  return (
+    <InputRange
+      min={0}
+      max={100}
+      value={value}
+      hideRange={true}
+      hideLabels={true}
+      onChange={(e) => setValue(parseInt(e.target.value))}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="min" type="number">
+  Minimum value of the range.
+</ParamField>
+
+<ParamField path="max" type="number">
+  Maximum value of the range.
+</ParamField>
+
+<ParamField path="value" type="number">
+  Current value (controlled).
+</ParamField>
+
+<ParamField path="defaultValue" type="number" default="0">
+  Default value (uncontrolled).
+</ParamField>
+
+<ParamField path="unit" type="string">
+  Unit label shown at min/max positions below the slider (e.g., "€", "kg", "km").
+</ParamField>
+
+<ParamField path="lineColor" type="string">
+  Color for the filled portion of the slider track (left of thumb).
+</ParamField>
+
+<ParamField path="backgroundColor" type="string">
+  Color for the unfilled portion of the slider track (right of thumb).
+</ParamField>
+
+<ParamField path="thumbColor" type="string">
+  Background color for the heart icon thumb.
+</ParamField>
+
+<ParamField path="hideRange" type="boolean" default="false">
+  Hide the floating value tooltip above the thumb.
+</ParamField>
+
+<ParamField path="hideLabels" type="boolean" default="false">
+  Hide the min/max labels below the slider.
+</ParamField>
+
+<ParamField path="presents" type="Present[]">
+  Array of milestone markers with Lottie animation when reached.
+  
+  Each present object includes:
+  - `value`: Position on the slider (numeric value)
+  - `icon`: Lucide React icon component
+  - `color`: Color when milestone not reached
+  - `colorSuccess`: Color when milestone reached (value >= milestone)
+  - `onClick`: Optional callback when marker is clicked
+</ParamField>
+
+<ParamField path="onChange" type="(e: ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when slider value changes.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS for the container.
+</ParamField>
+
+## Additional Props
+
+InputRange extends all native HTML range input attributes (`disabled`, `step`, `name`, etc.).
+
+## Present Interface
+
+```tsx
+interface Present {
+  value: number;
+  icon: React.ComponentType<{
+    height?: number;
+    width?: number;
+    color?: string;
+  }>;
+  color: string;
+  colorSuccess: string;
+  onClick?: () => void;
+}
+```
+
+## Features
+
+### Visual Design
+
+- **Heart thumb**: 44px circular thumb with heart icon
+- **Track gradient**: Two-color gradient (filled/unfilled)
+- **Value tooltip**: Floating bubble above thumb showing current value
+- **Min/Max labels**: Labels below slider with unit
+- **Border**: 2px white border on thumb with drop shadow
+
+### Thumb Animation
+
+- **Scale on drag**: Thumb scales to 1.1x when active
+- **Shadow on drag**: Enhanced shadow during interaction
+- **Smooth transition**: Transform and box-shadow transition
+
+### Milestone Animation
+
+- **Pop effect**: Lottie animation plays when milestone is reached
+- **Color change**: Icon and marker change to `colorSuccess`
+- **Elevation**: Milestone button translates up 8px when reached
+- **Shake animation**: Present container shakes when activated
+
+### Track Behavior
+
+- **Dynamic fill**: Left portion fills with `lineColor` as value increases
+- **Gradient calculation**: Based on value percentage
+- **Responsive**: Track width calculated from container
+
+## Examples
+
+### Donation Amount Selector
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+import { Heart, Gift, Trophy } from 'lucide-react';
+
+function DonationSelector() {
+  const [amount, setAmount] = useState(20);
+  
+  return (
+    <div>
+      <h3>Select Donation Amount</h3>
+      
+      <InputRange
+        min={5}
+        max={200}
+        unit="€"
+        value={amount}
+        lineColor="#FF6B6B"
+        thumbColor="#FF4444"
+        presents={[
+          {
+            value: 25,
+            icon: Heart,
+            color: '#E0E0E0',
+            colorSuccess: '#FF6B6B',
+            onClick: () => console.log('Bronze supporter!'),
+          },
+          {
+            value: 50,
+            icon: Gift,
+            color: '#E0E0E0',
+            colorSuccess: '#FFD700',
+            onClick: () => console.log('Silver supporter!'),
+          },
+          {
+            value: 100,
+            icon: Trophy,
+            color: '#E0E0E0',
+            colorSuccess: '#C0C0C0',
+            onClick: () => console.log('Gold supporter!'),
+          },
+        ]}
+        onChange={(e) => setAmount(parseInt(e.target.value))}
+      />
+      
+      <button>Donate {amount}€</button>
+    </div>
+  );
+}
+```
+
+### Progress Tracker
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState, useEffect } from 'react';
+import { Flag } from 'lucide-react';
+
+function ProgressTracker() {
+  const [progress, setProgress] = useState(0);
+  const [completed, setCompleted] = useState(false);
+  
+  useEffect(() => {
+    if (progress >= 100) {
+      setCompleted(true);
+    }
+  }, [progress]);
+  
+  return (
+    <div>
+      <h3>Course Progress</h3>
+      
+      <InputRange
+        min={0}
+        max={100}
+        unit="%"
+        value={progress}
+        lineColor="#4CAF50"
+        backgroundColor="#E0E0E0"
+        thumbColor="#2E7D32"
+        presents={[
+          {
+            value: 100,
+            icon: Flag,
+            color: '#E0E0E0',
+            colorSuccess: '#4CAF50',
+            onClick: () => alert('Course completed! 🎉'),
+          },
+        ]}
+        onChange={(e) => setProgress(parseInt(e.target.value))}
+      />
+      
+      {completed && <p>Congratulations! Course completed!</p>}
+    </div>
+  );
+}
+```
+
+### Temperature Control
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function TemperatureControl() {
+  const [temp, setTemp] = useState(20);
+  
+  const getColor = () => {
+    if (temp < 15) return '#2196F3';
+    if (temp > 25) return '#FF5722';
+    return '#4CAF50';
+  };
+  
+  return (
+    <div>
+      <h3>Set Temperature</h3>
+      
+      <InputRange
+        min={10}
+        max={30}
+        unit="°C"
+        value={temp}
+        lineColor={getColor()}
+        thumbColor={getColor()}
+        onChange={(e) => setTemp(parseInt(e.target.value))}
+      />
+      
+      <p>Current: {temp}°C</p>
+    </div>
+  );
+}
+```
+
+### Weight Selector
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function WeightSelector() {
+  const [weight, setWeight] = useState(70);
+  
+  return (
+    <InputRange
+      min={40}
+      max={150}
+      unit="kg"
+      value={weight}
+      step={0.5}
+      onChange={(e) => setWeight(parseFloat(e.target.value))}
+    />
+  );
+}
+```
+
+### Simple Slider (Minimal)
+
+```tsx
+import { InputRange } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function SimpleSlider() {
+  const [value, setValue] = useState(5);
+  
+  return (
+    <InputRange
+      min={1}
+      max={10}
+      value={value}
+      hideLabels={true}
+      onChange={(e) => setValue(parseInt(e.target.value))}
+    />
+  );
+}
+```
+
+## Styling Details
+
+### Container
+
+- Width: 100%
+- Position: Relative (for absolute-positioned elements)
+
+### Track
+
+- Height: 8px
+- Border radius: 10px
+- Margin: 18px 0px (space for thumb and tooltip)
+
+### Thumb
+
+- Size: 44px × 44px
+- Border: 2px solid white
+- Border radius: 50% (circular)
+- Background image: Heart icon (18px)
+- Drop shadow: 0px 2px 2px rgba(0, 0, 0, 0.04)
+
+### Value Tooltip
+
+- Position: Above thumb
+- Background: Neutral low surface color
+- Padding: 0 1em
+- Height: 24px
+- Border radius: 6px
+- Arrow pointing down
+
+### Min/Max Labels
+
+- Font: Poppins
+- Color: Neutral medium text
+- Position: Below track
+- Margin top: 8px
+
+### Milestone Markers
+
+- Size: 36px × 36px
+- Border radius: 44px
+- Position: Above track
+- Transform: translateY(-8px) when reached
+- Dot below: 10px × 10px circle
+
+## Browser Support
+
+- **Range input**: Universal support
+- **Custom styling**: WebKit and Firefox vendor prefixes
+- **Lottie animations**: All modern browsers
+- **Transforms**: Universal support

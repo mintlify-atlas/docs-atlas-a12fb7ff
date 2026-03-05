@@ -1,0 +1,332 @@
+---
+title: Modal
+description: Modal dialog component with multiple display modes and customization options
+---
+
+## Overview
+
+Modal is a flexible dialog component that supports three distinct display types: default centered modal, structured form layout, and embedded web content. It provides smooth animations, customizable headers, and responsive layouts.
+
+## Basic Usage
+
+```tsx
+import { Modal } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <button onClick={() => setIsOpen(true)}>Open Modal</button>
+      <Modal
+        isVisible={isOpen}
+        title="Welcome"
+        subtitle="Please review the information below"
+        onClose={() => setIsOpen(false)}
+      >
+        <p>Modal content goes here</p>
+      </Modal>
+    </>
+  );
+}
+```
+
+## Modal Types
+
+### Default Modal
+
+Standard centered modal with custom content.
+
+```tsx
+<Modal
+  isVisible={isOpen}
+  title="Notification"
+  subtitle="You have a new message"
+  buttonProps={{
+    onClick: handleConfirm,
+    children: 'Confirm'
+  }}
+  onClose={() => setIsOpen(false)}
+>
+  <div>Your custom content here</div>
+</Modal>
+```
+
+### Form Modal
+
+Structured layout for form fields with label-value pairs.
+
+```tsx
+<Modal
+  type="form"
+  isVisible={isOpen}
+  title="Edit Profile"
+  options={[
+    {
+      id: "name",
+      title: "Name",
+      Data: <Input value={name} onChange={setName} />
+    },
+    {
+      id: "email",
+      title: "Email",
+      Data: <Input type="email" value={email} onChange={setEmail} />
+    },
+    { id: "separator" },
+    {
+      id: "phone",
+      title: "Phone",
+      Data: <Input value={phone} onChange={setPhone} />
+    }
+  ]}
+  buttonProps={{
+    onClick: handleSave,
+    children: 'Save Changes'
+  }}
+  onClose={() => setIsOpen(false)}
+/>
+```
+
+### Web Modal
+
+Embeds external web content in an iframe.
+
+```tsx
+<Modal
+  type="web"
+  isVisible={isOpen}
+  url="https://example.com/embedded-content"
+  title="External Content"
+  onClose={() => setIsOpen(false)}
+/>
+```
+
+### Full Screen Modal
+
+Expands from bottom of screen, useful for mobile-first designs.
+
+```tsx
+<Modal
+  type="full-screen"
+  isVisible={isOpen}
+  title="Full Screen View"
+  onClose={() => setIsOpen(false)}
+>
+  <div>Full screen content</div>
+</Modal>
+```
+
+### Lateral Modal
+
+Slides in from the right side, ideal for side panels and settings.
+
+```tsx
+<Modal
+  type="lateral"
+  isVisible={isOpen}
+  title="Settings"
+  onClose={() => setIsOpen(false)}
+>
+  <div>Settings panel content</div>
+</Modal>
+```
+
+## Props
+
+<ParamField path="isVisible" type="boolean" required>
+  Controls modal visibility. When `true`, modal is displayed with animation.
+</ParamField>
+
+<ParamField path="onClose" type="() => void" required>
+  Callback fired when modal should close (X button, overlay click if enabled).
+</ParamField>
+
+<ParamField path="type" type="'default' | 'full-screen' | 'form' | 'web' | 'lateral'" default="default">
+  Display mode of the modal:
+  - `default`: Centered modal with scale animation
+  - `full-screen`: Slides up from bottom
+  - `form`: Centered with structured form layout
+  - `web`: Centered with embedded iframe
+  - `lateral`: Slides in from right side
+</ParamField>
+
+<ParamField path="title" type="string">
+  Main heading displayed in the modal header.
+</ParamField>
+
+<ParamField path="subtitle" type="string">
+  Secondary text displayed below the title.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed in a red banner above the footer.
+</ParamField>
+
+<ParamField path="options" type="Array<OptionProps>">
+  Form field configurations for `type="form"`. Each item creates a labeled row:
+  ```tsx
+  {
+    id: string;           // Unique identifier or "separator"
+    title?: string;       // Label text (left column)
+    Data?: ReactElement;  // Input component (right column)
+    hidden?: boolean;     // Hide this row
+  }
+  ```
+</ParamField>
+
+<ParamField path="url" type="string">
+  External URL to display in iframe when `type="web"`.
+</ParamField>
+
+<ParamField path="buttonProps" type="ButtonProps">
+  Props for the primary action button in the footer. If provided, button is displayed.
+</ParamField>
+
+<ParamField path="hideClose" type="boolean" default="false">
+  When `true`, hides the X close button in the top-right corner.
+</ParamField>
+
+<ParamField path="hideHeader" type="boolean" default="false">
+  When `true`, hides the entire header section (title, subtitle, Header).
+</ParamField>
+
+<ParamField path="shouldCloseOnOverlayClick" type="boolean" default="false">
+  When `true`, clicking the backdrop closes the modal.
+</ParamField>
+
+<ParamField path="overlayBackgroundOpacity" type="number" default="0.6">
+  Opacity of the backdrop overlay (0-1).
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the modal container.
+</ParamField>
+
+<ParamField path="titleStyle" type="CSSProperties">
+  Custom styles for the header section.
+</ParamField>
+
+<ParamField path="contentStyle" type="CSSProperties">
+  Custom styles for the children content wrapper.
+</ParamField>
+
+<ParamField path="footerStyle" type="CSSProperties">
+  Custom styles for the footer section.
+</ParamField>
+
+<ParamField path="Header" type="ReactElement">
+  Custom React element rendered in the header area, after title/subtitle.
+</ParamField>
+
+<ParamField path="Bottom" type="ReactElement">
+  Custom React element rendered in the footer, before the button.
+</ParamField>
+
+## Ref Methods
+
+Modal supports ref forwarding with the following methods:
+
+```tsx
+const modalRef = useRef<ModalRef>(null);
+
+// Programmatically close the modal
+modalRef.current?.close();
+```
+
+<ParamField path="close" type="() => void">
+  Programmatically closes the modal with animation.
+</ParamField>
+
+## Advanced Examples
+
+### Modal with Custom Header and Footer
+
+```tsx
+<Modal
+  isVisible={isOpen}
+  title="Advanced Modal"
+  Header={
+    <div style={{ marginTop: 12 }}>
+      <Badge text="New Feature" />
+    </div>
+  }
+  Bottom={
+    <Button design="text" onClick={handleCancel}>
+      Cancel
+    </Button>
+  }
+  buttonProps={{
+    onClick: handleSubmit,
+    children: 'Submit',
+    loading: isSubmitting
+  }}
+  onClose={() => setIsOpen(false)}
+>
+  <FormContent />
+</Modal>
+```
+
+### Modal with Error Handling
+
+```tsx
+const [error, setError] = useState('');
+
+<Modal
+  isVisible={isOpen}
+  title="Update Profile"
+  error={error}
+  buttonProps={{
+    onClick: async () => {
+      try {
+        await updateProfile(data);
+        setIsOpen(false);
+      } catch (err) {
+        setError(err.message);
+      }
+    },
+    children: 'Save'
+  }}
+  onClose={() => setIsOpen(false)}
+>
+  <ProfileForm />
+</Modal>
+```
+
+### Controlled Modal with Ref
+
+```tsx
+const modalRef = useRef<ModalRef>(null);
+
+const handleAutoClose = () => {
+  setTimeout(() => {
+    modalRef.current?.close();
+  }, 3000);
+};
+
+<Modal
+  ref={modalRef}
+  isVisible={isOpen}
+  title="Success"
+  onClose={() => setIsOpen(false)}
+>
+  <p>Operation completed successfully</p>
+</Modal>
+```
+
+## Styling Notes
+
+- Form modal automatically sizes to `80%` width with max `600px`
+- Web modal fills height and removes content padding
+- Full-screen modal animates from bottom with slide-up effect
+- Lateral modal is `400px` wide on desktop, full width on mobile
+- All animations use `0.3s ease-out` transitions
+- Backdrop uses smooth opacity transition
+
+## Accessibility
+
+- Modal uses `react-modal` internally for accessibility features
+- Focus is trapped within the modal when open
+- ESC key closes modal by default
+- Overlay click can be enabled with `shouldCloseOnOverlayClick`
+- Close button is keyboard accessible

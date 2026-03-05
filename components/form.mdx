@@ -1,0 +1,206 @@
+---
+title: Form
+description: Form router component for collecting structured data. Currently supports location form with Google Maps integration.
+---
+
+## Overview
+
+The Form component acts as a router that delegates to specific form implementations based on the `type` prop. Currently, it only supports location forms that collect complete address information using Google Maps Places API.
+
+## Installation
+
+<Warning>
+  The location form requires the Google Maps JavaScript API to be loaded in your application.
+</Warning>
+
+Add the Google Maps script to your HTML:
+
+```html
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&language=es"></script>
+```
+
+## Basic Usage
+
+```tsx
+import { Form } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function MyComponent() {
+  const [location, setLocation] = useState(null);
+  const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
+
+  // Check if Google Maps is loaded
+  useEffect(() => {
+    const checkGoogleMaps = setInterval(() => {
+      if (window.google?.maps) {
+        setIsGoogleMapsLoaded(true);
+        clearInterval(checkGoogleMaps);
+      }
+    }, 100);
+    return () => clearInterval(checkGoogleMaps);
+  }, []);
+
+  const handleSubmit = (result) => {
+    if (result.data) {
+      setLocation(result.data);
+      console.log('Location submitted:', result.data);
+    } else if (result.error) {
+      console.error('Form error:', result.error);
+    }
+  };
+
+  return (
+    <Form
+      type="location"
+      isLoaded={isGoogleMapsLoaded}
+      onSubmit={handleSubmit}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="type" type="'location'" required>
+  Form type to render. Currently only supports `"location"`.
+</ParamField>
+
+<ParamField path="isLoaded" type="boolean" required>
+  Whether Google Maps API is loaded and ready to use. Required for the location form to function properly.
+</ParamField>
+
+<ParamField path="onSubmit" type="function" required>
+  Callback function triggered when the form is submitted or when validation errors occur.
+  
+  ```tsx
+  (result: { data?: LocationProps; error?: string }) => void
+  ```
+  
+  - `result.data` - Complete location object when form is valid
+  - `result.error` - Error message when validation fails
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'">
+  Visual design variant for the form inputs. Defaults to `"primary"`.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Custom placeholder text for the street address input. Defaults to `"Nombre y número de la calle"` (Street name and number).
+</ParamField>
+
+<ParamField path="defaultLocation" type="LocationProps">
+  Pre-filled location data to initialize the form with.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles for the form container.
+</ParamField>
+
+## Location Object Structure
+
+The location form returns a `LocationProps` object with the following structure:
+
+```tsx
+interface LocationProps {
+  route: string;              // Street name
+  routeNumber: string;        // Street number
+  routeInfo?: string;         // Additional info (apartment, floor, etc.)
+  city: string;               // City name
+  zipCode: string;            // Postal code
+  province: string;           // Province/state
+  country: string;            // Country name
+  address: string;            // Full formatted address
+}
+```
+
+## Examples
+
+### With Design Variant
+
+```tsx
+<Form
+  type="location"
+  isLoaded={isGoogleMapsLoaded}
+  design="secondary"
+  onSubmit={handleSubmit}
+/>
+```
+
+### With Default Location
+
+```tsx
+const defaultLocation = {
+  route: "Gran Vía",
+  routeNumber: "1",
+  city: "Madrid",
+  zipCode: "28013",
+  province: "Madrid",
+  country: "España",
+  address: "Gran Vía 1, 28013, Madrid, Madrid, España"
+};
+
+<Form
+  type="location"
+  isLoaded={isGoogleMapsLoaded}
+  defaultLocation={defaultLocation}
+  onSubmit={handleSubmit}
+/>
+```
+
+### With Error Handling
+
+```tsx
+function LocationFormExample() {
+  const [error, setError] = useState(null);
+  const [location, setLocation] = useState(null);
+
+  const handleSubmit = (result) => {
+    if (result.error) {
+      setError(result.error);
+      setLocation(null);
+    } else if (result.data) {
+      setError(null);
+      setLocation(result.data);
+    }
+  };
+
+  return (
+    <div>
+      <Form
+        type="location"
+        isLoaded={isGoogleMapsLoaded}
+        onSubmit={handleSubmit}
+      />
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {location && <p>Address: {location.address}</p>}
+    </div>
+  );
+}
+```
+
+## Form Behavior
+
+The location form includes:
+
+1. **Google Maps autocomplete** for street address input
+2. **Automatic address parsing** from Google Maps Places API
+3. **Additional info input** for apartment, floor, etc. (appears after main address is selected)
+4. **Read-only fields** for city, postal code, and province (auto-filled from Google Maps)
+5. **Validation** that ensures both street name and number are provided
+
+### Validation
+
+The form validates that a complete street address (including street number) is provided. If the user doesn't include a street number, the form will trigger the `onSubmit` callback with an error:
+
+```tsx
+{
+  error: "Añade la dirección completa, incluyendo el número de la calle"
+}
+```
+
+## Notes
+
+- The form uses Spanish language by default for Google Maps Places API
+- City, postal code, and province fields are auto-filled and disabled
+- The additional info field (apartment, floor) is optional
+- The form automatically formats the complete address string

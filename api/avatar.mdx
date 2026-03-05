@@ -1,0 +1,59 @@
+---
+title: Avatar
+description: API reference for the Avatar component
+---
+
+## Avatar
+
+Circular avatar component supporting images, initials, and file upload. Click to view full-size image or to upload new one when editable.
+
+### Import
+
+```tsx
+import { Avatar } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="icon" type="string">
+  Image URL to display
+</ParamField>
+
+<ParamField path="name" type="string">
+  User name (displays first letter as fallback when no icon)
+</ParamField>
+
+<ParamField path="editable" type="boolean">
+  Enable file upload on click (accepts jpg, jpeg, png, gif)
+</ParamField>
+
+<ParamField path="clickable" type="boolean">
+  Enable click to view full-size image in modal
+</ParamField>
+
+<ParamField path="onChange" type="(file: string | ArrayBuffer | null) => void">
+  Callback fired when new image is selected, receives base64-encoded file
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the avatar container
+</ParamField>
+
+### Usage
+
+```tsx
+<Avatar
+  icon={userImageUrl}
+  name="John Doe"
+  editable
+  onChange={(file) => uploadAvatar(file)}
+/>
+```
+
+### Notes
+
+- When `editable` is true, clicking triggers file upload dialog
+- When `clickable` is true, clicking displays full-size image in modal
+- If no `icon` is provided, displays first letter of `name` in uppercase
+- File upload only accepts image formats: jpg, jpeg, png, gif
+- `onChange` receives the file as base64-encoded string

@@ -1,0 +1,334 @@
+---
+title: Hover
+description: Simple hover trigger component that displays content on hover
+---
+
+## Overview
+
+Hover is a lightweight component that shows additional content when users hover over a trigger element. The content appears below the trigger with a subtle shadow and border.
+
+## Basic Usage
+
+```tsx
+import { Hover } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <Hover modalProps={{ children: <div>This appears on hover!</div> }}>
+      <button>Hover over me</button>
+    </Hover>
+  );
+}
+```
+
+## Examples
+
+### User Info Popover
+
+```tsx
+import { Avatar, Text } from '@adoptaunabuelo/react-components';
+
+<Hover
+  modalProps={{
+    children: (
+      <div>
+        <Text type="h4">John Doe</Text>
+        <Text type="p2">Software Engineer</Text>
+        <Text type="c1">john@example.com</Text>
+      </div>
+    )
+  }}
+>
+  <Avatar name="John Doe" size="small" />
+</Hover>
+```
+
+### Tooltip with Details
+
+```tsx
+<Hover
+  modalProps={{
+    children: (
+      <div style={{ maxWidth: 200 }}>
+        <Text type="p" weight="medium">Premium Feature</Text>
+        <Text type="p2" style={{ marginTop: 8 }}>
+          Upgrade to Pro to unlock advanced analytics and reporting
+        </Text>
+      </div>
+    )
+  }}
+>
+  <Badge text="Pro" icon={<Lock size={12} />} />
+</Hover>
+```
+
+### Action Preview
+
+```tsx
+import { Trash2 } from 'lucide-react';
+
+<Hover
+  modalProps={{
+    children: (
+      <div style={{ padding: 8 }}>
+        <Text type="c1" style={{ color: 'red' }}>
+          This action cannot be undone
+        </Text>
+      </div>
+    )
+  }}
+>
+  <Button design="text" icon={<Trash2 size={16} />}>
+    Delete
+  </Button>
+</Hover>
+```
+
+### Status Information
+
+```tsx
+<Hover
+  modalProps={{
+    children: (
+      <div>
+        <Text type="p2">Server Status</Text>
+        <Text type="p" weight="medium" style={{ color: 'green' }}>
+          All systems operational
+        </Text>
+        <Text type="c1">Last checked: 2 minutes ago</Text>
+      </div>
+    ),
+    style: { minWidth: 250 }
+  }}
+>
+  <StatusIndicator status="online" />
+</Hover>
+```
+
+### Help Text
+
+```tsx
+import { HelpCircle } from 'lucide-react';
+
+<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+  <Text>API Key</Text>
+  <Hover
+    modalProps={{
+      children: (
+        <div style={{ maxWidth: 300 }}>
+          <Text type="c1">
+            Your API key is used to authenticate requests to our API.
+            Keep it secure and never share it publicly.
+          </Text>
+        </div>
+      )
+    }}
+  >
+    <HelpCircle size={16} style={{ cursor: 'pointer' }} />
+  </Hover>
+</div>
+```
+
+## Props
+
+<ParamField path="modalProps" type="React.ComponentProps<'div'>" required>
+  Props for the hover content container. Must include `children` with the content to display.
+  
+  Common properties:
+  - `children`: Content to display on hover
+  - `style`: Custom styles for the hover panel
+  - `className`: CSS class for the panel
+  - Any other valid div attributes
+</ParamField>
+
+<ParamField path="children" type="ReactNode" required>
+  The trigger element that activates the hover effect.
+</ParamField>
+
+<ParamField path="...props" type="ComponentPropsWithoutRef<'div'>">
+  All standard div props are supported for the container wrapper.
+</ParamField>
+
+## Advanced Examples
+
+### Complex Content with Styling
+
+```tsx
+<Hover
+  modalProps={{
+    children: (
+      <div style={{
+        padding: 16,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 12
+      }}>
+        <div>
+          <Text type="p" weight="semibold">Product Details</Text>
+        </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <img src="product.jpg" style={{ width: 80, height: 80 }} />
+          <div>
+            <Text type="p2">Premium Headphones</Text>
+            <Text type="c1">$299.99</Text>
+            <Text type="c1" style={{ color: 'green' }}>In Stock</Text>
+          </div>
+        </div>
+      </div>
+    ),
+    style: { width: 300 }
+  }}
+>
+  <ProductCard product={product} />
+</Hover>
+```
+
+### With Custom Positioning
+
+```tsx
+<Hover
+  modalProps={{
+    children: <div>Hover content</div>,
+    style: {
+      left: 'auto',
+      right: 0,  // Align to right instead of left
+    }
+  }}
+>
+  <Button>Right-aligned hover</Button>
+</Hover>
+```
+
+### Interactive Hover Content
+
+```tsx
+<Hover
+  modalProps={{
+    children: (
+      <div style={{ padding: 16 }}>
+        <Text type="p" weight="medium">Quick Actions</Text>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
+          <Button size="small" onClick={() => handleEdit()}>Edit</Button>
+          <Button size="small" onClick={() => handleDuplicate()}>Duplicate</Button>
+          <Button size="small" design="text" onClick={() => handleDelete()}>Delete</Button>
+        </div>
+      </div>
+    )
+  }}
+>
+  <MoreVertical size={20} style={{ cursor: 'pointer' }} />
+</Hover>
+```
+
+### Data Preview
+
+```tsx
+function DataRow({ data }) {
+  return (
+    <Hover
+      modalProps={{
+        children: (
+          <div style={{ padding: 16, minWidth: 250 }}>
+            <Text type="p2" weight="medium">Full Details</Text>
+            <div style={{ marginTop: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <Text type="c1">ID: {data.id}</Text>
+              <Text type="c1">Created: {data.createdAt}</Text>
+              <Text type="c1">Modified: {data.updatedAt}</Text>
+              <Text type="c1">Status: {data.status}</Text>
+            </div>
+          </div>
+        )
+      }}
+    >
+      <div style={{ cursor: 'pointer' }}>
+        <Text>{data.title}</Text>
+      </div>
+    </Hover>
+  );
+}
+```
+
+### Nested Hovers
+
+```tsx
+<Hover
+  modalProps={{
+    children: (
+      <div style={{ padding: 16 }}>
+        <Text type="p">Main hover content</Text>
+        <Hover
+          modalProps={{
+            children: <Text type="c1">Nested hover info</Text>
+          }}
+        >
+          <Text type="p2" style={{ color: 'blue', cursor: 'pointer' }}>
+            Hover for more info
+          </Text>
+        </Hover>
+      </div>
+    )
+  }}
+>
+  <Button>Hover me</Button>
+</Hover>
+```
+
+## Behavior Notes
+
+- **Trigger**: Hover is activated on mouse enter
+- **Display**: Content appears immediately below trigger element
+- **Positioning**: Uses `position: absolute` with `top: 100%`
+- **Z-index**: Content has `z-index: 10` to appear above other elements
+- **Hide on leave**: Content disappears when mouse leaves container
+- **Default state**: Content has `display: none` when not hovered
+
+## Styling Notes
+
+- Container: `position: relative`, `display: inline-block`
+- Hover panel:
+  - Background: white
+  - Border: `1px solid ColorV2.border.neutralSoft`
+  - Padding: 24px
+  - Border radius: 24px
+  - Box shadow: `0 2px 8px rgba(0, 0, 0, 0.08)`
+- Activation: CSS `:hover` pseudo-selector
+- No JavaScript event handlers (pure CSS solution)
+
+## Use Cases
+
+- **Tooltips**: Show help text or additional information
+- **Previews**: Display quick previews of content
+- **User info**: Show user details on avatar hover
+- **Status details**: Expand status indicators with more info
+- **Action menus**: Quick access to contextual actions
+- **Data inspection**: Show full data on truncated fields
+
+## Comparison with Other Components
+
+- **vs Tooltip**: Hover is simpler with no positioning logic
+- **vs Dropdown**: Hover is view-only, Dropdown is for selection
+- **vs Modal**: Hover is lightweight and non-blocking
+- **vs Popover**: Hover activates on hover, Popover on click
+
+## Accessibility Considerations
+
+- Not keyboard accessible by default (hover-only)
+- Consider adding click handler for keyboard users
+- Ensure hover content is not essential information
+- Use for supplementary content only
+- Not suitable for mobile devices (no hover state)
+
+## Mobile Considerations
+
+Hover effects don't work on touch devices. Consider:
+
+```tsx
+const isTouchDevice = 'ontouchstart' in window;
+
+if (isTouchDevice) {
+  // Use click-based alternative like Modal or Popover
+  return <Modal trigger={<button>Tap me</button>}>Content</Modal>;
+} else {
+  return <Hover modalProps={{...}}>Hover me</Hover>;
+}
+```

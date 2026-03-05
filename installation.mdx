@@ -1,0 +1,249 @@
+---
+title: Installation
+description: Install Adopta Un Abuelo React Components and its dependencies in your project
+---
+
+# Installation
+
+Get started with Adopta Un Abuelo React Components by installing the package and its peer dependencies.
+
+## Package Installation
+
+The library is available as an [npm package](https://www.npmjs.com/package/@adoptaunabuelo/react-components). Install it using your preferred package manager:
+
+<CodeGroup>
+
+```bash npm
+npm install @adoptaunabuelo/react-components react react-dom styled-components
+```
+
+```bash yarn
+yarn add @adoptaunabuelo/react-components react react-dom styled-components
+```
+
+```bash pnpm
+pnpm add @adoptaunabuelo/react-components react react-dom styled-components
+```
+
+</CodeGroup>
+
+<Note>
+  The library requires React 18+ or React 19+ and styled-components 5+ or 6+ as peer dependencies.
+</Note>
+
+## Peer Dependencies
+
+These dependencies are **required** for the library to function:
+
+| Package | Version | Purpose |
+|---------|---------|----------|
+| `react` | ^18.0.0 \|\| ^19.0.0 | React framework |
+| `react-dom` | ^18.0.0 \|\| ^19.0.0 | React DOM rendering |
+| `styled-components` | ^5.0.0 \|\| ^6.0.0 | CSS-in-JS styling |
+
+## Optional Dependencies
+
+Some components require additional dependencies. Install only what you need for the components you plan to use:
+
+### Google Maps (InputLocation)
+
+For the `InputLocation` component with autocomplete functionality:
+
+<CodeGroup>
+
+```bash npm
+npm install @react-google-maps/api
+```
+
+```bash yarn
+yarn add @react-google-maps/api
+```
+
+```bash pnpm
+pnpm add @react-google-maps/api
+```
+
+</CodeGroup>
+
+<Warning>
+  You must also add the Google Maps JavaScript API script to your project's HTML:
+  
+  ```html
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&language=es"></script>
+  ```
+  
+  Replace `YOUR_API_KEY` with your actual Google Maps API key.
+</Warning>
+
+### Stripe (Payout)
+
+For the `Payout` component with payment processing:
+
+<CodeGroup>
+
+```bash npm
+npm install @stripe/react-stripe-js @stripe/stripe-js
+```
+
+```bash yarn
+yarn add @stripe/react-stripe-js @stripe/stripe-js
+```
+
+```bash pnpm
+pnpm add @stripe/react-stripe-js @stripe/stripe-js
+```
+
+</CodeGroup>
+
+### Rich Text Editor (TextArea)
+
+For the `TextArea` component with rich text editing capabilities:
+
+<CodeGroup>
+
+```bash npm
+npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash yarn
+yarn add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+```bash pnpm
+pnpm add @tiptap/react @tiptap/starter-kit @tiptap/extension-text-align @tiptap/extension-text-style @tiptap/extensions
+```
+
+</CodeGroup>
+
+### Loading Animations (Button)
+
+For the `Button` component's Lottie-based loading and success animations:
+
+<CodeGroup>
+
+```bash npm
+npm install @lottiefiles/react-lottie-player
+```
+
+```bash yarn
+yarn add @lottiefiles/react-lottie-player
+```
+
+```bash pnpm
+pnpm add @lottiefiles/react-lottie-player
+```
+
+</CodeGroup>
+
+### Webcam (InputImage)
+
+For the `InputImage` component with webcam capture:
+
+<CodeGroup>
+
+```bash npm
+npm install react-webcam
+```
+
+```bash yarn
+yarn add react-webcam
+```
+
+```bash pnpm
+pnpm add react-webcam
+```
+
+</CodeGroup>
+
+### Styled Components Compatibility
+
+For better styled-components compatibility (recommended):
+
+<CodeGroup>
+
+```bash npm
+npm install @emotion/is-prop-valid
+```
+
+```bash yarn
+yarn add @emotion/is-prop-valid
+```
+
+```bash pnpm
+pnpm add @emotion/is-prop-valid
+```
+
+</CodeGroup>
+
+## Quick Reference Table
+
+| Component(s) | Required Package(s) |
+|--------------|--------------------|
+| `InputLocation` | `@react-google-maps/api` |
+| `Payout` | `@stripe/react-stripe-js`, `@stripe/stripe-js` |
+| `TextArea` (Rich Text) | `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-text-align`, `@tiptap/extension-text-style`, `@tiptap/extensions` |
+| `Button` (Loading/Success) | `@lottiefiles/react-lottie-player` |
+| `InputImage` (Webcam) | `react-webcam` |
+| All components | `@emotion/is-prop-valid` (recommended) |
+
+## Verifying Installation
+
+After installation, verify that the library is installed correctly by importing a component:
+
+```tsx
+import { Button } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return <Button>Hello World</Button>;
+}
+```
+
+If you see no errors, you're ready to start building!
+
+## Version Information
+
+Current version: **0.3.148**
+
+<Note>
+  Check the [changelog](https://github.com/Adopta-Un-Abuelo/react-components/releases) for the latest updates and breaking changes.
+</Note>
+
+## Troubleshooting
+
+### Styled Components Version Conflict
+
+If you encounter issues with styled-components, ensure you're using version 5.x or 6.x:
+
+```bash
+npm ls styled-components
+```
+
+### React Version Compatibility
+
+The library supports React 18 and React 19. If you're using an older version of React, you may need to upgrade:
+
+<CodeGroup>
+
+```bash npm
+npm install react@latest react-dom@latest
+```
+
+```bash yarn
+yarn add react@latest react-dom@latest
+```
+
+```bash pnpm
+pnpm add react@latest react-dom@latest
+```
+
+</CodeGroup>
+
+### TypeScript Support
+
+The library includes TypeScript definitions. No additional `@types` packages are needed.
+
+## Next Steps
+
+<Card title="Quick Start Guide" icon="rocket" href="/quickstart">
+  Learn how to use the library with practical examples
+</Card>

@@ -1,0 +1,170 @@
+---
+title: Avatar
+description: Circular avatar component supporting images, initials, and file upload functionality
+---
+
+## Overview
+
+The `Avatar` component displays user profile pictures in a circular format. It supports image URLs, fallback to user initials, click-to-view full-size modal, and file upload functionality.
+
+## Import
+
+```tsx
+import { Avatar } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Avatar
+
+```tsx
+<Avatar icon="https://example.com/user-photo.jpg" />
+```
+
+### Avatar with Initials Fallback
+
+```tsx
+<Avatar name="John Doe" />
+{/* Displays "J" when no icon is provided */}
+```
+
+### Editable Avatar
+
+```tsx
+const [avatar, setAvatar] = useState(userImageUrl);
+
+<Avatar 
+  icon={avatar}
+  name="John Doe"
+  editable
+  onChange={(file) => {
+    // file is base64-encoded string
+    uploadAvatar(file);
+    setAvatar(file);
+  }}
+/>
+```
+
+### Clickable Avatar (View Full Size)
+
+```tsx
+<Avatar 
+  icon={userImageUrl}
+  clickable
+/>
+{/* Click to view full-size image in modal */}
+```
+
+### Custom Styling
+
+```tsx
+import Color from '@adoptaunabuelo/react-components/constants/Color';
+
+<Avatar 
+  name="Jane Smith"
+  style={{
+    backgroundColor: Color.background.secondaryLow,
+    color: Color.text.secondary,
+    fontSize: 32,
+    width: 80,
+    height: 80
+  }}
+/>
+```
+
+## Props
+
+<ParamField path="icon" type="string">
+  Image URL to display as the avatar. When provided, this takes precedence over the name fallback.
+</ParamField>
+
+<ParamField path="name" type="string">
+  User's name. The first letter (capitalized) displays when no `icon` is provided.
+</ParamField>
+
+<ParamField path="editable" type="boolean" default="false">
+  When `true`, clicking the avatar opens a file picker for uploading a new image.
+  
+  **Accepts:** `.jpg`, `.jpeg`, `.png`, `.gif`
+</ParamField>
+
+<ParamField path="clickable" type="boolean" default="false">
+  When `true`, clicking the avatar opens a modal showing the full-size image.
+  
+  <Note>Cannot be used simultaneously with `editable`</Note>
+</ParamField>
+
+<ParamField path="onChange" type="(file: string | ArrayBuffer | null) => void">
+  Callback fired when a new image is selected (when `editable={true}`).
+  
+  **Parameters:**
+  - `file`: Base64-encoded image string, or `null` if selection failed
+  
+  The component automatically:
+  - Validates file type (shows alert for invalid formats)
+  - Converts selected file to base64
+  - Passes the result to this callback
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom inline styles for the avatar container. Useful for:
+  - Custom `backgroundColor`
+  - Text `color` for initials
+  - `fontSize` for initial letter size
+  - Custom `width`/`height` (default: 50px)
+</ParamField>
+
+## Features
+
+- **Image display**: Shows user profile pictures with proper circular cropping
+- **Automatic fallback**: Displays first letter of name when no image is available
+- **File upload**: Click-to-upload with validation for image formats
+- **Full-size preview**: Modal view for enlarged image display
+- **Base64 encoding**: Automatically converts uploaded files for easy storage
+- **Customizable**: Supports custom colors, sizes, and styling
+
+## Behavior
+
+### Upload Validation
+
+When `editable={true}`, the component:
+1. Opens file picker on click
+2. Validates file extension (`.jpg`, `.jpeg`, `.png`, `.gif`)
+3. Shows alert "Debes seleccionar una imagen" for invalid files
+4. Converts valid images to base64
+5. Calls `onChange` with the base64 string
+
+### Modal Display
+
+When `clickable={true}`, the component:
+1. Opens a modal on click
+2. Displays the full-size image in a black background
+3. Provides a close button to dismiss the modal
+
+## Accessibility
+
+- Uses `role="avatar"` for semantic identification
+- Cursor changes to pointer when interactive (`editable` or `clickable`)
+- Hidden file input for keyboard accessibility
+
+## Design Specifications
+
+- **Default size**: 50px × 50px
+- **Shape**: Perfect circle (border-radius: 50%)
+- **Background**: `Color.background.primaryLow` (light brand color)
+- **Text color**: `Color.text.primary`
+- **Font**: Poppins, weight 500
+- **Initial font size**: 25.45px (customizable)
+
+## Best Practices
+
+- Always provide a `name` prop as fallback when `icon` might be unavailable
+- Use `editable` for profile editing interfaces
+- Use `clickable` for viewing user profiles or large galleries
+- Handle `onChange` errors gracefully (network issues, storage limits)
+- Consider compressing images before upload for better performance
+- Use consistent avatar sizes across your application
+
+## Related Components
+
+- [Modal](/components/modal) - Used internally for full-size image display

@@ -1,0 +1,194 @@
+---
+title: Currency Selector
+description: Currency selector dropdown with modal interface for choosing from multiple currency options. Features responsive design with full-screen modal on mobile.
+---
+
+## Overview
+
+The CurrencySelector component provides an elegant way to select currencies from a list of options. It displays the selected currency with its symbol and code (e.g., "€ EUR") and opens a modal when clicked to show all available options.
+
+The component is fully responsive, displaying a standard modal on desktop and a full-screen modal on mobile devices.
+
+## Basic Usage
+
+```tsx
+import { CurrencySelector } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function MyComponent() {
+  const [selectedCurrency, setSelectedCurrency] = useState({
+    currency: 'EUR',
+    name: 'Euro',
+    symbol: '€'
+  });
+
+  const currencyOptions = [
+    { currency: 'EUR', name: 'Euro', symbol: '€' },
+    { currency: 'USD', name: 'US Dollar', symbol: '$' },
+    { currency: 'GBP', name: 'British Pound', symbol: '£' }
+  ];
+
+  return (
+    <CurrencySelector
+      options={currencyOptions}
+      selectedOption={selectedCurrency}
+      onChange={(option) => setSelectedCurrency(option)}
+    />
+  );
+}
+```
+
+## Props
+
+<ParamField path="options" type="CurrencySelectorOption[]" required>
+  Array of available currency options to display in the selector.
+  
+  ```tsx
+  interface CurrencySelectorOption {
+    currency: string;  // ISO currency code (e.g., "EUR", "USD")
+    name: string;      // Full currency name (e.g., "Euro")
+    symbol: string;    // Currency symbol (e.g., "€", "$")
+  }
+  ```
+</ParamField>
+
+<ParamField path="selectedOption" type="CurrencySelectorOption">
+  Currently selected currency option. If not provided, defaults to the first option in the `options` array.
+</ParamField>
+
+<ParamField path="onChange" type="function">
+  Callback function triggered when a currency is selected.
+  
+  ```tsx
+  (option: CurrencySelectorOption) => void
+  ```
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom CSS styles for the selector button container.
+</ParamField>
+
+## Examples
+
+### Multiple Currencies
+
+```tsx
+const currencies = [
+  { currency: 'EUR', name: 'Euro', symbol: '€' },
+  { currency: 'USD', name: 'US Dollar', symbol: '$' },
+  { currency: 'GBP', name: 'British Pound', symbol: '£' },
+  { currency: 'JPY', name: 'Japanese Yen', symbol: '¥' },
+  { currency: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
+  { currency: 'CAD', name: 'Canadian Dollar', symbol: 'CA$' }
+];
+
+<CurrencySelector
+  options={currencies}
+  selectedOption={currencies[0]}
+  onChange={(option) => console.log('Selected:', option.currency)}
+/>
+```
+
+### With Custom Styling
+
+```tsx
+<CurrencySelector
+  options={currencies}
+  selectedOption={selectedCurrency}
+  onChange={handleCurrencyChange}
+  style={{
+    marginTop: '20px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+  }}
+/>
+```
+
+### Controlled Component
+
+```tsx
+function CurrencyPicker() {
+  const [currency, setCurrency] = useState(null);
+
+  const options = [
+    { currency: 'EUR', name: 'Euro', symbol: '€' },
+    { currency: 'USD', name: 'US Dollar', symbol: '$' }
+  ];
+
+  const handleChange = (option) => {
+    setCurrency(option);
+    // Make API call with selected currency
+    updatePricing(option.currency);
+  };
+
+  return (
+    <div>
+      <h3>Select your currency</h3>
+      <CurrencySelector
+        options={options}
+        selectedOption={currency}
+        onChange={handleChange}
+      />
+      {currency && (
+        <p>Prices will be shown in {currency.name}</p>
+      )}
+    </div>
+  );
+}
+```
+
+### Uncontrolled with Default
+
+```tsx
+// Component manages its own state internally
+<CurrencySelector
+  options={[
+    { currency: 'EUR', name: 'Euro', symbol: '€' },
+    { currency: 'USD', name: 'US Dollar', symbol: '$' }
+  ]}
+  onChange={(option) => {
+    console.log('Currency changed to:', option.currency);
+  }}
+/>
+```
+
+## Visual Appearance
+
+### Selector Button
+
+- Rounded pill shape with subtle shadow
+- Displays symbol and currency code (e.g., "€ EUR")
+- Hover effect with light gray background
+- Clickable with cursor pointer
+
+### Modal
+
+- **Desktop**: Standard centered modal
+- **Mobile** (≤450px): Full-screen modal
+- Title: "Selecciona una divisa" (Select a currency)
+- Each option shows: Full name and symbol (e.g., "Euro (€)")
+- Selected option indicated with checkmark icon
+- Hover effects on currency options
+
+## Behavior
+
+1. **Initial Selection**: If `selectedOption` is not provided, the first option in the `options` array is automatically selected
+2. **Modal Opening**: Clicking the selector button opens the currency modal
+3. **Selection**: Clicking a currency in the modal:
+   - Updates the selected currency
+   - Closes the modal
+   - Triggers the `onChange` callback
+4. **Responsive**: Automatically switches to full-screen modal on mobile devices
+
+## Accessibility
+
+- Clickable elements have appropriate cursor styles
+- Visual feedback on hover states
+- Selected option clearly indicated with checkmark
+- Modal can be closed by clicking outside or using close button
+
+## Notes
+
+- The modal title is in Spanish: "Selecciona una divisa"
+- Mobile breakpoint is set at 450px viewport width
+- The component uses the internal Modal component from the library
+- Currency options should use standard ISO 4217 currency codes for consistency

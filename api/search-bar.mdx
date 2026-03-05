@@ -1,0 +1,100 @@
+---
+title: SearchBar
+description: Search input with magnifying glass icon supporting two sizes and visual designs
+---
+
+## Import
+
+```tsx
+import { SearchBar } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<SearchBar
+  type="big"
+  design="primary"
+  placeholder="Search..."
+  onChange={(e) => handleSearch(e.target.value)}
+/>
+```
+
+## Props
+
+<ParamField path="type" type="'big' | 'small'">
+  Size variant: `big` (48px height) or `small` (38px height)
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'">
+  Visual design: `primary` (gray background) or `secondary` (white with border)
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the search input
+</ParamField>
+
+<ParamField path="onChange" type="(event: React.ChangeEvent<HTMLInputElement>) => void">
+  Callback fired when the input value changes
+</ParamField>
+
+<ParamField path="value" type="string">
+  Controlled input value
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the search bar
+</ParamField>
+
+## Features
+
+- Magnifying glass icon (lucide-react Search component)
+- Auto-focuses on click and changes style on interaction
+- Two size variants: big (48px) and small (38px)
+- Two design variants: primary (gray background) and secondary (white with border)
+- Rounded pill shape (100px border radius)
+- Font size: 14px (small) or 16px (big with secondary design)
+- Supports all standard HTML input props
+
+## Examples
+
+### Primary Design (Big)
+
+```tsx
+<SearchBar
+  type="big"
+  design="primary"
+  placeholder="Search articles..."
+  onChange={(e) => setSearchQuery(e.target.value)}
+/>
+```
+
+### Secondary Design (Small)
+
+```tsx
+<SearchBar
+  type="small"
+  design="secondary"
+  placeholder="Find..."
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+/>
+```
+
+### Controlled Search Bar
+
+```tsx
+const [searchValue, setSearchValue] = useState('');
+
+<SearchBar
+  type="big"
+  design="primary"
+  value={searchValue}
+  onChange={(e) => setSearchValue(e.target.value)}
+  placeholder="Type to search..."
+/>
+```

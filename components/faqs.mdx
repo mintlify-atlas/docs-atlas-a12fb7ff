@@ -1,0 +1,352 @@
+---
+title: FAQs
+description: Accordion component for frequently asked questions with expandable answers
+---
+
+## Overview
+
+FAQs is an accordion-style component designed for displaying question-and-answer pairs. Only one question can be expanded at a time, making it ideal for FAQ sections and help documentation.
+
+## Basic Usage
+
+```tsx
+import { FAQs } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const faqs = [
+    {
+      id: '1',
+      title: 'How do I get started?',
+      description: 'To get started, simply create an account and follow the onboarding guide.'
+    },
+    {
+      id: '2',
+      title: 'What payment methods do you accept?',
+      description: 'We accept all major credit cards, PayPal, and bank transfers.'
+    },
+    {
+      id: '3',
+      title: 'Can I cancel my subscription?',
+      description: 'Yes, you can cancel your subscription at any time from your account settings.'
+    }
+  ];
+
+  return (
+    <FAQs
+      options={faqs}
+      onClick={(index) => console.log('FAQ clicked:', index)}
+    />
+  );
+}
+```
+
+## Examples
+
+### Product FAQ
+
+```tsx
+const productFaqs = [
+  {
+    id: 'shipping',
+    title: 'What are your shipping options?',
+    description: 'We offer standard shipping (5-7 business days) and express shipping (2-3 business days). Free shipping is available on orders over $50.'
+  },
+  {
+    id: 'returns',
+    title: 'What is your return policy?',
+    description: 'We accept returns within 30 days of purchase. Items must be unused and in original packaging. Refunds are processed within 5-10 business days.'
+  },
+  {
+    id: 'warranty',
+    title: 'Do you offer a warranty?',
+    description: 'Yes, all products come with a 1-year manufacturer warranty covering defects in materials and workmanship.'
+  },
+  {
+    id: 'international',
+    title: 'Do you ship internationally?',
+    description: 'Yes, we ship to over 50 countries worldwide. International shipping rates and times vary by destination.'
+  }
+];
+
+<FAQs options={productFaqs} />
+```
+
+### Service FAQ with Click Tracking
+
+```tsx
+const [expandedIndex, setExpandedIndex] = useState(0);
+
+const handleClick = (index: number) => {
+  setExpandedIndex(index);
+  // Track analytics
+  trackEvent('faq_clicked', {
+    question: serviceFaqs[index].title,
+    index
+  });
+};
+
+<FAQs
+  options={serviceFaqs}
+  onClick={handleClick}
+/>
+```
+
+### Technical Support FAQ
+
+```tsx
+const techFaqs = [
+  {
+    id: 'browser',
+    title: 'Which browsers are supported?',
+    description: 'We support the latest versions of Chrome, Firefox, Safari, and Edge. Internet Explorer is not supported.'
+  },
+  {
+    id: 'mobile',
+    title: 'Is there a mobile app?',
+    description: 'Yes, we have native apps for both iOS and Android. You can download them from the App Store or Google Play.'
+  },
+  {
+    id: 'api',
+    title: 'Do you provide an API?',
+    description: 'Yes, we offer a RESTful API with comprehensive documentation. API access is available on Pro and Enterprise plans.'
+  },
+  {
+    id: 'data',
+    title: 'How is my data secured?',
+    description: 'We use industry-standard encryption (AES-256) for data at rest and TLS 1.3 for data in transit. Our infrastructure is SOC 2 Type II certified.'
+  }
+];
+
+<FAQs options={techFaqs} />
+```
+
+### Styled FAQ Section
+
+```tsx
+<div style={{
+  maxWidth: 800,
+  margin: '0 auto',
+  padding: 40
+}}>
+  <Text type="h2" style={{ marginBottom: 32 }}>
+    Frequently Asked Questions
+  </Text>
+  <FAQs
+    options={faqs}
+    style={{
+      backgroundColor: '#f9f9f9',
+      padding: 24,
+      borderRadius: 12
+    }}
+    onClick={(index) => console.log('Question expanded:', index)}
+  />
+</div>
+```
+
+### Dynamic FAQ Loading
+
+```tsx
+function DynamicFAQs() {
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchFAQs().then(data => {
+      setFaqs(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <Spinner />;
+
+  return <FAQs options={faqs} />;
+}
+```
+
+## Props
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Array of FAQ items:
+  ```tsx
+  {
+    id: string;         // Unique identifier
+    title: string;      // Question text (always visible)
+    description: string; // Answer text (visible when expanded)
+  }
+  ```
+</ParamField>
+
+<ParamField path="onClick" type="(index: number) => void">
+  Callback fired when an FAQ item is clicked. Receives the index of the clicked item.
+  Useful for analytics tracking or custom behavior.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the container.
+</ParamField>
+
+## Advanced Examples
+
+### Categorized FAQs
+
+```tsx
+function CategorizedFAQs() {
+  const categories = [
+    {
+      name: 'Account & Billing',
+      faqs: [
+        { id: 'acc1', title: 'How do I reset my password?', description: '...' },
+        { id: 'acc2', title: 'How do I update my billing info?', description: '...' }
+      ]
+    },
+    {
+      name: 'Technical Support',
+      faqs: [
+        { id: 'tech1', title: 'Why is the app running slowly?', description: '...' },
+        { id: 'tech2', title: 'How do I export my data?', description: '...' }
+      ]
+    }
+  ];
+
+  return (
+    <div>
+      {categories.map(category => (
+        <div key={category.name} style={{ marginBottom: 48 }}>
+          <Text type="h3" style={{ marginBottom: 16 }}>
+            {category.name}
+          </Text>
+          <FAQs options={category.faqs} />
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### Searchable FAQs
+
+```tsx
+function SearchableFAQs({ allFaqs }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredFaqs, setFilteredFaqs] = useState(allFaqs);
+
+  useEffect(() => {
+    if (!searchTerm) {
+      setFilteredFaqs(allFaqs);
+    } else {
+      const filtered = allFaqs.filter(faq =>
+        faq.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        faq.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredFaqs(filtered);
+    }
+  }, [searchTerm, allFaqs]);
+
+  return (
+    <div>
+      <Input
+        placeholder="Search FAQs..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={{ marginBottom: 24 }}
+      />
+      {filteredFaqs.length > 0 ? (
+        <FAQs options={filteredFaqs} />
+      ) : (
+        <Text>No FAQs found matching your search.</Text>
+      )}
+    </div>
+  );
+}
+```
+
+### FAQ with Rich Content
+
+```tsx
+const richFaqs = [
+  {
+    id: '1',
+    title: 'How do I integrate with third-party services?',
+    description: 'You can integrate with services like Slack, Google Drive, and Dropbox through our Integrations page. Navigate to Settings > Integrations and click "Connect" next to the service you want to add.'
+  },
+  {
+    id: '2',
+    title: 'What are the system requirements?',
+    description: 'Minimum requirements:\n• Operating System: Windows 10, macOS 10.14, or Linux\n• RAM: 4GB\n• Storage: 500MB free space\n• Internet connection required'
+  }
+];
+
+<FAQs options={richFaqs} />
+```
+
+### FAQ with Initial Expansion
+
+Note: Component always starts with first item (index 0) expanded.
+
+```tsx
+// The first FAQ item will be expanded by default
+<FAQs
+  options={faqs}
+  onClick={(index) => {
+    console.log('User expanded question:', index);
+  }}
+/>
+```
+
+## Behavior Notes
+
+- **Single expansion**: Only one FAQ can be expanded at a time
+- **Toggle**: Clicking the expanded FAQ collapses it
+- **Default state**: First item (index 0) is expanded on mount
+- **Smooth transition**: Answer appears/disappears with CSS transition
+- **Hover effect**: Underline appears on hover for collapsed questions
+- **Icons**: Chevron up/down indicates expansion state
+
+## Styling Notes
+
+- Each FAQ item has `24px` bottom margin
+- Question title is displayed with `p` text type, medium weight
+- Answer is displayed with `p2` text type, neutral medium color
+- Answer has `8px` top margin when visible
+- Chevron icon is `20x20px` with `3px` top margin
+- Icons and title are aligned in a row layout
+- Hover state adds underline decoration to collapsed items
+
+## Accessibility
+
+- Container has `role="container"` attribute
+- Each FAQ item has unique `role` based on its ID
+- Visual indication of expanded/collapsed state with chevron icons
+- Clickable areas are large and clearly defined
+- Consider adding ARIA attributes for better screen reader support:
+  ```tsx
+  // Recommended enhancement
+  <button
+    aria-expanded={isExpanded}
+    aria-controls={`faq-answer-${id}`}
+  >
+    {title}
+  </button>
+  <div id={`faq-answer-${id}`} hidden={!isExpanded}>
+    {description}
+  </div>
+  ```
+
+## Use Cases
+
+- FAQ pages on websites
+- Help centers and documentation
+- Product information pages
+- Onboarding guides
+- Support documentation
+- Policy pages (privacy, terms, etc.)
+
+## Best Practices
+
+1. **Keep answers concise**: Users scan FAQs quickly
+2. **Order by importance**: Put most common questions first
+3. **Use clear language**: Avoid jargon in questions
+4. **Include search**: For more than 10 FAQs, add search
+5. **Track interactions**: Use `onClick` to identify popular questions
+6. **Update regularly**: Keep answers current and accurate

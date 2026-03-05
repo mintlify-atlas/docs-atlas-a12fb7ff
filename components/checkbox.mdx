@@ -1,0 +1,186 @@
+---
+title: Checkbox
+description: Checkbox component with animated checkmark and optional avatar
+---
+
+An interactive checkbox component with Lottie animation, support for sublabels, error states, and optional avatar display.
+
+## Basic Usage
+
+```tsx
+import { Checkbox } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function TermsAcceptance() {
+  const [accepted, setAccepted] = useState(false);
+
+  return (
+    <Checkbox
+      label="I accept the terms and conditions"
+      selected={accepted}
+      onClick={() => setAccepted(!accepted)}
+    />
+  );
+}
+```
+
+## With Sublabel
+
+```tsx
+<Checkbox
+  label="Option 1"
+  sublabel="This is a sublabel description"
+  selected={isSelected}
+  onClick={handleClick}
+/>
+```
+
+## With Avatar
+
+Displays an avatar with user initials:
+
+```tsx
+<Checkbox
+  label="John Doe"
+  avatarEnabled={true}
+  selected={isSelected}
+  onClick={handleClick}
+/>
+```
+
+## Custom Children
+
+Use custom JSX instead of the label prop:
+
+```tsx
+<Checkbox
+  selected={isSelected}
+  onClick={handleClick}
+>
+  <div>
+    <strong>Custom Title</strong>
+    <p style={{ fontSize: 12 }}>Custom description text</p>
+  </div>
+</Checkbox>
+```
+
+## Error State
+
+```tsx
+<Checkbox
+  label="Option 4"
+  selected={false}
+  error={true}
+  onClick={handleClick}
+/>
+```
+
+## Right-Positioned Checkbox
+
+```tsx
+<Checkbox
+  label="Accept terms"
+  position="right"
+  selected={accepted}
+  onClick={() => setAccepted(!accepted)}
+/>
+```
+
+## Circle Shape
+
+```tsx
+<Checkbox
+  label="Circle checkbox"
+  shape="circle"
+  selected={isSelected}
+  onClick={handleClick}
+/>
+```
+
+## Custom Size
+
+```tsx
+<Checkbox
+  label="Large checkbox"
+  height={32}
+  width={32}
+  selected={isSelected}
+  onClick={handleClick}
+/>
+```
+
+## Props
+
+<ParamField path="selected" type="boolean" required>
+  Whether the checkbox is checked. This is a controlled component.
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed next to the checkbox.
+</ParamField>
+
+<ParamField path="sublabel" type="string">
+  Secondary text displayed below the label in smaller font.
+</ParamField>
+
+<ParamField path="error" type="boolean" default="false">
+  Shows error state with red border and background colors.
+</ParamField>
+
+<ParamField path="position" type="'left' | 'right'" default="left">
+  Position of the checkbox relative to the label.
+</ParamField>
+
+<ParamField path="shape" type="'circle' | 'square'" default="square">
+  Shape of the checkbox:
+  - `square`: Rounded square (4px border radius)
+  - `circle`: Circular shape
+</ParamField>
+
+<ParamField path="height" type="number" default="22">
+  Custom height of the checkbox in pixels.
+</ParamField>
+
+<ParamField path="width" type="number" default="22">
+  Custom width of the checkbox in pixels.
+</ParamField>
+
+<ParamField path="avatarEnabled" type="boolean" default="false">
+  Shows an avatar with initials from the label text.
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent<HTMLButtonElement>) => void">
+  Callback fired when the checkbox is clicked.
+</ParamField>
+
+<ParamField path="disabled" type="boolean" default="false">
+  Disables the checkbox and reduces opacity to 0.5.
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  Custom content to display instead of the label. Overrides the `label` and `sublabel` props.
+</ParamField>
+
+Also supports all standard HTML button attributes.
+
+## Features
+
+- **Animated Checkmark**: Lottie animation plays when checkbox is selected
+- **Hover States**: Interactive hover effect with background color change
+- **Active State**: Scale animation (0.9) on click
+- **Responsive Colors**: Different background colors on mobile devices
+- **Error Indication**: Red color scheme when error prop is true
+- **Avatar Support**: Shows circular avatar with user initials
+- **Flexible Layout**: Checkbox can be positioned left or right
+- **Custom Content**: Supports both label props and custom children
+
+## Color States
+
+### Normal State
+- **Unselected**: Light primary background with soft primary border
+- **Selected**: Primary background with primary border
+- **Hover**: Primary soft background with primary border
+
+### Error State
+- **Unselected**: Error background with red soft border
+- **Selected**: Error background with error border

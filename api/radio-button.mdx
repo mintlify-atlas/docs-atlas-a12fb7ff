@@ -1,0 +1,104 @@
+---
+title: RadioButton
+description: Single selectable radio button component with animated selection indicator
+---
+
+## Import
+
+```tsx
+import { RadioButton } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<RadioButton
+  selected={isSelected}
+  onClick={() => setIsSelected(!isSelected)}
+>
+  Option label
+</RadioButton>
+```
+
+## Props
+
+<ParamField path="selected" type="boolean">
+  Whether the radio button is selected
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Whether the radio button is disabled (displays with gray styling)
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent<HTMLDivElement>) => void">
+  Callback fired when the radio button is clicked
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Label text or content to display next to the radio button
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+<ParamField path="id" type="string">
+  Unique identifier for the radio button
+</ParamField>
+
+## Features
+
+- Animated selection with smooth transitions (0.1s linear)
+- Circular radio indicator with inner filled circle when selected
+- Disabled state with gray styling
+- Automatically manages internal selected state
+- Clickable label text
+- 24px margin spacing for vertical layouts
+
+## Examples
+
+### Basic Radio Button
+
+```tsx
+<RadioButton
+  selected={selectedOption === 'option1'}
+  onClick={() => setSelectedOption('option1')}
+>
+  Option 1
+</RadioButton>
+```
+
+### Radio Button Group
+
+```tsx
+const [selected, setSelected] = useState('a');
+
+<div>
+  <RadioButton
+    selected={selected === 'a'}
+    onClick={() => setSelected('a')}
+  >
+    Option A
+  </RadioButton>
+  <RadioButton
+    selected={selected === 'b'}
+    onClick={() => setSelected('b')}
+  >
+    Option B
+  </RadioButton>
+  <RadioButton
+    selected={selected === 'c'}
+    onClick={() => setSelected('c')}
+  >
+    Option C
+  </RadioButton>
+</div>
+```
+
+### Disabled Radio Button
+
+```tsx
+<RadioButton disabled selected={false}>
+  Disabled option
+</RadioButton>
+```

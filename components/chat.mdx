@@ -1,0 +1,466 @@
+---
+title: Chat
+description: Full-featured chat interface with message history, templates, and media support
+---
+
+## Overview
+
+Chat is a complete messaging interface that displays conversation history with automatic date grouping, supports message templates for inactive conversations, and includes media upload capabilities. It auto-scrolls to the latest message and provides a polished messaging experience.
+
+## Basic Usage
+
+```tsx
+import { Chat } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [messages, setMessages] = useState([
+    {
+      key: '1',
+      type: 'recipient',
+      text: 'Hello! How can I help you?',
+      createdAt: new Date('2024-01-15T10:30:00')
+    },
+    {
+      key: '2',
+      type: 'sender',
+      text: 'I need help with my order',
+      createdAt: new Date('2024-01-15T10:31:00')
+    }
+  ]);
+
+  const templates = [
+    {
+      id: 'greeting',
+      title: 'Greeting',
+      subtitle: 'Say hello',
+      description: 'Hello! How can I assist you today?'
+    }
+  ];
+
+  const handleSend = (data) => {
+    if (data.text) {
+      setMessages([...messages, {
+        key: Date.now().toString(),
+        type: 'sender',
+        text: data.text,
+        createdAt: new Date()
+      }]);
+    }
+  };
+
+  return (
+    <Chat
+      messages={messages}
+      templates={templates}
+      placeholder="Type a message..."
+      onSend={handleSend}
+    />
+  );
+}
+```
+
+## Features
+
+### Message Display
+
+Messages are automatically grouped by date with visual dividers.
+
+```tsx
+const messages = [
+  {
+    key: '1',
+    type: 'recipient',
+    text: 'Message from yesterday',
+    createdAt: new Date('2024-01-14T15:00:00')
+  },
+  {
+    key: '2',
+    type: 'sender',
+    text: 'My response yesterday',
+    createdAt: new Date('2024-01-14T15:05:00')
+  },
+  {
+    key: '3',
+    type: 'recipient',
+    text: 'Message from today',
+    createdAt: new Date('2024-01-15T10:00:00')
+  }
+];
+
+<Chat
+  messages={messages}
+  templates={templates}
+  onSend={handleSend}
+/>
+// Date dividers automatically appear: "Mon 14 Jan" and "Tue 15 Jan"
+```
+
+### Message Templates
+
+Templates are shown when the last recipient message is over 24 hours old.
+
+```tsx
+const templates = [
+  {
+    id: 'follow-up',
+    title: 'Follow Up',
+    subtitle: 'Check order status',
+    description: 'Hi! I wanted to follow up on your recent order. Is everything going well?'
+  },
+  {
+    id: 'schedule',
+    title: 'Schedule Call',
+    subtitle: 'Arrange a meeting',
+    description: 'Would you like to schedule a call to discuss this further?'
+  },
+  {
+    id: 'thanks',
+    title: 'Thank You',
+    subtitle: 'Express gratitude',
+    description: 'Thank you for reaching out! We appreciate your business.'
+  }
+];
+
+const handleSend = (data) => {
+  if (data.template) {
+    // Send selected template
+    const template = templates.find(t => t.id === data.template);
+    sendMessage(template.description);
+  }
+};
+
+<Chat
+  messages={messages}
+  templates={templates}
+  onSend={handleSend}
+/>
+```
+
+### Media Uploads
+
+Supports image uploads with base64 encoding.
+
+```tsx
+const handleSend = (data) => {
+  if (data.media) {
+    // Upload image
+    uploadImage({
+      base64: data.media.base64,
+      contentType: data.media.contentType
+    }).then(url => {
+      addMessage({
+        key: Date.now().toString(),
+        type: 'sender',
+        imageUrl: url,
+        createdAt: new Date()
+      });
+    });
+  } else if (data.text) {
+    // Send text message
+    addMessage({
+      key: Date.now().toString(),
+      type: 'sender',
+      text: data.text,
+      createdAt: new Date()
+    });
+  }
+};
+
+<Chat
+  messages={messages}
+  templates={templates}
+  onSend={handleSend}
+/>
+```
+
+### Loading State
+
+```tsx
+const [isSending, setIsSending] = useState(false);
+
+const handleSend = async (data) => {
+  setIsSending(true);
+  try {
+    await sendMessageToAPI(data.text);
+    // Update messages
+  } finally {
+    setIsSending(false);
+  }
+};
+
+<Chat
+  messages={messages}
+  templates={templates}
+  loading={isSending}
+  onSend={handleSend}
+/>
+```
+
+## Props
+
+<ParamField path="messages" type="Array<ChatMessageProps>" required>
+  Array of chat messages to display. Each message requires:
+  ```tsx
+  {
+    key: string;              // Unique identifier
+    type: 'sender' | 'recipient'; // Message sender type
+    text?: string;            // Message text content
+    createdAt: Date;          // Message timestamp
+    // Additional ChatMessageProps from ChatBubble
+  }
+  ```
+  Messages are automatically grouped by date.
+</ParamField>
+
+<ParamField path="templates" type="Array<Template>" required>
+  Message templates shown when conversation is inactive (>24 hours):
+  ```tsx
+  {
+    id: string;        // Unique identifier
+    title: string;     // Template name
+    subtitle: string;  // Short description
+    description: string; // Full message text
+  }
+  ```
+</ParamField>
+
+<ParamField path="onSend" type="(data: SendData) => void" required>
+  Callback fired when user sends a message, template, or media:
+  ```tsx
+  {
+    text?: string;     // Text message
+    template?: string; // Template ID
+    media?: {          // Image upload
+      base64: string;
+      contentType: string;
+    }
+  }
+  ```
+</ParamField>
+
+<ParamField path="loading" type="boolean" default="false">
+  Shows loading spinner in input when `true`. Use while sending messages.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the message input field.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles applied to the container.
+</ParamField>
+
+## Advanced Examples
+
+### Real-time Chat
+
+```tsx
+import { useEffect, useState } from 'react';
+import { subscribeToMessages } from './api';
+
+function RealTimeChat({ conversationId }) {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToMessages(conversationId, (newMessage) => {
+      setMessages(prev => [...prev, newMessage]);
+    });
+    return unsubscribe;
+  }, [conversationId]);
+
+  const handleSend = async (data) => {
+    await sendMessage(conversationId, data);
+  };
+
+  return (
+    <Chat
+      messages={messages}
+      templates={templates}
+      onSend={handleSend}
+    />
+  );
+}
+```
+
+### With Typing Indicator
+
+```tsx
+const [messages, setMessages] = useState([]);
+const [isTyping, setIsTyping] = useState(false);
+
+// Add typing indicator to messages
+const displayMessages = isTyping
+  ? [...messages, {
+      key: 'typing',
+      type: 'recipient',
+      text: 'Typing...',
+      createdAt: new Date()
+    }]
+  : messages;
+
+<Chat
+  messages={displayMessages}
+  templates={templates}
+  onSend={handleSend}
+/>
+```
+
+### Message History Loading
+
+```tsx
+function ChatWithHistory() {
+  const [messages, setMessages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = async () => {
+    const olderMessages = await fetchMessages(page);
+    if (olderMessages.length === 0) {
+      setHasMore(false);
+    } else {
+      setMessages(prev => [...olderMessages, ...prev]);
+      setPage(prev => prev + 1);
+    }
+  };
+
+  return (
+    <div>
+      {hasMore && <Button onClick={loadMore}>Load Earlier Messages</Button>}
+      <Chat
+        messages={messages}
+        templates={templates}
+        onSend={handleSend}
+      />
+    </div>
+  );
+}
+```
+
+### Custom Message Types
+
+```tsx
+// Assuming ChatBubble supports custom message types
+const messages = [
+  {
+    key: '1',
+    type: 'sender',
+    text: 'Check out this file',
+    createdAt: new Date()
+  },
+  {
+    key: '2',
+    type: 'sender',
+    fileUrl: 'https://example.com/document.pdf',
+    fileName: 'document.pdf',
+    createdAt: new Date()
+  },
+  {
+    key: '3',
+    type: 'recipient',
+    text: 'Thanks! I\'ll review it.',
+    createdAt: new Date()
+  }
+];
+
+<Chat
+  messages={messages}
+  templates={templates}
+  onSend={handleSend}
+/>
+```
+
+### Template Modal Integration
+
+```tsx
+// Templates are shown automatically when last message > 24hrs old
+const handleSend = (data) => {
+  if (data.template) {
+    const selectedTemplate = templates.find(t => t.id === data.template);
+    // Send template message
+    sendMessage({
+      text: selectedTemplate.description,
+      templateId: data.template
+    });
+  }
+};
+
+<Chat
+  messages={messages}
+  templates={[
+    {
+      id: 'welcome',
+      title: 'Welcome Back',
+      subtitle: 'Greet returning customer',
+      description: 'Welcome back! How can we help you today?'
+    },
+    {
+      id: 'offer',
+      title: 'Special Offer',
+      subtitle: 'Share promotion',
+      description: 'We have a special offer just for you! Get 20% off your next purchase.'
+    }
+  ]}
+  onSend={handleSend}
+/>
+```
+
+## Behavior Notes
+
+- **Auto-scroll**: Automatically scrolls to bottom when new messages arrive
+- **Date grouping**: Groups messages by date with dividers (format: "ddd DD MMM")
+- **Template trigger**: Shows template prompt when last recipient message > 24 hours old
+- **Input disable**: Input is disabled when templates should be used
+- **Media picker**: Image upload opens native file picker
+- **Smooth scrolling**: Uses smooth scroll behavior for better UX
+
+## Template System
+
+### When Templates Appear
+- Last recipient message is > 24 hours old
+- OR no recipient messages exist
+
+### Template Modal
+- Opens when "Plantillas" option clicked
+- Displays all available templates
+- Sends template message on selection
+- Automatically dismisses after selection
+
+### Template Options
+Two built-in input options:
+1. **Plantillas** (Templates): Opens template modal
+2. **Fotos** (Photos): Opens image picker
+
+## Styling Notes
+
+- Container: Full height (`100vh`) with flex column layout
+- Message list: Scrollable with padding `24px 16px 32px` (desktop)
+- Input view: Sticky at bottom with padding `8px 24px 24px`
+- Date divider: Centered with horizontal lines
+- Template prompt: Yellow background (`ColorV2.surface.secondary`)
+- Messages use ChatBubble component for styling
+
+## Accessibility
+
+- Container has `role="container"` attribute
+- Scrollable area is keyboard accessible
+- Input has proper placeholder text
+- Template modal is accessible
+- Image upload uses native file input
+- Date dividers provide temporal context
+
+## Mobile Responsiveness
+
+- Adjusts padding for smaller screens
+- Date picker sizing adapts to screen width
+- Input layout optimized for mobile keyboards
+- Touch-friendly button sizes
+- Proper viewport height handling
+
+## Performance Notes
+
+- Messages grouped efficiently with single pass
+- Smooth scroll uses CSS for better performance
+- Template modal lazy loads
+- Image uploads use FileReader API
+- Auto-scroll only triggers on new messages

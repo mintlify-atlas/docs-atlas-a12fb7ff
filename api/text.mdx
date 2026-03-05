@@ -1,0 +1,162 @@
+---
+title: Text
+description: Unified typography component that renders headers, paragraphs, or button text with automatic semantic HTML elements
+---
+
+## Import
+
+```tsx
+import { Text } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Text type="h1" weight="bold">
+  Page Title
+</Text>
+
+<Text type="p" color={ColorV2.text.neutralMedium}>
+  Body text content
+</Text>
+
+<Text type="b1">Button text</Text>
+```
+
+## Props
+
+<ParamField path="type" type="'d1' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'p2' | 'c1' | 'c2' | 'o1' | 'o2' | 'b1' | 'b2' | 'b3'" required>
+  Text style variant that determines size, element, and formatting
+</ParamField>
+
+<ParamField path="weight" type="'semibold' | 'medium' | 'regular'">
+  Font weight (600, 500, or 400)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom inline styles
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Text content or nested elements
+</ParamField>
+
+## Type Variants
+
+### Headers (d1, h1-h6)
+Renders heading elements with responsive font sizes.
+
+| Type | Desktop Size | Mobile Size | Element |
+|------|-------------|-------------|----------|
+| d1   | 52px / 64lh | 48px / 60lh | h1 |
+| h1   | 48px / 56lh | 32px / 40lh | h1 |
+| h2   | 40px / 48lh | 28px / 36lh | h2 |
+| h3   | 28px / 36lh | 24px / 32lh | h3 |
+| h4   | 24px / 32lh | 20px / 28lh | h4 |
+| h5   | 20px / 28lh | 18px / 26lh | h5 |
+| h6   | 18px / 26lh | 16px / 24lh | h6 |
+
+### Paragraphs (p, p2, c1, c2, o1, o2)
+Renders paragraph elements with various sizes.
+
+| Type | Size | Notes |
+|------|------|-------|
+| p    | 15px | Standard paragraph |
+| p2   | 14px | Smaller paragraph |
+| c1   | 13px | Caption 1 |
+| c2   | 12px | Caption 2 |
+| o1   | 13px | Overline 1 (uppercase) |
+| o2   | 12px | Overline 2 (uppercase) |
+
+### Button Text (b1, b2, b3)
+Renders paragraph elements optimized for buttons.
+
+| Type | Desktop Size | Mobile Size |
+|------|-------------|-------------|
+| b1   | 18px        | 15px        |
+| b2   | 15px        | 14px        |
+| b3   | 13px        | 13px        |
+
+## Features
+
+- Automatically selects semantic HTML element based on type
+- Responsive font sizes for headers and button text
+- Uppercase text transformation for overline types (o1, o2)
+- Default color: ColorV2.text.neutralHard
+- Font family: Poppins
+- Zero margin and padding by default
+
+## Examples
+
+### Page Header
+
+```tsx
+<Text type="h1" weight="semibold">
+  Welcome to Our Platform
+</Text>
+```
+
+### Section Title
+
+```tsx
+<Text type="h3" weight="medium">
+  Features Overview
+</Text>
+```
+
+### Body Paragraph
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Text type="p" weight="regular" style={{ color: ColorV2.text.neutralMedium }}>
+  This is a paragraph of body text that provides detailed information
+  about the content on this page.
+</Text>
+```
+
+### Caption Text
+
+```tsx
+<Text type="c1" weight="medium">
+  Image caption or small detail text
+</Text>
+```
+
+### Overline (Uppercase)
+
+```tsx
+import { ColorV2 } from '@adoptaunabuelo/react-components';
+
+<Text type="o1" weight="semibold" style={{ color: ColorV2.text.primary }}>
+  Featured Article
+</Text>
+```
+
+### Button Text
+
+```tsx
+<button>
+  <Text type="b1" weight="medium" style={{ color: 'white' }}>
+    Get Started
+  </Text>
+</button>
+```
+
+### Custom Styled Text
+
+```tsx
+<Text
+  type="h2"
+  weight="semibold"
+  style={{
+    color: '#008FF5',
+    textAlign: 'center',
+    marginBottom: '24px'
+  }}
+>
+  Centered Blue Heading
+</Text>
+```

@@ -1,0 +1,201 @@
+---
+title: TextArea
+description: Multi-line text input component with default and rich text editor modes
+---
+
+A multi-line text input component with two modes: `default` (plain textarea) and `edit` (rich text editor with Tiptap).
+
+<Note>
+  The `edit` mode requires **Tiptap** dependencies to be installed in your project:
+  
+  ```bash
+  npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-text-style @tiptap/extension-text-align @tiptap/extension-placeholder
+  ```
+</Note>
+
+## Default Mode
+
+Basic multi-line text input with character counter:
+
+```tsx
+import { TextArea } from '@adoptaunabuelo/react-components';
+
+function CommentForm() {
+  return (
+    <TextArea
+      type="default"
+      placeholder="Enter your message..."
+      rows={5}
+    />
+  );
+}
+```
+
+## With Character Limit
+
+```tsx
+<TextArea
+  type="default"
+  placeholder="Enter your message..."
+  maxLength={500}
+  design="secondary"
+/>
+```
+
+## Rich Text Editor Mode
+
+Use `type="edit"` for formatted text editing with toolbar:
+
+```tsx
+import { TextArea } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function ArticleEditor() {
+  const [content, setContent] = useState('');
+
+  return (
+    <TextArea
+      type="edit"
+      value={content}
+      placeholder="Start writing..."
+      onChange={(html) => setContent(html)}
+      style={{ height: '400px' }}
+    />
+  );
+}
+```
+
+## Rich Text Editor with Custom Toolbar Button
+
+```tsx
+import { TextArea } from '@adoptaunabuelo/react-components';
+import { Save } from 'lucide-react';
+
+function EditorWithSave() {
+  const [content, setContent] = useState('');
+
+  const handleSave = () => {
+    // Save content to database
+    console.log('Saving:', content);
+  };
+
+  return (
+    <TextArea
+      type="edit"
+      value={content}
+      onChange={(html) => setContent(html)}
+      ToolbarButton={
+        <button onClick={handleSave}>
+          <Save />
+        </button>
+      }
+      style={{ height: '400px' }}
+    />
+  );
+}
+```
+
+## Design Variants
+
+### Primary Design (Default)
+
+Gray background without border:
+
+```tsx
+<TextArea
+  type="default"
+  design="primary"
+  placeholder="Enter your message..."
+/>
+```
+
+### Secondary Design
+
+White background with border:
+
+```tsx
+<TextArea
+  type="default"
+  design="secondary"
+  placeholder="Enter your message..."
+/>
+```
+
+## Props
+
+### Common Props (Both Types)
+
+<ParamField path="type" type="'default' | 'edit'" required>
+  The type of textarea:
+  - `default`: Plain textarea with optional character counter
+  - `edit`: Rich text editor with formatting toolbar (requires Tiptap)
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text displayed when empty.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles for the container.
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary'" default="primary">
+  Visual design variant:
+  - `primary`: Gray background without border
+  - `secondary`: White background with border
+</ParamField>
+
+<ParamField path="maxLength" type="number">
+  Maximum character length. Shows character counter when set (default mode only).
+</ParamField>
+
+### Default Mode Props
+
+<ParamField path="defaultValue" type="string">
+  Initial value for uncontrolled component.
+</ParamField>
+
+<ParamField path="name" type="string">
+  Name attribute for form submission.
+</ParamField>
+
+<ParamField path="onChange" type="(e: React.ChangeEvent<HTMLTextAreaElement>) => void">
+  Callback fired when the value changes.
+</ParamField>
+
+Also supports all standard HTML textarea attributes.
+
+### Edit Mode Props
+
+<ParamField path="value" type="string">
+  HTML content for controlled component (edit mode).
+</ParamField>
+
+<ParamField path="onChange" type="(html: string) => void">
+  Callback fired when content changes. Receives HTML string (edit mode).
+</ParamField>
+
+<ParamField path="ToolbarButton" type="ReactNode">
+  Custom button displayed in the top-right of the toolbar (edit mode only).
+</ParamField>
+
+## Rich Text Editor Features
+
+The `edit` mode includes a toolbar with the following formatting options:
+
+- **Text Styles**: Paragraph, Heading 1, Heading 2
+- **Text Formatting**: Bold, Italic, Underline
+- **Text Alignment**: Left, Center, Right
+
+The editor uses **Tiptap** extensions:
+- `StarterKit`: Basic editing functionality
+- `TextAlign`: Text alignment support
+- `TextStyleKit`: Text styling capabilities
+- `Placeholder`: Placeholder text support
+
+## Styling Notes
+
+- Default mode has a fixed height of 100px (can be overridden with `style`)
+- Edit mode height should be set via the `style` prop (defaults to container height minus toolbar)
+- Custom scrollbar styling in default mode
+- Both modes support focus states with border color changes

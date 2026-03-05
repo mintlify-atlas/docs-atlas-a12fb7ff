@@ -1,0 +1,242 @@
+---
+title: InputPhone
+description: Phone input with country selector and validation using google-libphonenumber
+---
+
+Phone input with integrated country selector and real-time validation using google-libphonenumber. Validates phone format for the selected country region.
+
+## Import
+
+```tsx
+import { InputPhone } from '@adoptaunabuelo/react-components';
+import { Country } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+<CodeGroup>
+```tsx Basic Usage
+import { InputPhone, Country } from '@adoptaunabuelo/react-components';
+
+function App() {
+  const countryOptions = [
+    {
+      id: 'spain',
+      esCountry: 'España',
+      enCountry: 'Spain',
+      prefix: '+34',
+      countryCode: 'ES',
+    },
+    {
+      id: 'france',
+      esCountry: 'Francia',
+      enCountry: 'France',
+      prefix: '+33',
+      countryCode: 'FR',
+    },
+    // ... more countries
+  ];
+  
+  return (
+    <InputPhone
+      design="secondary"
+      placeholder="Teléfono"
+      countryOptions={countryOptions}
+    />
+  );
+}
+```
+
+```tsx With Validation
+import { InputPhone } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function App() {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  
+  return (
+    <InputPhone
+      design="secondary"
+      placeholder="Teléfono"
+      country="ES"
+      countryOptions={countryOptions}
+      onPhoneChange={({ country, value, isValid }) => {
+        setIsValid(isValid);
+        if (isValid) {
+          setPhoneNumber(country + value);
+          console.log('Valid phone:', country + value);
+        }
+      }}
+    />
+  );
+}
+```
+
+```tsx Pre-selected Country
+import { InputPhone } from '@adoptaunabuelo/react-components';
+
+function App() {
+  return (
+    <InputPhone
+      design="secondary"
+      placeholder="Teléfono"
+      country="US"
+      defaultValue="5551234567"
+      countryOptions={countryOptions}
+    />
+  );
+}
+```
+</CodeGroup>
+
+## Props
+
+<ParamField path="country" type="string">
+  ISO country code (e.g., "ES", "US", "FR") to pre-select the country.
+</ParamField>
+
+<ParamField path="countryOptions" type="CountryProps[]">
+  Array of country options with prefix and countryCode. Each country object should include:
+  - `id`: Unique identifier
+  - `esCountry`: Country name in Spanish
+  - `enCountry`: Country name in English
+  - `prefix`: Phone prefix (e.g., "+34")
+  - `countryCode`: ISO country code (e.g., "ES")
+</ParamField>
+
+<ParamField path="onPhoneChange" type="(data: PhoneChangeData) => void">
+  Callback fired on input change or country change with validation status.
+  
+  The callback receives an object with:
+  - `country` (string): Country prefix (e.g., "+34")
+  - `value` (string | number | undefined): Phone number without prefix
+  - `isValid` (boolean): Whether phone is valid for selected country
+</ParamField>
+
+<ParamField path="design" type="'primary' | 'secondary' | 'third'" default="secondary">
+  Visual variant inherited from Input component.
+</ParamField>
+
+<ParamField path="placeholder" type="string">
+  Placeholder text for the phone number input.
+</ParamField>
+
+<ParamField path="error" type="string">
+  Error message displayed below the input.
+</ParamField>
+
+<ParamField path="defaultValue" type="string | number">
+  Default phone number value (without country prefix).
+</ParamField>
+
+<ParamField path="value" type="string | number">
+  Controlled phone number value (without country prefix).
+</ParamField>
+
+## Additional Props
+
+InputPhone extends all Input component props including `disabled`, `containerStyle`, `onChange`, `onFocus`, `onBlur`, and all native HTML input attributes.
+
+## Country Props Interface
+
+```tsx
+interface CountryProps {
+  id: string;
+  esCountry: string;
+  enCountry: string;
+  prefix: string;
+  countryCode: string;
+}
+```
+
+## Examples
+
+### Complete Form Example
+
+```tsx
+import { InputPhone } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function PhoneForm() {
+  const [phone, setPhone] = useState('');
+  const [error, setError] = useState('');
+  
+  const countryOptions = [
+    {
+      id: 'spain',
+      esCountry: 'España',
+      enCountry: 'Spain',
+      prefix: '+34',
+      countryCode: 'ES',
+    },
+    {
+      id: 'uk',
+      esCountry: 'Reino Unido',
+      enCountry: 'United Kingdom',
+      prefix: '+44',
+      countryCode: 'GB',
+    },
+  ];
+  
+  const handleSubmit = () => {
+    if (!phone) {
+      setError('Please enter a valid phone number');
+      return;
+    }
+    console.log('Submitting phone:', phone);
+  };
+  
+  return (
+    <div>
+      <InputPhone
+        design="secondary"
+        placeholder="Phone Number"
+        country="ES"
+        countryOptions={countryOptions}
+        error={error}
+        onPhoneChange={({ country, value, isValid }) => {
+          if (isValid) {
+            setPhone(country + value);
+            setError('');
+          } else {
+            setPhone('');
+          }
+        }}
+      />
+      <button onClick={handleSubmit}>Submit</button>
+    </div>
+  );
+}
+```
+
+### With All Available Countries
+
+```tsx
+import { InputPhone, Country } from '@adoptaunabuelo/react-components';
+
+// Use the built-in Country constant from the library
+// which includes all available countries
+
+function App() {
+  return (
+    <InputPhone
+      design="secondary"
+      placeholder="Teléfono"
+      countryOptions={Country}
+      onPhoneChange={({ country, value, isValid }) => {
+        console.log('Phone:', country + value, 'Valid:', isValid);
+      }}
+    />
+  );
+}
+```
+
+## Validation
+
+The component uses `google-libphonenumber` for phone validation:
+
+- Validates phone format based on selected country
+- Phone length must be between 8-17 characters (including country prefix)
+- Returns `isValid: true` only when phone matches country's format rules
+- Validation runs on every input change and country selection change

@@ -1,0 +1,407 @@
+---
+title: Styling & Theming
+description: Learn how to use styled-components, theming, and color constants in the library
+---
+
+## Overview
+
+The library uses **styled-components** for all styling, providing a powerful CSS-in-JS solution with TypeScript support. All components follow consistent styling patterns and use centralized color constants.
+
+## Styled Components
+
+### Basic Usage
+
+Components are styled using the `styled-components` library:
+
+```tsx
+import styled from "styled-components";
+import Color from "@constants/Color";
+
+const StyledButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  padding: 0px 24px;
+  border-radius: 1000px;
+  border: none;
+  background-color: ${Color.background.primary};
+  color: white;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: ${Color.status.primary.hover};
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+```
+
+### Transient Props
+
+<Warning>
+Always use **transient props** (prefixed with `$`) for styled-component props that shouldn't be passed to the DOM.
+</Warning>
+
+Transient props prevent React warnings about invalid DOM attributes:
+
+```tsx
+const ButtonPrimary = styled.button<{
+  $size?: "small" | "normal";
+  $loading?: boolean;
+  $success?: boolean;
+}>`
+  height: ${(props) => (props.$size === "small" ? "40px" : "56px")};
+  padding: ${(props) => (props.$loading ? "0px" : "0px 24px")};
+  background-color: ${(props) =>
+    props.$success ? Color.status.color.success : Color.background.primary};
+  opacity: ${(props) => (props.disabled ? 0.48 : 1)};
+  cursor: ${(props) =>
+    props.disabled || props.$loading ? "default" : "pointer"};
+`;
+```
+
+<Tip>
+The `$` prefix tells styled-components not to pass these props to the underlying DOM element, avoiding "React does not recognize the prop" warnings.
+</Tip>
+
+### Component Composition
+
+Styled components can be composed and extended:
+
+```tsx
+import Text from "@components/Text/Text";
+
+// Extend an existing styled component
+const Label = styled(Text)<{
+  $size?: "small" | "normal";
+  $icon: boolean;
+}>`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: ${(props) => (props.$size === "small" ? "14px" : "15px")};
+  width: 100%;
+  margin-left: ${(props) => (props.$icon ? "6px" : "0")};
+  color: white;
+`;
+```
+
+## Color System
+
+The library provides two color constant systems: `Color` (original) and `ColorV2` (updated design system).
+
+### Color Constants (Original)
+
+Import from `@constants/Color`:
+
+```tsx
+import Color from "@constants/Color";
+```
+
+#### Background Colors
+
+```tsx
+Color.background.primary        // #008FF5 - Primary blue
+Color.background.primaryLow     // #ECF4FB - Light blue
+Color.background.secondary      // #FFAA47 - Secondary orange
+Color.background.secondaryLow   // #FFF6E5 - Light orange
+Color.background.deepBlue       // #00315C - Dark blue
+Color.background.deepBlueLow    // #F0F3F6 - Soft gray-blue
+Color.background.full           // #333333 - Dark gray
+Color.background.neutral        // #FFFFFF - White
+```
+
+#### Line/Border Colors
+
+```tsx
+Color.line.primary              // #008FF5
+Color.line.primarySoft          // #C4DEF5
+Color.line.secondary            // #FFAA47
+Color.line.secondarySoft        // #FFD5A3
+Color.line.green                // #08A85B
+Color.line.soft                 // #E0E0E0
+Color.line.white                // #FFFFFF
+```
+
+#### Text Colors
+
+```tsx
+Color.text.primary              // #008FF5 - Primary blue text
+Color.text.deepBlue             // #00315C - Dark blue text
+Color.text.red                  // #E02D2D - Error text
+Color.text.green                // #08A85B - Success text
+Color.text.full                 // #000000C7 - 78% opacity black
+Color.text.high                 // #0000007D - 49% opacity black
+Color.text.medium               // #00000040 - 25% opacity black
+Color.text.white                // #FFFFFF - White text
+```
+
+#### Status Colors
+
+```tsx
+Color.status.primary.default    // #008FF5
+Color.status.primary.hover      // #005AA8
+Color.status.primary.active     // #00315C
+
+Color.status.secondary.default  // #FFAA47
+Color.status.secondary.hover    // #EB9026
+
+Color.status.color.success      // #08A85B - Success green
+Color.status.color.error        // #E02D2D - Error red
+Color.status.color.warning      // #FFAA47 - Warning orange
+```
+
+### ColorV2 Constants (Updated Design System)
+
+Import from `@constants/ColorV2`:
+
+```tsx
+import ColorV2 from "@constants/ColorV2";
+```
+
+#### Surface Colors
+
+```tsx
+ColorV2.surface.neutralHigh     // #66839E
+ColorV2.surface.neutralMedium   // #A6BACB
+ColorV2.surface.neutralLow      // #D8DFE5
+ColorV2.surface.neutralSoft     // #F0F3F6
+ColorV2.surface.background      // #F9F6F3
+ColorV2.surface.invert          // #FFFFFF
+
+ColorV2.surface.primary         // #008FF5
+ColorV2.surface.primaryLow      // #93CCF5
+ColorV2.surface.primarySoft     // #ECF4FB
+
+ColorV2.surface.secondary       // #FFAA47
+ColorV2.surface.secondarySoft   // #FFF6E5
+
+ColorV2.surface.green           // #08A85B
+ColorV2.surface.greenSoft       // #E4F8EE
+ColorV2.surface.red             // #E02D2D
+ColorV2.surface.redSoft         // #FFE5E5
+```
+
+#### Transparent Colors
+
+```tsx
+ColorV2.transparent.neutralHard     // rgba(0, 29, 61, 0.92)
+ColorV2.transparent.neutralHigh     // rgba(0, 29, 61, 0.56)
+ColorV2.transparent.neutralMedium   // rgba(0, 29, 61, 0.34)
+ColorV2.transparent.neutralLow      // rgba(0, 29, 61, 0.24)
+ColorV2.transparent.neutralSoft     // rgba(0, 29, 61, 0.10)
+
+ColorV2.transparent.invertHigh      // #FFFFFF8F
+ColorV2.transparent.invertMedium    // #FFFFFF5C
+ColorV2.transparent.invertSoft      // #FFFFFF1F
+```
+
+#### Border Colors
+
+```tsx
+ColorV2.border.neutralHard      // #001D3DEB
+ColorV2.border.neutralMedium    // #00315C57
+ColorV2.border.neutral          // #00315C24
+ColorV2.border.neutralSoft      // #00315C1A
+
+ColorV2.border.primary          // #008FF5
+ColorV2.border.primarySoft      // #D3E5F5
+ColorV2.border.secondary        // #FFAA47
+ColorV2.border.green            // #08A85B
+ColorV2.border.red              // #E02D2D
+```
+
+#### Text Colors
+
+```tsx
+ColorV2.text.neutralHard        // rgba(0, 29, 61, 0.92)
+ColorV2.text.neutralMedium      // rgba(0, 29, 61, 0.56)
+ColorV2.text.neutralSoft        // rgba(0, 29, 61, 0.24)
+ColorV2.text.invert             // #FFFFFF
+
+ColorV2.text.primary            // #008FF5
+ColorV2.text.orange             // #FF773D
+ColorV2.text.red                // #E02D2D
+ColorV2.text.green              // #08A85B
+```
+
+## Real-World Examples
+
+### Button with States
+
+```tsx ButtonPrimary.tsx
+import styled from "styled-components";
+import Color from "@constants/Color";
+
+const ButtonPrimary = styled.button<{
+  $size?: "small" | "normal";
+  $loading?: boolean;
+  $success?: boolean;
+}>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => (props.$size === "small" ? "40px" : "56px")};
+  border-radius: 1000px;
+  border: none;
+  color: white;
+  background-color: ${(props) =>
+    props.$success ? Color.status.color.success : Color.background.primary};
+  opacity: ${(props) => (props.disabled ? 0.48 : 1)};
+  transition: transform 0.05s ease-out, width 0.2s ease-out,
+    background-color 0.2s ease-out, opacity 0.2s ease-out;
+  min-width: ${(props) => (props.$size === "small" ? "80px" : "100px")};
+  cursor: ${(props) =>
+    props.disabled || props.$loading ? "default" : "pointer"};
+  
+  &:hover {
+    background-color: ${(props) =>
+      props.disabled || props.$loading
+        ? Color.background.primary
+        : Color.status.primary.hover};
+  }
+  
+  &:active {
+    transform: ${(props) =>
+      props.disabled || props.$loading ? "none" : "scale(0.95)"};
+  }
+`;
+```
+
+### Secondary Button with Border
+
+```tsx ButtonSecondary.tsx
+import styled from "styled-components";
+import Color from "@constants/Color";
+
+const ButtonSecondary = styled.button<{
+  $size?: "small" | "normal";
+  $loading?: boolean;
+  $success?: boolean;
+}>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: ${(props) => (props.$size === "small" ? "36px" : "56px")};
+  border-radius: 1000px;
+  border: ${(props) =>
+    props.$success
+      ? "none"
+      : "1px solid " + (props.color || Color.background.primary)};
+  background-color: ${(props) =>
+    props.$success ? Color.status.color.success : "transparent"};
+  min-width: ${(props) => (props.$size === "small" ? "80px" : "100px")};
+  cursor: ${(props) =>
+    props.disabled || props.$loading ? "default" : "pointer"};
+  
+  &:hover {
+    background-color: ${(props) =>
+      props.disabled || props.$loading
+        ? "transparent"
+        : Color.background.primary + "30"};  // 30 = 18.8% opacity in hex
+  }
+`;
+```
+
+## Best Practices
+
+<AccordionGroup>
+  <Accordion title="Always Use Color Constants">
+    <Warning>
+    Never hardcode color values. Always import from `Color` or `ColorV2` constants.
+    </Warning>
+    
+    ```tsx
+    // ❌ Bad
+    background-color: #008FF5;
+    
+    // ✅ Good
+    import Color from "@constants/Color";
+    background-color: ${Color.background.primary};
+    ```
+  </Accordion>
+  
+  <Accordion title="Use Transient Props for Styling">
+    Prefix styled-component-only props with `$` to prevent DOM warnings:
+    
+    ```tsx
+    // ❌ Bad - causes React warnings
+    const Button = styled.button<{ loading: boolean }>`
+      opacity: ${props => props.loading ? 0.5 : 1};
+    `;
+    
+    // ✅ Good
+    const Button = styled.button<{ $loading: boolean }>`
+      opacity: ${props => props.$loading ? 0.5 : 1};
+    `;
+    ```
+  </Accordion>
+  
+  <Accordion title="Add Smooth Transitions">
+    Use CSS transitions for interactive states:
+    
+    ```tsx
+    transition: transform 0.05s ease-out,
+                background-color 0.2s ease-out,
+                opacity 0.2s ease-out;
+    ```
+  </Accordion>
+  
+  <Accordion title="Handle Disabled States">
+    Reduce opacity and change cursor for disabled elements:
+    
+    ```tsx
+    opacity: ${(props) => (props.disabled ? 0.48 : 1)};
+    cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## Responsive Design
+
+The library includes `styled-media-query` for responsive utilities:
+
+```tsx
+import styled from "styled-components";
+import media from "styled-media-query";
+import Color from "@constants/Color";
+
+const Container = styled.div`
+  padding: 24px;
+  
+  ${media.lessThan("medium")`
+    padding: 16px;
+  `}
+  
+  ${media.lessThan("small")`
+    padding: 12px;
+  `}
+`;
+```
+
+## Important Notes
+
+<Warning>
+Do **not** modify files in `src/constants/` directory. These are managed centrally by the design team.
+</Warning>
+
+<Note>
+All components must use TypeScript in **strict mode** with proper type definitions for styled-component props.
+</Note>
+
+## Related Resources
+
+<CardGroup cols={2}>
+  <Card title="Component Architecture" icon="layer-group" href="/concepts/architecture">
+    Learn about the variant router pattern and component structure
+  </Card>
+  
+  <Card title="TypeScript Usage" icon="code" href="/concepts/typescript">
+    Understand type definitions and path aliases
+  </Card>
+</CardGroup>

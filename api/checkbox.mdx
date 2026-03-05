@@ -1,0 +1,79 @@
+---
+title: Checkbox
+description: API reference for the Checkbox component
+---
+
+## Checkbox
+
+Checkbox component with animated checkmark, label support, and optional avatar display.
+
+### Import
+
+```tsx
+import { Checkbox } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="selected" type="boolean" required>
+  Whether the checkbox is checked
+</ParamField>
+
+<ParamField path="label" type="string">
+  Label text displayed next to checkbox
+</ParamField>
+
+<ParamField path="sublabel" type="string">
+  Secondary label text displayed below main label
+</ParamField>
+
+<ParamField path="error" type="boolean">
+  Shows error state with red coloring
+</ParamField>
+
+<ParamField path="height" type="number">
+  Custom height in pixels for the checkbox box
+</ParamField>
+
+<ParamField path="width" type="number">
+  Custom width in pixels for the checkbox box
+</ParamField>
+
+<ParamField path="position" type="'left' | 'right'" default="left">
+  Position of checkbox relative to label
+</ParamField>
+
+<ParamField path="avatarEnabled" type="boolean">
+  Shows avatar with first letter of label
+</ParamField>
+
+<ParamField path="shape" type="'circle' | 'square'" default="square">
+  Shape of the checkbox box
+</ParamField>
+
+<ParamField path="onClick" type="(event: React.MouseEvent<HTMLButtonElement>) => void">
+  Callback fired when checkbox is clicked
+</ParamField>
+
+<ParamField path="children" type="React.ReactNode">
+  Custom content to display instead of label
+</ParamField>
+
+### Usage
+
+```tsx
+<Checkbox
+  selected={isChecked}
+  label="Accept terms and conditions"
+  onClick={() => setIsChecked(!isChecked)}
+/>
+```
+
+### Notes
+
+- Uses Lottie animation for checkmark appearance
+- Supports both controlled and uncontrolled modes
+- Error state changes colors to red variants
+- Avatar displays first letter of label in uppercase
+- Hover effect changes background color
+- Active state includes scale-down animation

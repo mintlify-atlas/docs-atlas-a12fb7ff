@@ -1,122 +1,192 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Adopta Un Abuelo React Components",
+  "theme": "palm",
   "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+    "primary": "#848c8e",
+    "light": "#11161e",
+    "dark": "#cfd0d2"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://media.brand.dev/2b01fe20-c04b-4a1d-a2f9-1d2789c50a7a.jpg",
+  "logo": {
+    "light": "https://media.brand.dev/5ffd6ce4-2434-4b4b-920a-f8cacac8b48b.svg",
+    "dark": "https://media.brand.dev/5ffd6ce4-2434-4b4b-920a-f8cacac8b48b.svg"
+  },
+  "navbar": {
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/Adopta-Un-Abuelo/react-components"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Adopta-Un-Abuelo/react-components"
+    }
+  },
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Documentation",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "introduction",
+              "installation",
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Core Concepts",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "concepts/architecture",
+              "concepts/styling",
+              "concepts/typescript"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Form Components",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "components/button",
+              "components/input",
+              "components/input-phone",
+              "components/input-location",
+              "components/input-image",
+              "components/input-birthday",
+              "components/input-code",
+              "components/input-date-range",
+              "components/input-range",
+              "components/input-price",
+              "components/input-chat",
+              "components/select",
+              "components/textarea",
+              "components/checkbox",
+              "components/radio-button",
+              "components/switch",
+              "components/search-bar"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Display Components",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "components/text",
+              "components/avatar",
+              "components/label",
+              "components/progress-bar",
+              "components/countdown",
+              "components/counter",
+              "components/stamp",
+              "components/feedback"
+            ]
+          },
+          {
+            "group": "Navigation Components",
+            "pages": [
+              "components/breadcrumb",
+              "components/menu",
+              "components/tabs",
+              "components/pagination"
+            ]
+          },
+          {
+            "group": "Interactive Components",
+            "pages": [
+              "components/modal",
+              "components/dropdown",
+              "components/filter",
+              "components/cell-selector",
+              "components/tag-selector",
+              "components/switch-tag",
+              "components/hover",
+              "components/faqs",
+              "components/chat"
+            ]
+          },
+          {
+            "group": "Form & Data",
+            "pages": [
+              "components/form",
+              "components/currency-selector",
+              "components/payout"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "advanced/optional-dependencies",
+              "advanced/google-maps-integration",
+              "advanced/stripe-integration",
+              "advanced/rich-text-editor"
+            ]
+          },
+          {
+            "group": "Resources",
+            "pages": [
+              "resources/contributing",
+              "resources/changelog",
+              "resources/license"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Components",
             "pages": [
-              "api-reference/introduction"
+              "api/avatar",
+              "api/breadcrumb",
+              "api/button",
+              "api/cell-selector",
+              "api/chat",
+              "api/checkbox",
+              "api/countdown",
+              "api/counter",
+              "api/currency-selector",
+              "api/dropdown",
+              "api/faqs",
+              "api/feedback",
+              "api/filter",
+              "api/form",
+              "api/hover",
+              "api/input",
+              "api/input-birthday",
+              "api/input-chat",
+              "api/input-code",
+              "api/input-date-range",
+              "api/input-image",
+              "api/input-location",
+              "api/input-phone",
+              "api/input-price",
+              "api/input-range",
+              "api/label",
+              "api/menu",
+              "api/modal",
+              "api/pagination",
+              "api/payout",
+              "api/progress-bar",
+              "api/radio-button",
+              "api/search-bar",
+              "api/select",
+              "api/stamp",
+              "api/switch",
+              "api/switch-tag",
+              "api/tabs",
+              "api/tag-selector",
+              "api/text",
+              "api/textarea"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "Constants",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api/color",
+              "api/color-v2"
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }

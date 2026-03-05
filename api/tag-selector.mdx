@@ -1,0 +1,157 @@
+---
+title: TagSelector
+description: Tag selector component for single or multiple selection with optional subtitles in a flex-wrap layout
+---
+
+## Import
+
+```tsx
+import { TagSelector } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={[
+    { id: "1", title: "React" },
+    { id: "2", title: "TypeScript", subtitle: "Recommended" }
+  ]}
+  optionsSelected={selectedTags}
+  onChange={(tags) => setSelectedTags(tags)}
+/>
+```
+
+## Props
+
+<ParamField path="type" type="'multiple' | 'single'">
+  Selection mode: `single` for radio-like behavior, `multiple` for multi-select
+</ParamField>
+
+<ParamField path="options" type="Array<OptionProps>" required>
+  Available tag options to display
+</ParamField>
+
+<ParamField path="optionsSelected" type="Array<OptionProps>">
+  Pre-selected options (controlled component pattern)
+</ParamField>
+
+<ParamField path="onChange" type="(selection: Array<OptionProps>) => void">
+  Callback fired when selection changes, receives array of selected options
+</ParamField>
+
+<ParamField path="onlyVisual" type="boolean">
+  When true, disables click interactions (display only)
+</ParamField>
+
+<ParamField path="design" type="'design1' | 'design2'">
+  Visual design variant
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+## OptionProps
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the tag
+</ParamField>
+
+<ParamField path="title" type="string" required>
+  Main text displayed on the tag
+</ParamField>
+
+<ParamField path="subtitle" type="string">
+  Optional secondary text below the title
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for individual tag
+</ParamField>
+
+## Features
+
+- Flex-wrap layout that automatically wraps tags to multiple rows
+- Single selection mode: only one tag can be selected at a time (clicking again deselects)
+- Multiple selection mode: multiple tags can be selected simultaneously
+- Supports tags with optional subtitles
+- Visual-only mode for display without interaction
+- Automatically renders Tag or TagSubtitle components based on subtitle presence
+
+## Examples
+
+### Multiple Selection
+
+```tsx
+const [selectedSkills, setSelectedSkills] = useState([]);
+
+<TagSelector
+  type="multiple"
+  options={[
+    { id: '1', title: 'JavaScript' },
+    { id: '2', title: 'React' },
+    { id: '3', title: 'TypeScript' },
+    { id: '4', title: 'Node.js' }
+  ]}
+  optionsSelected={selectedSkills}
+  onChange={(tags) => setSelectedSkills(tags)}
+/>
+```
+
+### Single Selection
+
+```tsx
+const [selectedPlan, setSelectedPlan] = useState([]);
+
+<TagSelector
+  type="single"
+  options={[
+    { id: 'basic', title: 'Basic', subtitle: '$9/month' },
+    { id: 'pro', title: 'Pro', subtitle: '$29/month' },
+    { id: 'enterprise', title: 'Enterprise', subtitle: 'Custom pricing' }
+  ]}
+  optionsSelected={selectedPlan}
+  onChange={(tags) => setSelectedPlan(tags)}
+/>
+```
+
+### With Subtitles
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={[
+    { id: '1', title: 'React', subtitle: 'Frontend library' },
+    { id: '2', title: 'Vue', subtitle: 'Progressive framework' },
+    { id: '3', title: 'Angular', subtitle: 'Full framework' }
+  ]}
+  optionsSelected={frameworks}
+  onChange={setFrameworks}
+/>
+```
+
+### Visual Only (Display Mode)
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={userSkills}
+  optionsSelected={userSkills}
+  onlyVisual
+/>
+```
+
+### Custom Design
+
+```tsx
+<TagSelector
+  type="multiple"
+  options={tags}
+  optionsSelected={selected}
+  onChange={setSelected}
+  design="design2"
+  style={{ gap: '12px', padding: '16px' }}
+/>
+```

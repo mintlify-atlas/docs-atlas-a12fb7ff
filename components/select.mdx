@@ -1,0 +1,154 @@
+---
+title: Select
+description: Dropdown select component with icons and keyboard-friendly navigation
+---
+
+A dropdown select component with support for icons, auto-close on outside click, and both controlled and uncontrolled modes.
+
+## Basic Usage
+
+```tsx
+import { Select } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function LanguageSelector() {
+  const [language, setLanguage] = useState(null);
+
+  return (
+    <Select
+      id="language-select"
+      options={[
+        { label: 'Option 1' },
+        { label: 'Option 2' },
+        { label: 'Option 3' },
+        { label: 'Option 4' }
+      ]}
+      onChange={(option) => setLanguage(option)}
+    />
+  );
+}
+```
+
+## With Icons
+
+```tsx
+import { Select } from '@adoptaunabuelo/react-components';
+import { Dog, Cat, Cake, Calendar } from 'lucide-react';
+
+function IconSelect() {
+  return (
+    <Select
+      id="icon-select"
+      options={[
+        { label: 'Dogs', icon: <Dog width={20} height={20} /> },
+        { label: 'Cats', icon: <Cat width={20} height={20} /> },
+        { label: 'Birthday', icon: <Cake width={20} height={20} /> },
+        { label: 'Events', icon: <Calendar width={20} height={20} /> }
+      ]}
+      onChange={(option) => console.log(option)}
+    />
+  );
+}
+```
+
+## Controlled Component
+
+```tsx
+import { Select } from '@adoptaunabuelo/react-components';
+import { useState } from 'react';
+
+function ControlledSelect() {
+  const options = [
+    { label: 'English', icon: <FlagIcon /> },
+    { label: 'Spanish', icon: <FlagIcon /> },
+    { label: 'French', icon: <FlagIcon /> }
+  ];
+
+  const [selected, setSelected] = useState(options[0]);
+
+  return (
+    <Select
+      id="language-select"
+      options={options}
+      selectedItem={selected}
+      onChange={(option) => setSelected(option)}
+    />
+  );
+}
+```
+
+## Icon-Only Mode
+
+Hide the label text and show only the icon:
+
+```tsx
+<Select
+  id="icon-only-select"
+  hideTitle={true}
+  options={[
+    { label: 'English', icon: <FlagEN /> },
+    { label: 'Spanish', icon: <FlagES /> }
+  ]}
+  onChange={(option) => setLanguage(option)}
+/>
+```
+
+## Custom Styles
+
+```tsx
+<Select
+  id="custom-select"
+  style={{ width: '200px', backgroundColor: '#f0f0f0' }}
+  optionStyle={{ maxHeight: '300px' }}
+  options={[
+    { label: 'Option 1' },
+    { label: 'Option 2' },
+    { label: 'Option 3' }
+  ]}
+  onChange={(option) => console.log(option)}
+/>
+```
+
+## Props
+
+<ParamField path="id" type="string" required>
+  Unique identifier required for click-outside detection. Must be unique across the page.
+</ParamField>
+
+<ParamField path="options" type="Array<{ label: string; icon?: ReactElement }>" required>
+  Array of selectable options.
+  
+  Each option object:
+  - `label` (string, required): Display text for the option
+  - `icon` (ReactElement, optional): Icon displayed before the label
+</ParamField>
+
+<ParamField path="selectedItem" type="{ label: string; icon?: ReactElement }">
+  Current selected option for controlled component mode. When provided, the component operates in controlled mode.
+</ParamField>
+
+<ParamField path="onChange" type="(option: { label: string; icon?: ReactElement }) => void">
+  Callback fired when selection changes. Receives the complete option object.
+</ParamField>
+
+<ParamField path="hideTitle" type="boolean" default="false">
+  Hide the selected item label (icon-only mode). Only shows the icon when true.
+</ParamField>
+
+<ParamField path="optionStyle" type="CSSProperties">
+  Custom styles for the dropdown options container.
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom styles for the select button.
+</ParamField>
+
+## Features
+
+- **Auto-close**: Automatically closes when clicking outside the component
+- **Default Selection**: Automatically selects the first option if no `selectedItem` is provided
+- **Chevron Icon**: Shows up/down chevron icon based on open/closed state
+- **Hover Effects**: Visual feedback on option hover
+- **Scrollable Options**: Maximum height of 220px with scrollable overflow
+- **Controlled/Uncontrolled**: Supports both controlled (via `selectedItem`) and uncontrolled modes
+- **Icon Support**: Optional icons for both the selected item and dropdown options

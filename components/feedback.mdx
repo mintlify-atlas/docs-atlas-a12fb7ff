@@ -1,0 +1,416 @@
+---
+title: Feedback
+description: Toast-style notification component with slide-in/out animations and auto-dismiss functionality
+---
+
+## Overview
+
+The `Feedback` component displays toast-style notifications that slide in from the bottom-left corner, auto-dismiss after a specified duration, and provide visual feedback for user actions. It supports success, error, and custom types.
+
+## Import
+
+```tsx
+import { Feedback } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Basic Success Message
+
+```tsx
+const [showSuccess, setShowSuccess] = useState(false);
+
+<>
+  <button onClick={() => setShowSuccess(true)}>
+    Save Changes
+  </button>
+  
+  <Feedback 
+    type="success"
+    text="Changes saved successfully"
+    isVisible={showSuccess}
+    onClose={() => setShowSuccess(false)}
+  />
+</>
+```
+
+### Error Message
+
+```tsx
+const [showError, setShowError] = useState(false);
+
+<Feedback 
+  type="error"
+  text="Failed to update profile"
+  isVisible={showError}
+  onClose={() => setShowError(false)}
+/>
+```
+
+### Custom Duration
+
+```tsx
+<Feedback 
+  type="success"
+  text="File uploaded successfully"
+  isVisible={isVisible}
+  closeAfter={5000}
+  onClose={handleClose}
+/>
+{/* Stays visible for 5 seconds */}
+```
+
+### With Manual Close Button
+
+```tsx
+<Feedback 
+  type="success"
+  text="Task completed"
+  isVisible={isVisible}
+  showClose
+  onClose={handleClose}
+/>
+```
+
+### Custom Type with Icon
+
+```tsx
+import { Info } from 'lucide-react';
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Feedback 
+  type="custom"
+  icon={<Info color="white" size={24} style={{ marginRight: 12 }} />}
+  text="New features available"
+  isVisible={isVisible}
+  style={{ background: ColorV2.surface.blue }}
+  onClose={handleClose}
+/>
+```
+
+### Complete Implementation Example
+
+```tsx
+function MyComponent() {
+  const [feedback, setFeedback] = useState({
+    visible: false,
+    type: 'success',
+    message: ''
+  });
+
+  const showFeedback = (type, message) => {
+    setFeedback({ visible: true, type, message });
+  };
+
+  const handleSave = async () => {
+    try {
+      await saveData();
+      showFeedback('success', 'Data saved successfully');
+    } catch (error) {
+      showFeedback('error', 'Failed to save data');
+    }
+  };
+
+  return (
+    <>
+      <button onClick={handleSave}>Save</button>
+      
+      <Feedback 
+        type={feedback.type}
+        text={feedback.message}
+        isVisible={feedback.visible}
+        onClose={() => setFeedback(prev => ({ ...prev, visible: false }))}
+      />
+    </>
+  );
+}
+```
+
+## Props
+
+<ParamField path="isVisible" type="boolean" required>
+  Controls visibility and triggers show/hide animation.
+  
+  - Set to `true` to show the feedback
+  - Animation plays on state change
+  - Component automatically sets to `false` after `closeAfter` duration
+  
+  ```tsx
+  isVisible={showFeedback}
+  ```
+</ParamField>
+
+<ParamField path="type" type="string" required>
+  Visual variant of the feedback notification.
+  
+  **Options:**
+  - `"success"` - Green background with check icon
+  - `"error"` - Red background with X icon
+  - `"custom"` - Custom background with custom icon (requires `icon` prop)
+  
+  ```tsx
+  type="success" // Green with check
+  type="error"   // Red with X
+  type="custom"  // Requires icon and style props
+  ```
+</ParamField>
+
+<ParamField path="text" type="string" required>
+  Message text to display in the notification.
+  
+  Keep concise for better UX (1-2 short sentences).
+  
+  ```tsx
+  text="Changes saved successfully"
+  ```
+</ParamField>
+
+<ParamField path="icon" type="ReactNode">
+  Custom icon for `type="custom"`. Ignored for success/error types.
+  
+  ```tsx
+  import { Bell } from 'lucide-react';
+  
+  icon={<Bell color="white" size={24} style={{ marginRight: 12 }} />}
+  ```
+</ParamField>
+
+<ParamField path="closeAfter" type="number" default="3000">
+  Auto-dismiss duration in milliseconds.
+  
+  The notification automatically hides and calls `onClose` after this duration.
+  
+  ```tsx
+  closeAfter={5000} // 5 seconds
+  closeAfter={2000} // 2 seconds
+  ```
+</ParamField>
+
+<ParamField path="showClose" type="boolean" default="false">
+  Display manual close button in the top-right corner.
+  
+  Allows users to dismiss notification before auto-close timer.
+  
+  ```tsx
+  showClose={true}
+  ```
+</ParamField>
+
+<ParamField path="onClose" type="() => void">
+  Callback fired when notification is dismissed (auto or manual).
+  
+  Use this to update parent state and reset visibility.
+  
+  ```tsx
+  onClose={() => setShowFeedback(false)}
+  ```
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom inline styles for the container.
+  
+  For `type="custom"`, you must set `background` color:
+  
+  ```tsx
+  style={{ 
+    background: ColorV2.surface.purple,
+    minWidth: '50%' 
+  }}
+  ```
+</ParamField>
+
+## Features
+
+- **Smooth animations**: Slide in/out with scale effect
+- **Auto-dismiss**: Configurable timeout for automatic closure
+- **Manual close**: Optional close button for user control
+- **Type variants**: Success, error, and custom types with icons
+- **Positioning**: Bottom-left corner, absolute positioning
+- **Responsive**: Adapts to screen width (max-width constraint)
+- **Non-blocking**: Uses absolute positioning with high z-index
+- **Accessible**: Uses `role="feedback"` for semantic identification
+
+## Animation Details
+
+### Slide In (Enter)
+- **Duration**: 0.3s
+- **Easing**: ease-out
+- **Effect**: Scale from 0 to 1, opacity from 0 to 1
+- **Transform origin**: Bottom-left corner
+
+### Slide Out (Exit)
+- **Duration**: 0.3s
+- **Easing**: ease-in
+- **Effect**: Scale from 1 to 0, opacity from 1 to 0
+- **Transform origin**: Bottom-left corner
+
+## Design Specifications
+
+### Position & Size
+- **Position**: Absolute, bottom-left
+- **Bottom**: 24px from viewport bottom
+- **Left**: 24px from viewport left
+- **Min width**: 40% of screen
+- **Max width**: calc(100% - 24px)
+- **Width**: Fits content
+- **Z-index**: 100
+
+### Colors
+- **Success**: `Color.status.color.success` (green)
+- **Error**: `Color.status.color.error` (red)
+- **Custom**: User-defined via `style.background`
+- **Text**: White for all types
+- **Icon**: White for all types
+
+### Spacing & Layout
+- **Padding**: 16px
+- **Border radius**: 4px
+- **Icon margin**: 12px right
+- **Box shadow**: Layered shadow for depth
+  - `2px 0px 20px rgba(0, 0, 0, 0.09)`
+  - `0px 4px 8px rgba(0, 0, 0, 0.1)`
+
+## Type-Specific Behavior
+
+### Success Type
+```tsx
+type="success"
+```
+- ✅ Check icon (from Lucide React)
+- Green background
+- White text and icon
+- Used for: Save confirmations, successful operations
+
+### Error Type
+```tsx
+type="error"
+```
+- ❌ X icon (from Lucide React)
+- Red background
+- White text and icon
+- Used for: Failed operations, validation errors
+
+### Custom Type
+```tsx
+type="custom"
+icon={<YourIcon />}
+style={{ background: '#your-color' }}
+```
+- User-provided icon
+- User-defined background color
+- White text (use `style` to override)
+- Used for: Info messages, warnings, custom notifications
+
+## Best Practices
+
+- Keep messages concise (1-2 short sentences)
+- Use success type for positive confirmations
+- Use error type for failures requiring attention
+- Set appropriate `closeAfter` duration:
+  - 2-3s for success messages
+  - 4-5s for error messages (more time to read)
+  - 5s+ for important custom messages
+- Add `showClose` for error messages (let users dismiss)
+- Handle `onClose` to reset state properly
+- Avoid showing multiple feedback messages simultaneously
+- Test on mobile devices (check positioning and width)
+- Use custom type for neutral/informational messages
+
+## Common Patterns
+
+### Global Feedback System
+
+```tsx
+// contexts/FeedbackContext.tsx
+const FeedbackContext = createContext();
+
+export function FeedbackProvider({ children }) {
+  const [feedback, setFeedback] = useState({ visible: false, type: 'success', text: '' });
+  
+  const showFeedback = (type, text) => {
+    setFeedback({ visible: true, type, text });
+  };
+  
+  return (
+    <FeedbackContext.Provider value={{ showFeedback }}>
+      {children}
+      <Feedback 
+        {...feedback}
+        isVisible={feedback.visible}
+        onClose={() => setFeedback(prev => ({ ...prev, visible: false }))}
+      />
+    </FeedbackContext.Provider>
+  );
+}
+
+// Usage in components
+const { showFeedback } = useContext(FeedbackContext);
+showFeedback('success', 'Profile updated');
+```
+
+### Multiple Feedback Types
+
+```tsx
+const [feedbacks, setFeedbacks] = useState([]);
+
+const addFeedback = (type, text) => {
+  const id = Date.now();
+  setFeedbacks(prev => [...prev, { id, type, text, visible: true }]);
+  
+  setTimeout(() => {
+    setFeedbacks(prev => prev.filter(f => f.id !== id));
+  }, 3000);
+};
+
+return (
+  <>
+    {feedbacks.map(feedback => (
+      <Feedback 
+        key={feedback.id}
+        type={feedback.type}
+        text={feedback.text}
+        isVisible={feedback.visible}
+        onClose={() => setFeedbacks(prev => prev.filter(f => f.id !== feedback.id))}
+        style={{ bottom: 24 + (feedbacks.indexOf(feedback) * 80) }}
+      />
+    ))}
+  </>
+);
+```
+
+## Accessibility
+
+- Uses `role="feedback"` for semantic identification
+- High contrast colors (white text on colored background)
+- Sufficient size for touch targets (close button)
+- Auto-dismiss prevents screen clutter
+- Manual close option for accessibility tools
+- Consider adding:
+  - `aria-live="polite"` for screen reader announcements
+  - `aria-atomic="true"` for complete message reading
+
+```tsx
+<div aria-live="polite" aria-atomic="true">
+  <Feedback {...props} />
+</div>
+```
+
+## Browser Support
+
+- Modern browsers with CSS animations support
+- Uses CSS keyframes for animations
+- Absolute positioning widely supported
+- Box shadow for depth effect
+
+## Dependencies
+
+- styled-components - Animations and styling
+- lucide-react - Check and X icons
+- Button component - Close button
+- Text component - Message text
+
+## Related Components
+
+- [Button](/components/button) - Used for close button
+- [Text](/components/text) - Used for message text
+- [Label](/components/label) - Alternative for inline status indicators

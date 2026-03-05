@@ -1,0 +1,218 @@
+---
+title: Text
+description: Unified typography component that renders headers, paragraphs, or button text with semantic HTML elements
+---
+
+## Overview
+
+The `Text` component is a versatile typography component that automatically selects the appropriate semantic HTML element based on the `type` prop. It supports headers (h1-h6, d1), paragraphs (p, p2, c1, c2, o1, o2), and button text (b1, b2, b3).
+
+## Import
+
+```tsx
+import { Text } from '@adoptaunabuelo/react-components';
+```
+
+## Usage
+
+### Headers
+
+```tsx
+<Text type="d1" weight="semibold">Display Title</Text>
+<Text type="h1" weight="semibold">Page Title</Text>
+<Text type="h2" weight="medium">Section Title</Text>
+<Text type="h3">Subsection Title</Text>
+<Text type="h4">Small Heading</Text>
+<Text type="h5">Smaller Heading</Text>
+<Text type="h6">Smallest Heading</Text>
+```
+
+### Paragraphs
+
+```tsx
+<Text type="p">Regular paragraph text</Text>
+<Text type="p2">Smaller paragraph text</Text>
+<Text type="c1">Caption text</Text>
+<Text type="c2">Smaller caption text</Text>
+<Text type="o1">OVERLINE TEXT</Text>
+<Text type="o2">SMALLER OVERLINE</Text>
+```
+
+### Button Text
+
+```tsx
+<Text type="b1">Large Button Text</Text>
+<Text type="b2">Medium Button Text</Text>
+<Text type="b3">Small Button Text</Text>
+```
+
+### Custom Styling
+
+```tsx
+import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
+
+<Text 
+  type="p" 
+  weight="medium"
+  style={{ color: ColorV2.text.neutralMedium }}
+>
+  Styled paragraph text
+</Text>
+```
+
+## Type Variants
+
+### Headers (d1, h1-h6)
+
+<ParamField path="d1" type="Display 1">
+  **Size:** 52px (desktop), 48px (mobile)  
+  **Line Height:** 64px (desktop), 60px (mobile)  
+  **Element:** `<h1>`  
+  **Use case:** Hero titles, largest display text
+</ParamField>
+
+<ParamField path="h1" type="Heading 1">
+  **Size:** 48px (desktop), 32px (mobile)  
+  **Line Height:** 56px (desktop), 40px (mobile)  
+  **Element:** `<h1>`  
+  **Use case:** Page titles
+</ParamField>
+
+<ParamField path="h2" type="Heading 2">
+  **Size:** 40px (desktop), 28px (mobile)  
+  **Line Height:** 48px (desktop), 36px (mobile)  
+  **Element:** `<h2>`  
+  **Use case:** Major section headings
+</ParamField>
+
+<ParamField path="h3" type="Heading 3">
+  **Size:** 28px (desktop), 24px (mobile)  
+  **Line Height:** 36px (desktop), 32px (mobile)  
+  **Element:** `<h3>`  
+  **Use case:** Subsection headings
+</ParamField>
+
+<ParamField path="h4" type="Heading 4">
+  **Size:** 24px (desktop), 20px (mobile)  
+  **Line Height:** 32px (desktop), 28px (mobile)  
+  **Element:** `<h4>`  
+  **Use case:** Card titles, smaller headings
+</ParamField>
+
+<ParamField path="h5" type="Heading 5">
+  **Size:** 20px (desktop), 18px (mobile)  
+  **Line Height:** 28px (desktop), 26px (mobile)  
+  **Element:** `<h5>`  
+  **Use case:** Minor headings
+</ParamField>
+
+<ParamField path="h6" type="Heading 6">
+  **Size:** 18px (desktop), 16px (mobile)  
+  **Line Height:** 26px (desktop), 24px (mobile)  
+  **Element:** `<h6>`  
+  **Use case:** Smallest headings
+</ParamField>
+
+### Paragraphs (p, p2, c1, c2, o1, o2)
+
+<ParamField path="p" type="Paragraph">
+  **Size:** 15px  
+  **Element:** `<p>`  
+  **Use case:** Body text, main content
+</ParamField>
+
+<ParamField path="p2" type="Paragraph 2">
+  **Size:** 14px  
+  **Element:** `<p>`  
+  **Use case:** Secondary body text
+</ParamField>
+
+<ParamField path="c1" type="Caption 1">
+  **Size:** 13px  
+  **Element:** `<p>`  
+  **Use case:** Captions, helper text
+</ParamField>
+
+<ParamField path="c2" type="Caption 2">
+  **Size:** 12px  
+  **Element:** `<p>`  
+  **Use case:** Smaller captions, metadata
+</ParamField>
+
+<ParamField path="o1" type="Overline 1">
+  **Size:** 13px  
+  **Transform:** Uppercase  
+  **Element:** `<p>`  
+  **Use case:** Labels, category tags
+</ParamField>
+
+<ParamField path="o2" type="Overline 2">
+  **Size:** 12px  
+  **Transform:** Uppercase  
+  **Element:** `<p>`  
+  **Use case:** Smaller labels, tags
+</ParamField>
+
+### Button Text (b1, b2, b3)
+
+<ParamField path="b1" type="Button 1">
+  **Size:** 18px (desktop), 15px (mobile)  
+  **Element:** `<p>`  
+  **Use case:** Large button text
+</ParamField>
+
+<ParamField path="b2" type="Button 2">
+  **Size:** 15px (desktop), 14px (mobile)  
+  **Element:** `<p>`  
+  **Use case:** Standard button text
+</ParamField>
+
+<ParamField path="b3" type="Button 3">
+  **Size:** 13px  
+  **Element:** `<p>`  
+  **Use case:** Small button text
+</ParamField>
+
+## Props
+
+<ParamField path="type" type="string" required>
+  Typography variant to render. Determines the HTML element and default styles.
+  
+  **Options:** `"d1"` | `"h1"` | `"h2"` | `"h3"` | `"h4"` | `"h5"` | `"h6"` | `"p"` | `"p2"` | `"c1"` | `"c2"` | `"o1"` | `"o2"` | `"b1"` | `"b2"` | `"b3"`
+</ParamField>
+
+<ParamField path="weight" type="string">
+  Font weight variant.
+  
+  **Options:** `"regular"` (400) | `"medium"` (500) | `"semibold"` (600)  
+  **Default:** `"regular"`
+</ParamField>
+
+<ParamField path="style" type="CSSProperties">
+  Custom inline styles to apply to the element.
+</ParamField>
+
+<ParamField path="children" type="ReactNode">
+  Text content to display.
+</ParamField>
+
+## Features
+
+- **Automatic semantic HTML**: Renders the appropriate element (`<h1>`, `<p>`, etc.) based on type
+- **Responsive typography**: Headers automatically adjust size on mobile devices
+- **Flexible styling**: Supports custom colors, weights, and additional styles
+- **Design system integration**: Uses ColorV2 constants for consistent theming
+- **Accessible**: Proper semantic elements for better accessibility
+
+## Best Practices
+
+- Use header types (`h1`-`h6`) for semantic document structure
+- Use `d1` for large hero text that doesn't need to be a semantic heading
+- Apply `weight="semibold"` or `weight="medium"` for emphasis
+- Use overline types (`o1`, `o2`) for labels and category indicators
+- Prefer ColorV2 constants over hardcoded colors for consistency
+
+## Related Components
+
+- [Button](/components/button) - Uses Text internally for button labels
+- [Label](/components/label) - Uses Text for label content

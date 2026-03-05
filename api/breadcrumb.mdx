@@ -1,0 +1,41 @@
+---
+title: BreadCrumb
+description: API reference for the BreadCrumb component
+---
+
+## BreadCrumb
+
+Step indicator component displaying circular dots to show progress through a multi-step flow. Highlights the current active step with primary color.
+
+### Import
+
+```tsx
+import { BreadCrumb } from '@adoptaunabuelo/react-components';
+```
+
+### Props
+
+<ParamField path="steps" type="number" required>
+  Total number of steps to display
+</ParamField>
+
+<ParamField path="selectedStep" type="number" default="0">
+  Current active step index (0-based)
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+### Usage
+
+```tsx
+<BreadCrumb steps={4} selectedStep={1} />
+```
+
+### Notes
+
+- `selectedStep` is 0-based (first step is 0)
+- Active step is highlighted with primary background color
+- Inactive steps use low-opacity text color
+- Each step is displayed as a circular dot (8px diameter)

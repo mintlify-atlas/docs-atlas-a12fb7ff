@@ -1,0 +1,218 @@
+---
+title: Filter
+description: API reference for the Filter component
+---
+
+## Filter
+
+Filter component router supporting three types: checkbox (multi-select), ratio (range slider), and date (date picker). Each type has its own variant implementation with specific props.
+
+### Import
+
+```tsx
+import { Filter } from '@adoptaunabuelo/react-components';
+```
+
+## Filter Types
+
+The Filter component supports three types: `checkbox`, `ratio`, and `date`. Props vary based on type.
+
+### Checkbox Filter
+
+Multi-select or single-select filter with search functionality.
+
+#### Props
+
+<ParamField path="type" type="'single' | 'multiple'" required>
+  Filter type for checkbox variant
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the filter
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Placeholder text for the filter button
+</ParamField>
+
+<ParamField path="options" type="Array<CheckboxOption>" required>
+  Array of checkbox options
+</ParamField>
+
+<ParamField path="selectedOptions" type="Array<CheckboxOption>">
+  Currently selected options
+</ParamField>
+
+<ParamField path="onChange" type="(result: Array<CheckboxOption>) => void">
+  Callback when selection changes
+</ParamField>
+
+<ParamField path="shape" type="'circle' | 'square'">
+  Shape of the checkbox boxes
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the filter
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left'">
+  Position of dropdown menu
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+#### CheckboxOption
+
+<ParamField path="id" type="string" required>
+  Unique identifier
+</ParamField>
+
+<ParamField path="label" type="string" required>
+  Display label
+</ParamField>
+
+<ParamField path="sublabel" type="string">
+  Secondary label text
+</ParamField>
+
+#### Usage
+
+```tsx
+<Filter
+  type="multiple"
+  id="category-filter"
+  placeholder="Categories"
+  options={[
+    { id: "1", label: "Option 1" },
+    { id: "2", label: "Option 2" }
+  ]}
+  onChange={(selected) => applyFilters(selected)}
+/>
+```
+
+### Date Filter
+
+Date range picker filter.
+
+#### Props
+
+<ParamField path="type" type="'date'" required>
+  Filter type for date variant
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the filter
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Placeholder text for the filter button
+</ParamField>
+
+<ParamField path="selectedOptions" type="{ startDate: moment.Moment | null; endDate: moment.Moment | null }">
+  Currently selected date range
+</ParamField>
+
+<ParamField path="onChange" type="(result: { startDate: moment.Moment | null; endDate: moment.Moment | null }) => void">
+  Callback when date range changes
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the filter
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left'">
+  Position of dropdown menu
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+#### Usage
+
+```tsx
+<Filter
+  type="date"
+  id="date-filter"
+  placeholder="Select dates"
+  selectedOptions={{ startDate: moment(), endDate: moment().add(7, 'days') }}
+  onChange={(range) => setDateRange(range)}
+/>
+```
+
+### Ratio Filter
+
+Range slider filter for numeric values.
+
+#### Props
+
+<ParamField path="type" type="'ratio'" required>
+  Filter type for ratio variant
+</ParamField>
+
+<ParamField path="id" type="string" required>
+  Unique identifier for the filter
+</ParamField>
+
+<ParamField path="placeholder" type="string" required>
+  Placeholder text for the filter button
+</ParamField>
+
+<ParamField path="min" type="number" required>
+  Minimum value for the range
+</ParamField>
+
+<ParamField path="max" type="number" required>
+  Maximum value for the range
+</ParamField>
+
+<ParamField path="unit" type="string">
+  Unit label (e.g., "km", "$")
+</ParamField>
+
+<ParamField path="selectedOptions" type="number">
+  Currently selected value
+</ParamField>
+
+<ParamField path="onChange" type="(result: number | undefined) => void">
+  Callback when value changes
+</ParamField>
+
+<ParamField path="disabled" type="boolean">
+  Disables the filter
+</ParamField>
+
+<ParamField path="position" type="'bottom-right' | 'bottom-left'">
+  Position of dropdown menu
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom styles for the container
+</ParamField>
+
+#### Usage
+
+```tsx
+<Filter
+  type="ratio"
+  id="distance-filter"
+  placeholder="Distance"
+  min={0}
+  max={100}
+  unit="km"
+  selectedOptions={50}
+  onChange={(value) => setDistance(value)}
+/>
+```
+
+### Common Features
+
+- All filter types show as rounded pill buttons
+- Selected filters display with primary border and show current value
+- Click X icon to clear filter
+- Opens modal on mobile, dropdown on desktop
+- Includes "Borrar" (Clear) and "Aplicar" (Apply) buttons
+- Auto-closes when clicking outside
+- Checkbox filter includes search functionality
