@@ -1,0 +1,131 @@
+---
+title: TextAnimated
+description: Text component with rotating animated words that cycle through options array
+---
+
+## Import
+
+```tsx
+import { TextAnimated } from '@adoptaunabuelo/react-components';
+```
+
+## Description
+
+Text component with rotating animated words that cycle through options array. Uses `{{data}}` placeholder in children string for where animation appears. Built on top of the Text component with fade-in/fade-out animations.
+
+## Usage
+
+```tsx
+<TextAnimated 
+  type="h1" 
+  weight="semibold"
+  options={["developers", "designers", "creators"]}
+  interval={3000}
+>
+  Built for {{data}}
+</TextAnimated>
+```
+
+## Props
+
+Extends all props from the [Text](/api/text) component with additional animation props:
+
+<ParamField path="options" type="string[]" required>
+  Array of strings to cycle through in the animation. Each string will be displayed in sequence with fade transitions.
+</ParamField>
+
+<ParamField path="interval" type="number">
+  Time in milliseconds between word transitions.
+  
+  **Default:** 2500
+</ParamField>
+
+<ParamField path="type" type="string" required>
+  Typography variant inherited from Text component.
+  
+  **Options:** `"d1"` | `"h1"` | `"h2"` | `"h3"` | `"h4"` | `"h5"` | `"h6"` | `"p"` | `"p2"` | `"c1"` | `"c2"` | `"o1"` | `"o2"` | `"b1"` | `"b2"` | `"b3"`
+</ParamField>
+
+<ParamField path="weight" type="string">
+  Font weight variant inherited from Text component.
+  
+  **Options:** `"regular"` (400) | `"medium"` (500) | `"semibold"` (600)  
+  **Default:** `"regular"`
+</ParamField>
+
+<ParamField path="children" type="string" required>
+  Text content with `{{data}}` placeholder where animated words appear. The placeholder will be replaced with cycling options.
+</ParamField>
+
+<ParamField path="style" type="React.CSSProperties">
+  Custom inline styles to apply to the text element.
+</ParamField>
+
+## Animation Details
+
+The component uses CSS keyframe animations with the following behavior:
+
+- **0-20%**: Fade in from below (opacity 0 → 1, translateY 10px → 0)
+- **20-80%**: Display word (opacity 1, translateY 0)
+- **80-100%**: Fade out upward (opacity 1 → 0, translateY 0 → -10px)
+
+Total animation duration: 2.5 seconds (default) or custom interval value.
+
+## Examples
+
+### Hero Section
+
+```tsx
+<TextAnimated 
+  type="d1" 
+  weight="semibold"
+  options={["fast", "simple", "powerful"]}
+  color={ColorV2.text.neutralHigh}
+>
+  Documentation that's {{data}}
+</TextAnimated>
+```
+
+### Feature Highlight
+
+```tsx
+<TextAnimated 
+  type="h2" 
+  options={["analytics", "reports", "insights", "metrics"]}
+  interval={2000}
+>
+  View your {{data}} in real-time
+</TextAnimated>
+```
+
+### Call to Action
+
+```tsx
+<TextAnimated 
+  type="p" 
+  options={["React", "Vue", "Angular", "Svelte"]}
+  interval={1500}
+>
+  Build with {{data}} today
+</TextAnimated>
+```
+
+## Behavior
+
+- Automatically starts animation on mount
+- Cycles through options array infinitely
+- Returns to first option after reaching the end
+- Cleans up interval timer on unmount
+- Recalculates timing if options array length changes
+
+## Use Cases
+
+- Hero section taglines with rotating value propositions
+- Feature descriptions highlighting multiple capabilities
+- Landing page headlines that showcase versatility
+- Call-to-action text with multiple audience segments
+- Product descriptions emphasizing various use cases
+
+## Related Components
+
+- [Text](/api/text) - Base typography component

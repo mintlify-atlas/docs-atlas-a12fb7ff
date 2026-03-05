@@ -175,6 +175,7 @@
               "api/tabs",
               "api/tag-selector",
               "api/text",
+              "api/text-animated",
               "api/textarea"
             ]
           },

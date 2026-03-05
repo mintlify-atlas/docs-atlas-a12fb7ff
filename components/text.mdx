@@ -212,6 +212,51 @@ import ColorV2 from '@adoptaunabuelo/react-components/constants/ColorV2';
 - Use overline types (`o1`, `o2`) for labels and category indicators
 - Prefer ColorV2 constants over hardcoded colors for consistency
 
+## TextAnimated Component
+
+The library also exports a `TextAnimated` component that cycles through an array of words with fade animations.
+
+### Import
+
+```tsx
+import { TextAnimated } from '@adoptaunabuelo/react-components';
+```
+
+### Usage
+
+Use `{{data}}` as a placeholder in the children string where you want the animated words to appear:
+
+```tsx
+<TextAnimated 
+  type="h1" 
+  options={["developers", "designers", "creators"]}
+  interval={3000}
+>
+  Built for {{data}}
+</TextAnimated>
+```
+
+### Props
+
+All Text props are supported, plus:
+
+<ParamField path="options" type="string[]" required>
+  Array of strings to cycle through in the animation
+</ParamField>
+
+<ParamField path="interval" type="number">
+  Time in milliseconds between transitions
+  
+  **Default:** 2500
+</ParamField>
+
+### Animation
+
+- Fades out current word with upward motion
+- Fades in next word with downward motion
+- Automatically cycles through options array
+- Loops infinitely
+
 ## Related Components
 
 - [Button](/components/button) - Uses Text internally for button labels
